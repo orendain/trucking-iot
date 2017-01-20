@@ -1,19 +1,24 @@
+//import com.scalapenos.sbt.prompt.SbtPrompt.autoImport._
+
 lazy val commonSettings = Seq(
   organization := "com.hortonworks.orendainx",
   version := "0.3.2",
   scalaVersion := "2.11.8"
 )
 
-//lazy val root = project in file(".")
+lazy val truckingIot = (project in file(".")).
+  settings(
+    promptTheme := ScalapenosTheme
+  )
 
-lazy val shared = (project in file("trucking-shared")).
+lazy val common = (project in file("trucking-common")).
   settings(
     commonSettings,
-    name := "trucking-shared"
+    name := "trucking-common"
   )
 
 lazy val simulator = (project in file("trucking-simulator"))
-  .dependsOn(shared)
+  .dependsOn(common)
   .settings(
     commonSettings,
     name := "trucking-simulator",
@@ -21,7 +26,7 @@ lazy val simulator = (project in file("trucking-simulator"))
   )
 
 lazy val enrichment = (project in file("trucking-enrichment"))
-  .dependsOn(shared)
+  .dependsOn(common)
   .settings(
     commonSettings,
     name := "trucking-enrichment",
@@ -29,7 +34,7 @@ lazy val enrichment = (project in file("trucking-enrichment"))
   )
 
 lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
-  .dependsOn(shared)
+  .dependsOn(common)
   .settings(
     commonSettings,
     name := "trucking-schema-registrar",
@@ -38,7 +43,7 @@ lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
   )
 
 lazy val topology = (project in file("trucking-topology"))
-  .dependsOn(shared)
+  .dependsOn(common)
   .settings(
     commonSettings,
     name := "trucking-topology",

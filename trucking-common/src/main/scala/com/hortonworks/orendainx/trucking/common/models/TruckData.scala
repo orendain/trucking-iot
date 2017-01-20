@@ -1,4 +1,4 @@
-package com.hortonworks.orendainx.trucking.shared.models
+package com.hortonworks.orendainx.trucking.common.models
 
 /**
   * The model for a truck event originating from a truck's onboard computer.

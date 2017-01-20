@@ -1,14 +1,10 @@
-# trucking-nifi-bundle
+# Trucking NiFi Bundle
 
-First, clone and build the necessary library [trucking-simulator](https://github.com/orendain/trucking-simulator) (instructions in that readme).
+A NiFi bundle that includes relevant NiFi processors and controller services.
 
-Next, to build this NiFi bundle:
-```
-git clone https://github.com/orendain/trucking-nifi-bundle
-cd trucking-nifi-bundle
-mvn package
-```
+Includes a processor, GetTruckingData, that generates data mimicing sensor logs from truck sensors as well as
+traffic congestion data from the edge.  Underneath the hood, this processor leverages the `trucking-simulator`
+simulator engine included with the base project.
 
-A `nar` file is built and saved to `./nifi-trucking-nar/target/nifi-trucking-nar-0.3.1.nar`.
-
-Take this file and upload it to your NiFi library.  Upon a NiFi restart, you should see a `GetTruckingData` processor included in your NiFi instance.
+Upon building this module, a `nifi-trucking-nar-<version>.nar` is created, which should be uploaded to each
+NiFi node's `/lib` directory.  Upon a NiFi restart, all processors and controller services will be available for use.

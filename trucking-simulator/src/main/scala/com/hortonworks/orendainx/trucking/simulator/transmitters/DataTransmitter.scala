@@ -1,7 +1,7 @@
 package com.hortonworks.orendainx.trucking.simulator.transmitters
 
 import akka.actor.Actor
-import com.hortonworks.orendainx.trucking.shared.models.TruckingData
+import com.hortonworks.orendainx.trucking.common.models.TruckingData
 
 /**
   * DataTransmitters are the sinks for generated simulator data.

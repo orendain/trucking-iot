@@ -1,7 +1,7 @@
 package com.hortonworks.orendainx.trucking.simulator
 
 import akka.actor.{ActorSystem, Inbox}
-import com.hortonworks.orendainx.trucking.shared.models.TruckingData
+import com.hortonworks.orendainx.trucking.common.models.TruckingData
 import com.hortonworks.orendainx.trucking.simulator.coordinators.ManualCoordinator
 import com.hortonworks.orendainx.trucking.simulator.depots.NoSharingDepot
 import com.hortonworks.orendainx.trucking.simulator.flows.SharedFlowManager

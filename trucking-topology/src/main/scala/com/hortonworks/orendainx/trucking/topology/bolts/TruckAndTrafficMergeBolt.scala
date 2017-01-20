@@ -1,16 +1,14 @@
 package com.hortonworks.orendainx.trucking.topology.bolts
 
 import java.io.ByteArrayInputStream
-import java.nio.charset.StandardCharsets
 import java.util
 
-import com.hortonworks.orendainx.trucking.shared.models.{TrafficData, TruckAndTrafficData, TruckData}
+import com.hortonworks.orendainx.trucking.common.models.{TruckData, TrafficData, TruckAndTrafficData}
+import com.hortonworks.registries.schemaregistry.SchemaMetadata
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
 import com.hortonworks.registries.schemaregistry.serdes.avro.{AvroSnapshotDeserializer, AvroSnapshotSerializer}
-import com.hortonworks.registries.schemaregistry.{SchemaCompatibility, SchemaMetadata}
 import com.typesafe.scalalogging.Logger
-import org.apache.avro.Schema
 import org.apache.avro.generic.{GenericData, GenericRecord}
 import org.apache.nifi.storm.NiFiDataPacket
 import org.apache.storm.task.{OutputCollector, TopologyContext}

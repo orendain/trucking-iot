@@ -1,4 +1,4 @@
-package com.hortonworks.orendainx.trucking.shared.models
+package com.hortonworks.orendainx.trucking.common.models
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>

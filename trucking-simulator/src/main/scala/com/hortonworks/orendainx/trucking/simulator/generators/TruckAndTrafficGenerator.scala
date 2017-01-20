@@ -5,7 +5,7 @@ import java.time.Instant
 import java.util.Date
 
 import akka.actor.{ActorLogging, ActorRef, Props, Stash}
-import com.hortonworks.orendainx.trucking.shared.models.{TrafficData, TruckData, TruckDataTypes}
+import com.hortonworks.orendainx.trucking.common.models.{TrafficData, TruckData, TruckDataTypes}
 import com.hortonworks.orendainx.trucking.simulator.coordinators.GeneratorCoordinator
 import com.hortonworks.orendainx.trucking.simulator.depots.ResourceDepot.{RequestRoute, RequestTruck, ReturnRoute, ReturnTruck}
 import com.hortonworks.orendainx.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}

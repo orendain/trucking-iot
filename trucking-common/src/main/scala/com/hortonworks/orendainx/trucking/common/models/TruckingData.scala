@@ -1,4 +1,4 @@
-package com.hortonworks.orendainx.trucking.shared.models
+package com.hortonworks.orendainx.trucking.common.models
 
 /**
   * The supertype for all trucking data models.
