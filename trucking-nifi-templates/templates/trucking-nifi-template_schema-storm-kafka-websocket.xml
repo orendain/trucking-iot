@@ -2,7 +2,7 @@
 <template encoding-version="1.0">
   <description>NiFi flow using GetTruckingData processor and leveraging Schema Registry, Storm, Kafka and WebSockets.</description>
   <groupId>7c84501d-d10c-407c-b9f3-1d80e38fe36a</groupId>
-  <name>trucking-nifi-flow_schema-storm-kafka-websocket</name>
+  <name>trucking-nifi-template_schema-storm-kafka-websocket</name>
   <snippet>
     <connections>
       <id>8c197f86-0159-1000-0000-000000000000</id>
