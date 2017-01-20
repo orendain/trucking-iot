@@ -1,14 +1,17 @@
-//import com.scalapenos.sbt.prompt.SbtPrompt.autoImport._
-
 lazy val commonSettings = Seq(
-  organization := "com.hortonworks.orendainx",
   version := "0.3.2",
-  scalaVersion := "2.11.8"
+  scalaVersion := "2.11.8",
+  description := """Trucking IoT application.""",
+  homepage := Some(url("https://github.com/orendain/trucking-iot")),
+  organization := "com.orendainx.hortonworks",
+  organizationHomepage := Some(url("https://github.com/orendain/trucking-iot")),
+  licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
+  promptTheme := ScalapenosTheme
 )
 
 lazy val truckingIot = (project in file(".")).
   settings(
-    promptTheme := ScalapenosTheme
+    commonSettings
   )
 
 lazy val common = (project in file("trucking-common")).

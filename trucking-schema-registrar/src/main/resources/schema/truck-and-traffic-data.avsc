@@ -1,6 +1,6 @@
 {
    "type" : "record",
-   "namespace" : "com.hortonworks.orendainx.trucking",
+   "namespace" : "com.orendainx.hortonworks.trucking",
    "name" : "TruckAndTrafficData",
    "fields" : [
       { "name" : "eventTime" , "type" : "string" },

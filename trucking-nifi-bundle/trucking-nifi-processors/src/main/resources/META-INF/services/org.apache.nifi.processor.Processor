@@ -1,1 +1,1 @@
-com.hortonworks.orendainx.trucking.nifi.processors.GetTruckingData
+com.orendainx.hortonworks.trucking.nifi.processors.GetTruckingData

@@ -7,7 +7,7 @@
   <packaging>nar</packaging>
 
   <parent>
-    <groupId>com.hortonworks.orendainx</groupId>
+    <groupId>com.orendainx.hortonworks</groupId>
     <artifactId>trucking-nifi-bundle</artifactId>
     <version>${trucking.nifi.version}</version>
   </parent>
@@ -19,7 +19,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.hortonworks.orendainx</groupId>
+      <groupId>com.orendainx.hortonworks</groupId>
       <artifactId>trucking-nifi-processors</artifactId>
       <version>${trucking.nifi.version}</version>
     </dependency>
