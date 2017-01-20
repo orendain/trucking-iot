@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>trucking-nifi-processors</artifactId>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>com.hortonworks.orendainx</groupId>
+    <artifactId>trucking-nifi-bundle</artifactId>
+    <version>${trucking.nifi.version}</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.hortonworks.orendainx</groupId>
+      <artifactId>trucking-simulator_${scala.major.version}</artifactId>
+      <version>${trucking.simulator.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.typesafe</groupId>
+      <artifactId>config</artifactId>
+      <version>${typesafe.config.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.nifi</groupId>
+      <artifactId>nifi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.nifi</groupId>
+      <artifactId>nifi-processor-utils</artifactId>
+    </dependency>
+  </dependencies>
+</project>
