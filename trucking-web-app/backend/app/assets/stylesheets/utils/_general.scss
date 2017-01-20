@@ -1,0 +1,78 @@
+
+// Navbar
+.navbar-brand {
+  padding: 5px 15px;
+}
+
+// Event map
+.event-map {
+  height: 300px;
+  margin-bottom: 15px;
+}
+
+// Event list
+// ----------------------------
+.event-list-header {
+  display: flex;
+  padding: 5px 5px;
+  border-bottom: 1px solid $gray-light;
+  font-weight: bold;
+
+  div {
+    flex-basis: calc(100%/7);
+  }
+}
+
+.event-list {
+  margin: 0;
+  padding: 0;
+
+  li {
+    padding: 5px 5px;
+
+    &:nth-child(even) {
+      @include background($gray-lighter);
+    }
+
+    &:nth-child(odd) {
+      @include background($white);
+    }
+
+    display: flex;
+
+    div {
+      flex-basis: calc(100%/7);
+      //width: calc(100%/7);
+    }
+  }
+}
+
+// Footer
+// ----------------------------
+footer {
+  @include background($gray-dark);
+  bottom: 0;
+  color: $white;
+  height: $footer-height;
+  left: 0;
+  padding: 15px 0;
+  position: absolute;
+  width: 100%;
+}
+
+// Sticky footer
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.page-wrapper {
+  min-height: 100%;
+  position: relative;
+}
+
+main {
+  padding-bottom: $footer-height;
+}

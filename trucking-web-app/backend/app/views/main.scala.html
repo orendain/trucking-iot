@@ -1,0 +1,48 @@
+@*
+ * This template is called from the `index` template. This template
+ * handles the rendering of the page header and body tags. It takes
+ * two arguments, a `String` for the title of the page and an `Html`
+ * object to insert into the body of the page.
+ *@
+@(title: String)(content: Html)(resources: Html = play.twirl.api.Html(""))
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>@title | Trucking IoT</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Trucking IoT, edgar@@orendainx.com">
+
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+
+    <!-- Polyfill for older browsers -->
+    <script type='text/javascript' src='@routes.Assets.versioned("lib/systemjs/dist/system-polyfills.js")'></script>
+    <script type='text/javascript' src='@routes.Assets.versioned("lib/core-js/client/shim.min.js")'></script>
+    <script type='text/javascript' src='@routes.Assets.versioned("lib/zone.js/dist/zone.js")'></script>
+    <script type='text/javascript' src='@routes.Assets.versioned("lib/reflect-metadata/Reflect.js")'></script>
+    <script type='text/javascript' src='@routes.Assets.versioned("lib/systemjs/dist/system.src.js")'></script>
+
+    <!-- Configure SystemJS -->
+    <script src="@routes.Assets.versioned("javascripts/systemjs.config.js")"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@@1.0.2/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@@1.0.2/dist/leaflet.js"></script>
+    <script>System.import('app').catch(console.error.bind(console));</script>
+
+    </head>
+    <body>
+      @* @scalajs.html.scripts("client", routes.Assets.versioned(_).toString, name => getClass.getResource(s"/public/$name") != null) *@
+      <div class="page-wrapper">
+        @nav()
+
+        <main id="content" role="main">
+          <div class="container">
+            @content
+          </div>
+        </main>
+
+        @{footer(resources)}
+      </div>
+    </body>
+</html>

@@ -1,0 +1,21 @@
+<div class="event-list-header">
+  <div class="eventTime">Time</div>
+  <div class="driverName">Driver</div>
+  <div class="routeName">Route</div>
+  <div class="latitudeLongitude">(Lat, Long)</div>
+  <div class="congestionLevel">Congestion (%)</div>
+  <div class="speed">Speed (MPH)</div>
+  <div class="eventType">Event</div>
+</div>
+
+<ul class="event-list">
+  <li *ngFor="let event of events.slice().reverse()">
+    <div class="eventTime">{{event.prettyEventTime}}</div>
+    <div class="driverName">{{event.driverName}}</div>
+    <div class="routeName">{{event.routeName}}</div>
+    <div class="latitudeLongitude">{{event.prettyLatitude}}, {{event.prettyLongitude}}</div>
+    <div class="congestionLevel">{{event.congestionLevel}}</div>
+    <div class="speed">{{event.speed}}</div>
+    <div class="eventType">{{event.eventType}}</div>
+  </li>
+</ul>
