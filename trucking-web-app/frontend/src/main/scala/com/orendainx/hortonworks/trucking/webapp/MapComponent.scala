@@ -25,7 +25,7 @@ class MapComponent(webSocketService: WebSocketService) extends OnInit {
 
   // Marker options
   private val MarkerFillOpacity = 0.5
-  private val MarkerRadius = 10000
+  private val MarkerRadius = 15000
   private val MarkerBorderWeight = 2
   private val MarkerTypeColors = Map[String, String](
     TruckDataTypes.Normal -> "#0f0",

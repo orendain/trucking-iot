@@ -12,9 +12,9 @@ import scala.scalajs.js
 @NgModule(
   imports = @@[BrowserModule] :+
   RouterModule.forRoot(js.Array(
-    Route(path = "monitor", component = %%[TruckingMonitorComponent]),
-    Route(path = "dashboard", component = %%[DashboardComponent]),
-    Route(path = "", redirectTo = "/monitor", pathMatch = "full")
+    Route(path = "", component = %%[TruckingMonitorComponent]),
+    Route(path = "dashboard", component = %%[DashboardComponent])//,
+    //Route(path = "", redirectTo = "/monitor", pathMatch = "full")
   )),
   providers = @@[WebSocketService],
   declarations = @@[AppComponent, DashboardComponent, TruckingMonitorComponent, MapComponent, EventListComponent],
