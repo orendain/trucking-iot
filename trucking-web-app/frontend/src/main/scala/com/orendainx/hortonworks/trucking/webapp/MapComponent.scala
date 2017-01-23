@@ -2,6 +2,7 @@ package com.orendainx.hortonworks.trucking.webapp
 
 import angulate2.std.{Component, OnInit}
 import com.felstar.scalajs.leaflet._
+import com.orendainx.hortonworks.trucking.common.models.TruckDataTypes
 import com.orendainx.hortonworks.trucking.webapp.PrettyTruckAndTrafficData
 
 import scala.collection.mutable
@@ -15,58 +16,80 @@ import scala.collection.mutable
 )
 class MapComponent(webSocketService: WebSocketService) extends OnInit {
 
+  // Map options
   private val MaxMarkers = 30
-  // TODO: best collection for trimming/appending?
-  private val markers = mutable.Buffer.empty[Layer]
-  private var lmap: LMap = _
+  private val CenterView = (40.0, -90.0)
+  private val DefaultZoom = 6
+  private val MinZoom = 5
+  private val MaxZoom = 7
+  private val MapBoxAccessToken = "pk.eyJ1Ijoib3JlbmRhaW4iLCJhIjoiY2l4cWwwYTJrMDkwZTMwbHZ1MG8wYmkxZiJ9.J0uY8A4pTzlcfhc0oUyebg"
 
+  // Marker options
+  private val MarkerFillOpacity = 0.5
+  private val MarkerRadius = 10000
+  private val MarkerBorderWeight = 2
   private val MarkerTypeColors = Map[String, String](
-    //TruckEventTypes.Normal -> "#0f0",
-    "normal" -> "#0f0",
-    "speeding" -> "#f00"
+    TruckDataTypes.Normal -> "#0f0",
+    TruckDataTypes.Speeding -> "#f00",
+    TruckDataTypes.LaneDeparture -> "#ff0",
+    TruckDataTypes.UnsafeFollowDistance -> "#0ff",
+    TruckDataTypes.UnsafeTailDistance -> "#00f"
   )
+
+  // Collections
+  private val events = mutable.Buffer.empty[PrettyTruckAndTrafficData]
+  private val markers = mutable.Buffer.empty[Layer] // TODO: best collection for trimming/appending?
+  private var lmap: LMap = _
 
   override def ngOnInit(): Unit = {
     lmap = create("trucking-map")
     webSocketService.registerCallback(addEvent _)
   }
 
-  // TODO: vs other collections?
-  val list = mutable.Buffer.empty[PrettyTruckAndTrafficData]
-
-  def addEvent(event: PrettyTruckAndTrafficData) = {
-
-    //if (event.eventType != "Normal") {
-      list += event
-      addMarker(event)
-    //}
+  def addEvent(event: PrettyTruckAndTrafficData): Unit = {
+    events += event
+    addMarker(event)
   }
 
   def create(el: String): LMap = {
-    lmap = L.map(el, LMapOptions.scrollWheelZoom(false)).setView((40.0, -90.0), 6)
+    val map = L.map(el, LMapOptions.scrollWheelZoom(false)).setView(CenterView, DefaultZoom)
 
     val tileLayer =
-    //L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoib3JlbmRhaW4iLCJhIjoiY2l4cWwwYTJrMDkwZTMwbHZ1MG8wYmkxZiJ9.J0uY8A4pTzlcfhc0oUyebg",
-      L.tileLayer("https://api.mapbox.com/styles/v1/orendain/cixwfdcue00112splqmktu0e9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoib3JlbmRhaW4iLCJhIjoiY2l4cWwwYTJrMDkwZTMwbHZ1MG8wYmkxZiJ9.J0uY8A4pTzlcfhc0oUyebg",
-        TileLayerOptions.id("mapbox.streets").maxZoom(7).minZoom(5).attribution("""<a href="https://github.com/orendain">Source Code</a>""".stripMargin)
-      ).addTo(lmap)
-    lmap
+    //L.tileLayer(s"https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=$MapBoxAccessToken",
+      L.tileLayer(s"https://api.mapbox.com/styles/v1/orendain/cixwfdcue00112splqmktu0e9/tiles/256/{z}/{x}/{y}?access_token=$MapBoxAccessToken",
+        TileLayerOptions.id("mapbox.streets").maxZoom(MaxZoom).minZoom(MinZoom)
+          .attribution("""<a href="https://github.com/orendain/trucking-iot">Source Code</a>""".stripMargin)
+      ).addTo(map)
+
+    map
   }
 
+  /** Create marker and add it to the map.
+    * This method will automatically remove marker layers from the map in a FIFO fashion
+    * when MaxMarkers markers are already displayed.
+    *
+    * @param event The PrettyTruckAndTrafficData event to add to the map
+    * @return The changed [[LMap]] with the new marker, for chaining purposes.
+    */
   def addMarker(event: PrettyTruckAndTrafficData): LMap = {
+    val color = MarkerTypeColors(event.eventType)
+    val circle = L.circle((event.latitude.toDouble, event.longitude.toDouble),
+      CircleOptions.color(color).weight(MarkerBorderWeight).fillColor(color).fillOpacity(MarkerFillOpacity).radius(MarkerRadius)
+    ).bindPopup(markerMarkup(event)).addTo(lmap)
 
-    if (markers.size == MaxMarkers) {
+    markers += circle
+    if (markers.size > MaxMarkers) {
       lmap.removeLayer(markers(0))
       markers.trimStart(1)
     }
 
-    val markup = s"<b>Driver Name: ${event.driverName}</b><br><b>Route Name: ${event.routeName}<br><b>Violation: ${event.eventType}</b>"
-    val circle = L.circle((event.latitude.toDouble, event.longitude.toDouble), CircleOptions.color("#0f0").weight(2).fillColor("#0f0").fillOpacity(0.5).radius(10000))
-      .bindPopup(markup).addTo(lmap)//.openPopup()
-
-    markers.append(circle)
-
     lmap
+  }
+
+  private def markerMarkup(event: PrettyTruckAndTrafficData) = {
+    s"""<b>Driver:</b> ${event.driverName}<br>
+       |<b>Route:</b> ${event.routeName}<br>
+       |<b>Event:</b> ${event.eventType}""".stripMargin
   }
 
 }
