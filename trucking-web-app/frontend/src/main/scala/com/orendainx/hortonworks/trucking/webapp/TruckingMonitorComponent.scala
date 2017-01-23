@@ -6,9 +6,9 @@ import angulate2.std.Component
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 @Component(
-  selector = "trucking-iot-app",
-  templateUrl = "/assets/templates/app.component.html"
+  selector = "trucking-monitor",
+  templateUrl = "/assets/templates/trucking-monitor.component.html"
 )
-class AppComponent {
+class TruckingMonitorComponent {
   val title = "Real-Time Truck Monitor - Powered by HDF"
 }
