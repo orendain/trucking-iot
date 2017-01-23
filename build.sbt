@@ -15,14 +15,18 @@ lazy val truckingIot = (project in file(".")).
     commonSettings
   )
 
-lazy val common = (project in file("trucking-common")).
-  settings(
+lazy val common = (project in file("trucking-common"))
+    .aggregate(commonJVM, commonJS)
+lazy val commonCross = crossProject.in(file("trucking-common"))
+  .settings(
     commonSettings,
     name := "trucking-common"
   )
+lazy val commonJVM = commonCross.jvm
+lazy val commonJS = commonCross.js
 
 lazy val simulator = (project in file("trucking-simulator"))
-  .dependsOn(common)
+  .dependsOn(commonJVM)
   .settings(
     commonSettings,
     name := "trucking-simulator",
@@ -30,7 +34,7 @@ lazy val simulator = (project in file("trucking-simulator"))
   )
 
 lazy val enrichment = (project in file("trucking-enrichment"))
-  .dependsOn(common)
+  .dependsOn(commonJVM)
   .settings(
     commonSettings,
     name := "trucking-enrichment",
@@ -38,7 +42,7 @@ lazy val enrichment = (project in file("trucking-enrichment"))
   )
 
 lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
-  .dependsOn(common)
+  .dependsOn(commonJVM)
   .settings(
     commonSettings,
     name := "trucking-schema-registrar",
@@ -47,7 +51,7 @@ lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
   )
 
 lazy val topology = (project in file("trucking-topology"))
-  .dependsOn(common)
+  .dependsOn(commonJVM)
   .settings(
     commonSettings,
     name := "trucking-topology",
@@ -111,7 +115,7 @@ lazy val webAppBackend = (project in file("trucking-web-app/backend"))
   ).enablePlugins(PlayScala)
 
 lazy val webAppFrontend = (project in file("trucking-web-app/frontend"))
-  .dependsOn(common)
+  .dependsOn(commonJS)
   .settings(
     commonSettings,
     name := "trucking-web-app-frontend",

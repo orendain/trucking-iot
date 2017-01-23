@@ -3,7 +3,6 @@ package com.orendainx.hortonworks.trucking.webapp
 import angulate2.std.{Component, OnInit}
 import com.felstar.scalajs.leaflet._
 import com.orendainx.hortonworks.trucking.common.models.TruckDataTypes
-import com.orendainx.hortonworks.trucking.webapp.PrettyTruckAndTrafficData
 
 import scala.collection.mutable
 
