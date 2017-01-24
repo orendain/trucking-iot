@@ -60,6 +60,7 @@ lazy val topology = (project in file("trucking-topology"))
     resolvers += Resolver.mavenLocal,
     libraryDependencies ++= Dependencies.topologyDeps,
 
+    // TODO: Temporary, change once schema registry release updated
     assemblyMergeStrategy in assembly := {
       case PathList("org", "apache", "commons", "collections", xs @ _*)      => MergeStrategy.first
       case PathList("org", "slf4j", xs @ _*)      => MergeStrategy.first
@@ -117,7 +118,8 @@ lazy val webAppBackend = (project in file("trucking-web-app/backend"))
     resolvers += Resolver.mavenLocal, // For topology > schema-registry-serdes
     libraryDependencies ++= (Seq(filters, cache, ws) ++ Dependencies.webAppBackendDeps),
     scalacOptions += "-Yresolve-term-conflict:package",
-    shellPrompt := (state ⇒ promptTheme.value.render(state)) // Override Play's Sbt prompt
+    shellPrompt := (state ⇒ promptTheme.value.render(state)), // Override Play's Sbt prompt
+    PlayKeys.devSettings := Seq("play.server.http.port" -> "1234")
   ).enablePlugins(PlayScala)
 
 lazy val webAppFrontend = (project in file("trucking-web-app/frontend"))
