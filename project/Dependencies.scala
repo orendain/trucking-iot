@@ -20,6 +20,8 @@ object Dependencies {
   lazy val nifiStormSpout = "org.apache.nifi" % "nifi-storm-spout" % "1.1.0"
   lazy val stormCore = "org.apache.storm" % "storm-core" % "1.0.2"
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
+  //lazy val kafka = "org.apache.kafka" %% "kafka" % "0.10.1.1"
+  lazy val kafkaProducer = "org.apache.kafka" %% "kafka-clients" % "0.10.1.1"
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT")
   //val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-5" from "http://nexus-private.hortonworks.com/nexus/content/groups/public/com/hortonworks/registries/schema-registry-serdes/0.0.1.2.2.0.0-5/schema-registry-serdes-0.0.1.2.2.0.0-5.jar")
     .exclude("org.slf4j", "log4j-over-slf4j")
@@ -67,7 +69,7 @@ object Dependencies {
   //val scalaTime = "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M6"
 
   // Projects
-  val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback)
+  val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback, kafkaProducer)
   val enrichmentDeps = Seq(scalaCsv, config, betterFiles)
   val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
   val topologyDeps = Seq(nifiStormSpout, stormCoreProvided, glass, schemaRegistrySerdes, config, betterFiles, scalaLogging)

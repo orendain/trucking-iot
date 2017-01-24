@@ -28,6 +28,7 @@ lazy val commonJS = commonCross.js
 lazy val simulator = (project in file("trucking-simulator"))
   .dependsOn(commonJVM)
   .settings(
+    isSnapshot := true,
     commonSettings,
     name := "trucking-simulator",
     libraryDependencies ++= Dependencies.simulatorDeps
@@ -81,7 +82,10 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
   .dependsOn(simulator)
   .settings(
     commonSettings,
-    execScript := { Process("mvn clean package", baseDirectory.value) ! } ,
+    execScript := {
+      (publishM2 in Compile in simulator).value
+      Process("mvn clean package", baseDirectory.value) !
+    } ,
     (`compile` in Compile) <<= (compile in Compile).dependsOn(execScript)
   )
 
