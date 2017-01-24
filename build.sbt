@@ -83,6 +83,7 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
   .settings(
     commonSettings,
     execScript := {
+      (publishM2 in Compile in common).value
       (publishM2 in Compile in simulator).value
       Process("mvn clean package", baseDirectory.value) !
     } ,
