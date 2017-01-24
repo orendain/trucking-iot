@@ -20,7 +20,8 @@ lazy val common = (project in file("trucking-common"))
 lazy val commonCross = crossProject.in(file("trucking-common"))
   .settings(
     commonSettings,
-    name := "trucking-common"
+    name := "trucking-common",
+    isSnapshot := true
   )
 lazy val commonJVM = commonCross.jvm
 lazy val commonJS = commonCross.js
