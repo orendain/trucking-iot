@@ -95,6 +95,8 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
           val data: TrafficData = deserializer.deserialize(new ByteArrayInputStream(dp.getContent), trafficDataSchemaMetadata, null).asInstanceOf[GenericData.Record]
           trafficDataPerRoute += (data.routeId -> (trafficDataPerRoute.getOrElse(data.routeId, ListBuffer.empty[TrafficData]) += data))
       }
+
+      //outputCollector.ack(tuple)
     }
 
     // For each TruckData object, find the TrafficData object with the closest timestamp

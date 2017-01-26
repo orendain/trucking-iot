@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.simulator
 import akka.actor.{ActorSystem, Inbox, Terminated}
 import com.orendainx.hortonworks.trucking.simulator.coordinators.AutomaticCoordinator
 import com.orendainx.hortonworks.trucking.simulator.depots.NoSharingDepot
-import com.orendainx.hortonworks.trucking.simulator.flows.{FlowManager, SharedFlowManager}
+import com.orendainx.hortonworks.trucking.simulator.flows.{FlowManager, SharedFlowManager, TruckAndTrafficFlowManager}
 import com.orendainx.hortonworks.trucking.simulator.generators.TruckAndTrafficGenerator
 import com.orendainx.hortonworks.trucking.simulator.models.{Driver, DrivingPattern}
 import com.orendainx.hortonworks.trucking.simulator.transmitters.FileTransmitter
@@ -34,8 +34,10 @@ class AutoFinishSimulator {
 
   // Generate the different actors in the simulation
   private val depot = system.actorOf(NoSharingDepot.props())
-  private val transmitter = system.actorOf(FileTransmitter.props(config.getString("options.filetransmitter.filepath")))
-  private val flowManager = system.actorOf(SharedFlowManager.props(transmitter))
+  private val transmitter1 = system.actorOf(FileTransmitter.props(config.getString("options.filetransmitter.filepath")))
+  //private val transmitter2 = system.actorOf(FileTransmitter.props("/tmp/trucking-simulator/data2.txt"))
+  private val flowManager = system.actorOf(SharedFlowManager.props(transmitter1))
+  //private val flowManager = system.actorOf(TruckAndTrafficFlowManager.props(transmitter1, transmitter2))
   private val dataGenerators = drivers.map { driver => system.actorOf(TruckAndTrafficGenerator.props(driver, depot, flowManager)) }
   private val coordinator = system.actorOf(AutomaticCoordinator.props(dataGenerators, flowManager))
 
