@@ -26,8 +26,8 @@ object NoSharingDepot {
 
 class NoSharingDepot(implicit config: Config) extends ResourceDepot with Stash with ActorLogging {
 
-  private val trucksAvailable = Random.shuffle(1 to config.getInt("simulator.trucks-available")).toList.map(Truck).toBuffer
-  private val routesAvailable = RouteParser(config.getString("options.route-directory")).routes.toBuffer
+  private val trucksAvailable = Random.shuffle(1 to config.getInt("resource-depot.trucks-available")).toList.map(Truck).toBuffer
+  private val routesAvailable = RouteParser(config.getString("resource-depot.route-directory")).routes.toBuffer
 
   log.info("Trucks and routes initialized and ready for deployment")
   log.info(s"${trucksAvailable.length} trucks available.")

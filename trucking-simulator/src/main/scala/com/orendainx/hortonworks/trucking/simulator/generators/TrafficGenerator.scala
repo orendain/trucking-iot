@@ -13,6 +13,7 @@ import com.orendainx.hortonworks.trucking.simulator.models._
 import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
 import com.typesafe.config.Config
 
+import scala.collection.mutable
 import scala.util.Random
 
 /**
@@ -26,7 +27,6 @@ object TrafficGenerator {
     *
     * @param depot ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot]]
     * @param flowManager ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.flows.FlowManager]]
-    * @param config TODO
     * @return
     */
   def props(depot: ActorRef, flowManager: ActorRef)(implicit config: Config) =
@@ -35,9 +35,12 @@ object TrafficGenerator {
 
 class TrafficGenerator(depot: ActorRef, flowManager: ActorRef)(implicit config: Config) extends DataGenerator with Stash with ActorLogging {
 
-  val NumberOfRoutes = 5 // TODO: hardcoded for demo's sake
-  var congestionLevel = 50 // TODO: hardcoded starting point for demo's sake
-  var routes = Seq.empty[Route].toBuffer
+  // Some settings
+  val NumberOfRoutes = config.getInt("generator.routes-to-simulate")
+  val CongestionJitter = config.getInt("generator.congestion.jitter")
+
+  var congestionLevel = config.getInt("generator.congestion.start")
+  var routes = mutable.Buffer.empty[Route]
 
   // Request NumberOfRoutes routes
   (1 to NumberOfRoutes).foreach(_ => depot ! RequestRoute(EmptyRoute))
@@ -60,7 +63,7 @@ class TrafficGenerator(depot: ActorRef, flowManager: ActorRef)(implicit config: 
     case GenerateData =>
       routes.foreach { route =>
         // Create traffic data and emit it
-        congestionLevel += Random.nextInt(11) - 5 // -5 to 5
+        congestionLevel += -CongestionJitter + Random.nextInt(CongestionJitter*2 + 1)
         val traffic = TrafficData(Instant.now().toEpochMilli, route.id, congestionLevel)
         flowManager ! Transmit(traffic)
       }

@@ -28,7 +28,6 @@ object TruckAndTrafficGenerator {
     * @param driver The [[Driver]] driving the truck.
     * @param depot ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot]]
     * @param flowManager ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.flows.FlowManager]]
-    * @param config TODO
     * @return
     */
   def props(driver: Driver, depot: ActorRef, flowManager: ActorRef)(implicit config: Config) =
@@ -37,19 +36,21 @@ object TruckAndTrafficGenerator {
 
 class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: ActorRef)(implicit config: Config) extends DataGenerator with Stash with ActorLogging {
 
-  val SpeedingThreshold = config.getInt("simulator.speeding-threshold")
-  val MaxRouteCompletedCount = config.getInt("simulator.max-route-completed-count")
+  // Some settings
+  val SpeedingThreshold = config.getInt("generator.speeding-threshold")
+  val MaxRouteCompletedCount = config.getInt("generator.max-route-completed-count")
+  val CongestionJitter = config.getInt("generator.congestion.jitter")
 
   // Truck and route being used, locations this driving agent has driven to and congestion level
   var truck: Truck = EmptyTruck
   var route: Route = EmptyRoute
   var locations = List.empty[Location]
   var locationsRemaining = locations.iterator
-  var congestionLevel = 50 // TODO: hardcoded to start at 50 for now, abstract out to config
 
-  // Counters
+  // Counters and congestion
   var driveCount = 0
   var routeCompletedCount = 0
+  var congestionLevel = config.getInt("generator.congestion.start")
 
   // Query depot for a route and a truck
   depot ! RequestRoute(route)
@@ -98,7 +99,7 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
       flowManager ! Transmit(event)
 
       // Create traffic data and emit it
-      congestionLevel += Random.nextInt(11) - 5 // -5 to 5
+      congestionLevel += -CongestionJitter + Random.nextInt(CongestionJitter*2 + 1)
       val traffic = TrafficData(eventTime, route.id, congestionLevel)
       flowManager ! Transmit(traffic)
 

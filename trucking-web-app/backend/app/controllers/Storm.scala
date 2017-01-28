@@ -9,6 +9,7 @@ import org.apache.storm.shade.org.json.simple.JSONValue
 import org.apache.storm.utils.{NimbusClient, Utils}
 import play.api.mvc._
 
+import scala.sys.SystemProperties
 import scala.util.parsing.json.JSONObject
 
 //import scala.util.parsing.json.JSONObject
@@ -29,12 +30,18 @@ class Storm @Inject() extends Controller {
 
     val (stormConfig, stormTopology) = TruckingTopology.buildStormConfigAndTopology()
 
-    stormConfig.put("storm.zookeeper.servers", "sandbox.hortonworks.com")
+    //stormConfig.put("storm.zookeeper.servers", "sandbox.hortonworks.com")
     import scala.collection.JavaConversions._
     import scala.collection.JavaConverters._
     //stormConfig.put("nimbus.seeds", List("sandbox.hortonworks.com").asJava)
-    stormConfig.put(Config.NIMBUS_HOST, "sandbox.hortonworks.com")
-    stormConfig.setDebug(true)
+    stormConfig.put(Config.NIMBUS_SEEDS, "sandbox.hortonworks.com")
+    stormConfig.put(Config.NIMBUS_THRIFT_PORT, 6627)
+    stormConfig.put(Config.STORM_ZOOKEEPER_SERVERS, "sandbox.hortonworks.com")
+    stormConfig.put(Config.STORM_ZOOKEEPER_PORT, 2181)
+
+    val systemProperties = new SystemProperties
+    systemProperties.put("storm.jar", "fullPathToStormJar")
+
 
     //val stormConf2: Map[String, AnyRef] = Utils.readStormConfig()
     //stormConf2.put("nimbus.host", "sandbox.hortonworks.com")

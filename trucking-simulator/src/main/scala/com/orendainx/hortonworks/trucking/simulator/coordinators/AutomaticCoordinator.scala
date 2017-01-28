@@ -1,6 +1,8 @@
 package com.orendainx.hortonworks.trucking.simulator.coordinators
 
 import akka.actor.{ActorLogging, ActorRef, PoisonPill, Props}
+import com.orendainx.hortonworks.trucking.simulator.coordinators.AutomaticCoordinator.TickGenerator
+import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator.AcknowledgeTick
 import com.orendainx.hortonworks.trucking.simulator.flows.FlowManager
 import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator
 import com.typesafe.config.Config
@@ -28,24 +30,18 @@ object AutomaticCoordinator {
     * @param flowManager ActorRef to the instance of a [[FlowManager]] actor that handles data flow/transmission.
     * @return A Props for a new [[AutomaticCoordinator]]
     */
-  def props(generators: Seq[ActorRef], flowManager: ActorRef)(implicit config: Config) =
-    Props(new AutomaticCoordinator(generators, flowManager))
+  def props(eventCount: Int, generators: Seq[ActorRef], flowManager: ActorRef)(implicit config: Config) =
+    Props(new AutomaticCoordinator(eventCount, generators, flowManager))
 }
 
-class AutomaticCoordinator(generators: Seq[ActorRef], flowManager: ActorRef)(implicit config: Config) extends GeneratorCoordinator with ActorLogging {
+class AutomaticCoordinator(eventCount: Int, generators: Seq[ActorRef], flowManager: ActorRef)(implicit config: Config) extends GeneratorCoordinator with ActorLogging {
 
   // For receive messages and an execution context
-  import AutomaticCoordinator._
-  import GeneratorCoordinator._
   import context.dispatcher
 
-  // TODO: Better configuration abstraction
-  // Extract some configs
-  val eventCount = config.getInt("options.event-count")
-  val eventDelay = config.getInt("simulator.event-delay")
-  val eventDelayJitter = config.getInt("simulator.event-delay-jitter")
-
-  // Initialize a counter for each data generator
+  // Event delay settings, and initialize a counter for each data generator
+  val eventDelay = config.getInt("generator.event-delay")
+  val eventDelayJitter = config.getInt("generator.event-delay-jitter")
   val generateCounters = mutable.Map(generators.map((_, 0)): _*)
 
   // Insert each new generator into the simulation (at a random scheduled point) and begin "ticking"

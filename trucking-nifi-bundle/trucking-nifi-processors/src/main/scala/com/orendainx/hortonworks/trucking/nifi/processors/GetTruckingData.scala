@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.nifi.processors
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
-import com.orendainx.hortonworks.trucking.simulator.TickAndFetchSimulator
+import com.orendainx.hortonworks.trucking.simulator.simulators.ManualTickAndFetchSimulator$
 import com.typesafe.config.ConfigFactory
 import org.apache.nifi.annotation.behavior._
 import org.apache.nifi.annotation.documentation.{CapabilityDescription, Tags}
@@ -29,7 +29,7 @@ class GetTruckingData extends AbstractProcessor with GetTruckingDataProperties w
 
   private var log: ComponentLog = _
   private lazy val config = ConfigFactory.load()
-  private lazy val simulator = TickAndFetchSimulator()
+  private lazy val simulator = ManualTickAndFetchSimulator()
 
   override def init(context: ProcessorInitializationContext): Unit = {
     // On initialization, tick the simulator forward

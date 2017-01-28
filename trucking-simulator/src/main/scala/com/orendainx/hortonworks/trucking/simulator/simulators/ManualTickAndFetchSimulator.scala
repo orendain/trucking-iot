@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.simulator
+package com.orendainx.hortonworks.trucking.simulator.simulators
 
 import akka.actor.{ActorSystem, Inbox}
 import com.orendainx.hortonworks.trucking.common.models.TruckingData
@@ -6,14 +6,12 @@ import com.orendainx.hortonworks.trucking.simulator.coordinators.ManualCoordinat
 import com.orendainx.hortonworks.trucking.simulator.depots.NoSharingDepot
 import com.orendainx.hortonworks.trucking.simulator.flows.SharedFlowManager
 import com.orendainx.hortonworks.trucking.simulator.generators.TruckAndTrafficGenerator
-import com.orendainx.hortonworks.trucking.simulator.models.{Driver, DrivingPattern}
+import com.orendainx.hortonworks.trucking.simulator.services.DriverFactory
 import com.orendainx.hortonworks.trucking.simulator.transmitters.AccumulateTransmitter
 import com.typesafe.config.ConfigFactory
 
-import scala.collection.JavaConversions._
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.util.Random
 
 /**
   * This simulator requires the tick() method to be called to tick the simulator forward.  Generated data can then be
@@ -24,17 +22,17 @@ import scala.util.Random
   * @author Edgar Orendain <edgar@orendainx.com>
   * @see https://github.com/orendain/trucking-nifi-bundle for an example of now a custom NiFi processor uses this simulator.
   */
-object TickAndFetchSimulator {
-  def apply() = new TickAndFetchSimulator()
+object ManualTickAndFetchSimulator {
+  def apply() = new ManualTickAndFetchSimulator()
 }
 
-class TickAndFetchSimulator {
+class ManualTickAndFetchSimulator extends Simulator {
 
   private implicit val config = ConfigFactory.load()
-  private val system = ActorSystem("TickAndFetchSimulator")
+  private val system = ActorSystem("ManualTickAndFetchSimulator")
 
-  // Generate the actors to be used in the simulation and create an Inbox for accepting messages
-  private val drivers = generateDrivers()
+  // Generate the drivers to be used in the simulation and create an Inbox for accepting messages
+  private val drivers = DriverFactory.drivers
   private val inbox = Inbox.create(system)
 
   // Generate the different actors in the simulation
@@ -45,9 +43,7 @@ class TickAndFetchSimulator {
   private val coordinator = system.actorOf(ManualCoordinator.props(dataGenerators))
 
   // Ensure that the system is properly terminated when the simulator is shutdown.
-  scala.sys.addShutdownHook {
-    stop()
-  }
+  scala.sys.addShutdownHook { stop() }
 
   /**
     * Trigger the simulator to tick once.
@@ -71,42 +67,12 @@ class TickAndFetchSimulator {
   }
 
   /**
-    * Stop the simulation, terminating the underlying system.
+    * Manually stop the simulation, terminating the underlying system.
     *
-    * @param timeout Time to wait for the system to terminate, in milliseconds (default: 10000 milliseconds).
+    * @param timeout Time to wait for the system to terminate, in milliseconds (default: 5000 milliseconds).
     */
-  def stop(timeout: Int = 10000): Unit = {
+  def stop(timeout: Int = 5000): Unit = {
     system.terminate()
     Await.result(system.whenTerminated, timeout.milliseconds)
-  }
-
-  /**
-    * Generate a list of drivers using values from this class's [[com.typesafe.config.Config]] object.
-    */
-  private def generateDrivers() = {
-    // TODO: clean up config abstractions
-    // This assumes that special-drivers have sequential ids starting at 1
-
-    // Generate driving patterns
-    val patterns = config.getConfigList("simulator.driving-patterns").map { conf =>
-      val name = conf.getString("name")
-      (name, DrivingPattern(name, conf.getInt("min-speed"), conf.getInt("max-speed"), conf.getInt("risk-frequency")))
-    }.toMap
-
-    // First, initialize all special drivers
-    val specialDrivers = config.getConfigList("simulator.special-drivers").map { conf =>
-      Driver(conf.getInt("id"), conf.getString("name"), patterns(conf.getString("pattern")))
-    }
-
-    // If we need more drivers, generate "normal" drivers. Or if we need to remove some special drivers, do so.
-    val driverCount = config.getInt("options.driver-count")
-    if (specialDrivers.length < driverCount) {
-      val newDrivers = ((specialDrivers.length+1) to driverCount).map { newId =>
-        val randomDriverName = Random.alphanumeric.take(config.getInt("simulator.driver-name-length")).mkString
-        Driver(newId, randomDriverName, patterns("normal"))
-      }
-      specialDrivers ++ newDrivers
-    } else
-      specialDrivers.take(driverCount)
   }
 }

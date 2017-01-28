@@ -1,7 +1,9 @@
 package com.orendainx.hortonworks.trucking.simulator
 
+import com.orendainx.hortonworks.trucking.simulator.simulators.{AutoFinishSimulator, ManualTickAndFetchSimulator}
+
 /**
-  * Entry point for the simulator.
+  * Main entry point.
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
@@ -18,7 +20,7 @@ object SimulatorMain {
   }
 
   def runTickAndFetchSimulator(): Unit = {
-    val simulator = TickAndFetchSimulator()
+    val simulator = ManualTickAndFetchSimulator()
     simulator.tick()
     simulator.fetch()
   }

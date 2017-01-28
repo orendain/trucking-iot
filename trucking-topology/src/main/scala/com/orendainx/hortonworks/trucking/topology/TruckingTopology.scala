@@ -29,6 +29,8 @@ object TruckingTopology {
   private val NiFiInputBatchSize = "nifi.input.batch-size"
   private val NiFiInputTickFrequency = "nifi.input.tick-frequency"
 
+  // TODO: http://storm.apache.org/releases/1.0.2/SECURITY.html
+
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildStormConfigAndTopology(if (args.nonEmpty) args(0) else "")

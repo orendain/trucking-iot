@@ -15,6 +15,8 @@ object SharedFlowManager {
     Props(new SharedFlowManager(transmitter))
 }
 class SharedFlowManager(transmitter: ActorRef) extends FlowManager {
+
+
   def receive = {
     case msg: Transmit => transmitter ! msg
 
