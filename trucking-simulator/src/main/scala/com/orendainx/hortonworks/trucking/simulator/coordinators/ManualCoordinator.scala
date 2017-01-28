@@ -8,7 +8,7 @@ import scala.collection.mutable
 
 /**
   * The ManualCoordinator waits for a [[ManualCoordinator.Tick]] message to tell the generators
-  * it coordinates to generate data.  [[DataGenerator]]s that process and acknowledge these ticks are
+  * it coordinates to generate data.  [[DataGenerator]] s that process and acknowledge these ticks are
   * requeued for another round of data generation, which happens on the next [[ManualCoordinator.Tick]].
   *
   * @author Edgar Orendain <edgar@orendainx.com>

@@ -16,7 +16,7 @@ import com.typesafe.config.Config
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object KafkaTransmitter {
-  def props(topic: String) = Props(new KafkaTransmitter(topic))
+  def props(topic: String)(implicit config: Config) = Props(new KafkaTransmitter(topic))
 }
 
 class KafkaTransmitter(topic: String)(implicit config: Config) extends DataTransmitter with ActorLogging {
