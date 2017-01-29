@@ -2,23 +2,23 @@ package com.orendainx.hortonworks.trucking.simulator.transmitters
 
 import akka.actor.{ActorLogging, Props}
 import com.orendainx.hortonworks.trucking.common.models.TruckingData
-import com.orendainx.hortonworks.trucking.simulator.transmitters.AccumulateTransmitter.Fetch
+import com.orendainx.hortonworks.trucking.simulator.transmitters.BufferTransmitter.Fetch
 import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
 
 import scala.collection.mutable
 
 /**
-  * AccumulateTransmitter stores data to be polled by an outside source.
+  * BufferTransmitter buffers data until fetched by an outside source.
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-object AccumulateTransmitter {
+object BufferTransmitter {
   case object Fetch
 
-  def props() = Props(new AccumulateTransmitter)
+  def props() = Props(new BufferTransmitter)
 }
 
-class AccumulateTransmitter extends DataTransmitter with ActorLogging {
+class BufferTransmitter extends DataTransmitter with ActorLogging {
 
   val buffer = mutable.ListBuffer.empty[TruckingData]
 
@@ -34,6 +34,6 @@ class AccumulateTransmitter extends DataTransmitter with ActorLogging {
   }
 
   override def postStop(): Unit = {
-    log.info(s"AccumulateTransmitter stopped with ${buffer.length} items unfetched.")
+    log.info(s"BufferTransmitter stopped with ${buffer.length} items unfetched.")
   }
 }

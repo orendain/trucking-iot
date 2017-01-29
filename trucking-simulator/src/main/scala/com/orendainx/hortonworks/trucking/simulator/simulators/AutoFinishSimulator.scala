@@ -6,7 +6,7 @@ import com.orendainx.hortonworks.trucking.simulator.depots.NoSharingDepot
 import com.orendainx.hortonworks.trucking.simulator.flows.{FlowManager, SharedFlowManager}
 import com.orendainx.hortonworks.trucking.simulator.generators.TruckAndTrafficGenerator
 import com.orendainx.hortonworks.trucking.simulator.services.DriverFactory
-import com.orendainx.hortonworks.trucking.simulator.transmitters.FileTransmitter
+import com.orendainx.hortonworks.trucking.simulator.transmitters.{FileTransmitter, KafkaTransmitter}
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.Await
@@ -32,8 +32,9 @@ class AutoFinishSimulator extends Simulator {
 
   // Generate the different actors in the simulation
   private val depot = system.actorOf(NoSharingDepot.props())
-  private val transmitter = system.actorOf(FileTransmitter.props(config.getString("simulator.auto-finish.output-filepath")))
-  private val flowManager = system.actorOf(SharedFlowManager.props(transmitter))
+  private val fileTransmitter = system.actorOf(FileTransmitter.props(config.getString("simulator.auto-finish.output-filepath")))
+  private val kafkaTransmitter = system.actorOf(KafkaTransmitter.props("example.topic"))
+  private val flowManager = system.actorOf(SharedFlowManager.props(kafkaTransmitter))
   private val dataGenerators = drivers.map { driver => system.actorOf(TruckAndTrafficGenerator.props(driver, depot, flowManager)) }
   private val coordinator = system.actorOf(AutomaticCoordinator.props(config.getInt("simulator.auto-finish.event-count"), dataGenerators, flowManager))
 
