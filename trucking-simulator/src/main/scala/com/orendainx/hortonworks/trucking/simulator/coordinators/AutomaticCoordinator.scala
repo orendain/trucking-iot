@@ -1,6 +1,6 @@
 package com.orendainx.hortonworks.trucking.simulator.coordinators
 
-import akka.actor.{ActorLogging, ActorRef, PoisonPill, Props}
+import akka.actor.{ActorLogging, ActorRef, PoisonPill, Props, Terminated}
 import com.orendainx.hortonworks.trucking.simulator.coordinators.AutomaticCoordinator.TickGenerator
 import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator.AcknowledgeTick
 import com.orendainx.hortonworks.trucking.simulator.flows.FlowManager
@@ -62,8 +62,15 @@ class AutomaticCoordinator(eventCount: Int, generators: Seq[ActorRef], flowManag
         // Kill the individual generator, since we are done with it.
         generator ! PoisonPill
 
-        // If all other generators have met their count, kill self
-        if (!generateCounters.values.exists(_ <= eventCount)) self ! PoisonPill
+        // If all other generators have met their count, tell flow manager to shutdown
+        if (!generateCounters.values.exists(_ <= eventCount)) {
+          flowManager ! FlowManager.ShutdownFlow
+          context watch flowManager
+        }
       }
+
+    // Once the flow manager and its transmitters terminate, shut it all down
+    case Terminated(`flowManager`) =>
+      context.system.terminate()
   }
 }

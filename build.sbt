@@ -7,7 +7,8 @@ lazy val commonSettings = Seq(
   organization := "com.orendainx.hortonworks",
   organizationHomepage := Some(url("https://github.com/orendain/trucking-iot")),
   licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
-  promptTheme := ScalapenosTheme
+  promptTheme := ScalapenosTheme,
+  autoAPIMappings := true
 )
 
 lazy val truckingIot = (project in file(".")).

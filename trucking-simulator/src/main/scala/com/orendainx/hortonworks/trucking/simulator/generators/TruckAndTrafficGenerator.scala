@@ -39,7 +39,7 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
   // Some settings
   val SpeedingThreshold = config.getInt("generator.speeding-threshold")
   val MaxRouteCompletedCount = config.getInt("generator.max-route-completed-count")
-  val CongestionJitter = config.getInt("generator.congestion.jitter")
+  val CongestionDelta = config.getInt("generator.congestion.delta")
 
   // Truck and route being used, locations this driving agent has driven to and congestion level
   var truck: Truck = EmptyTruck
@@ -99,7 +99,7 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
       flowManager ! Transmit(event)
 
       // Create traffic data and emit it
-      congestionLevel += -CongestionJitter + Random.nextInt(CongestionJitter*2 + 1)
+      congestionLevel += -CongestionDelta + Random.nextInt(CongestionDelta*2 + 1)
       val traffic = TrafficData(eventTime, route.id, congestionLevel)
       flowManager ! Transmit(traffic)
 

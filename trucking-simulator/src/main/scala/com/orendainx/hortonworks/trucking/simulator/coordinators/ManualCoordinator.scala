@@ -1,6 +1,8 @@
 package com.orendainx.hortonworks.trucking.simulator.coordinators
 
 import akka.actor.{ActorLogging, ActorRef, Props}
+import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator.AcknowledgeTick
+import com.orendainx.hortonworks.trucking.simulator.coordinators.ManualCoordinator.Tick
 import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator
 import com.typesafe.config.Config
 
@@ -26,10 +28,6 @@ object ManualCoordinator {
 }
 
 class ManualCoordinator(generators: Seq[ActorRef])(implicit config: Config) extends GeneratorCoordinator with ActorLogging {
-
-  // For receive messages
-  import GeneratorCoordinator._
-  import ManualCoordinator._
 
   // Set all generators as ready
   val generatorsReady = mutable.Set(generators: _*)

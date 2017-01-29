@@ -29,11 +29,11 @@ class TruckAndTrafficFlowManager(truckTransmitter: ActorRef, trafficTransmitter:
     case ShutdownFlow =>
       truckTransmitter ! PoisonPill
       trafficTransmitter ! PoisonPill
-      context.watch(truckTransmitter)
-      context.watch(trafficTransmitter)
+      context watch truckTransmitter
+      context watch trafficTransmitter
 
     case Terminated(_) =>
       transmittersTerminated += 1
-      if (transmittersTerminated == 2) context.system.terminate()
+      if (transmittersTerminated == 2) context stop self
   }
 }

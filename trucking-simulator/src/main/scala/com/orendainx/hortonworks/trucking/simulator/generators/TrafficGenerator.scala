@@ -37,7 +37,7 @@ class TrafficGenerator(depot: ActorRef, flowManager: ActorRef)(implicit config: 
 
   // Some settings
   val NumberOfRoutes = config.getInt("generator.routes-to-simulate")
-  val CongestionJitter = config.getInt("generator.congestion.jitter")
+  val CongestionDelta = config.getInt("generator.congestion.delta")
 
   var congestionLevel = config.getInt("generator.congestion.start")
   var routes = mutable.Buffer.empty[Route]
@@ -63,7 +63,7 @@ class TrafficGenerator(depot: ActorRef, flowManager: ActorRef)(implicit config: 
     case GenerateData =>
       routes.foreach { route =>
         // Create traffic data and emit it
-        congestionLevel += -CongestionJitter + Random.nextInt(CongestionJitter*2 + 1)
+        congestionLevel += -CongestionDelta + Random.nextInt(CongestionDelta*2 + 1)
         val traffic = TrafficData(Instant.now().toEpochMilli, route.id, congestionLevel)
         flowManager ! Transmit(traffic)
       }

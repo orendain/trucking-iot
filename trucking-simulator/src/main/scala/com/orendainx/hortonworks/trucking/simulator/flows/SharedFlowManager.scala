@@ -16,15 +16,14 @@ object SharedFlowManager {
 }
 class SharedFlowManager(transmitter: ActorRef) extends FlowManager {
 
-
   def receive = {
     case msg: Transmit => transmitter ! msg
 
     case ShutdownFlow =>
       transmitter ! PoisonPill
-      context.watch(transmitter)
+      context watch transmitter
 
     case Terminated(`transmitter`) =>
-      context.system.terminate()
+      context stop self
   }
 }

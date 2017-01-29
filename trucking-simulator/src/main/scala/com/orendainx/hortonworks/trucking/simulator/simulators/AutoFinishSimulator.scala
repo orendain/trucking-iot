@@ -44,19 +44,6 @@ class AutoFinishSimulator extends Simulator {
   scala.sys.addShutdownHook { stop() }
 
   /**
-    * Check to see if the simulation has completed.  On completion, the system is terminated.
-    */
-  def checkFinished(): Unit = {
-    inbox.receive(1.millisecond) match {
-      case Terminated(`coordinator`) =>
-        flowManager ! FlowManager.ShutdownFlow
-        inbox.watch(flowManager)
-      case Terminated(`flowManager`) =>
-        stop()
-    }
-  }
-
-  /**
     * Manually stop the simulation, terminating the underlying system.
     *
     * @param timeout Time to wait for the system to terminate gracefully, in milliseconds (default: 5000 milliseconds).

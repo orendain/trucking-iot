@@ -9,7 +9,6 @@ import akka.actor.Actor
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object FlowManager {
-  // TODO: rather than this triggering a system termination, simply kill the flow and have supervising actors respond accordingly?
   case object ShutdownFlow
 }
 
