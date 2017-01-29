@@ -1,8 +1,6 @@
 package com.orendainx.hortonworks.trucking.simulator.generators
 
-import java.sql.Timestamp
 import java.time.Instant
-import java.util.Date
 
 import akka.actor.{ActorLogging, ActorRef, Props, Stash}
 import com.orendainx.hortonworks.trucking.common.models._

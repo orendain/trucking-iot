@@ -1,6 +1,7 @@
 package com.orendainx.hortonworks.trucking.simulator.generators
 
 import akka.actor.Actor
+import com.orendainx.hortonworks.trucking.simulator.models.Resource
 
 /**
   * [[DataGenerator]]s are responsible for generating simulation data.
@@ -17,8 +18,7 @@ import akka.actor.Actor
 object DataGenerator {
   case object GenerateData
 
-  // TODO: Ungenericize arg?  Would require creating base type of Resource for Truck/Route
-  case class NewResource(resource: Any)
+  case class NewResource(resource: Resource)
 }
 
 trait DataGenerator extends Actor
