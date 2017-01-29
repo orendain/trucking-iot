@@ -94,11 +94,6 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
 
 
 
-
-
-
-
-
 lazy val webAppBackend = (project in file("trucking-web-app/backend"))
   .dependsOn(topology)
   .settings(
