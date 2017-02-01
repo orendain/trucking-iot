@@ -22,7 +22,9 @@ object Dependencies {
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
   //lazy val kafka = "org.apache.kafka" %% "kafka" % "0.10.1.1"
   lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.1.1"
-  lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT")
+  //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT")
+  lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-18")
+  //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry" % "0.0.1.2.2.0.0-18")
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT" from "file://~/.m2/repository/com/hortonworks/registries/schema-registry-serdes/0.1.0-SNAPSHOT/schema-registry-serdes-0.1.0-SNAPSHOT.jar")
   //val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-5" from "http://nexus-private.hortonworks.com/nexus/content/groups/public/com/hortonworks/registries/schema-registry-serdes/0.0.1.2.2.0.0-5/schema-registry-serdes-0.0.1.2.2.0.0-5.jar")
     .exclude("org.slf4j", "log4j-over-slf4j")

@@ -34,7 +34,7 @@ class AutoFinishSimulator extends Simulator {
   private val depot = system.actorOf(NoSharingDepot.props())
   private val fileTransmitter = system.actorOf(FileTransmitter.props(config.getString("simulator.auto-finish.output-filepath")))
   private val kafkaTransmitter = system.actorOf(KafkaTransmitter.props("example.topic"))
-  private val flowManager = system.actorOf(SharedFlowManager.props(kafkaTransmitter))
+  private val flowManager = system.actorOf(SharedFlowManager.props(fileTransmitter))
   private val dataGenerators = drivers.map { driver => system.actorOf(TruckAndTrafficGenerator.props(driver, depot, flowManager)) }
   private val coordinator = system.actorOf(AutomaticCoordinator.props(config.getInt("simulator.auto-finish.event-count"), dataGenerators, flowManager))
 

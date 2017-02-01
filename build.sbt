@@ -11,10 +11,8 @@ lazy val commonSettings = Seq(
   autoAPIMappings := true
 )
 
-lazy val truckingIot = (project in file(".")).
-  settings(
-    commonSettings
-  )
+lazy val truckingIot = (project in file("."))
+  .settings(commonSettings)
 
 lazy val common = (project in file("trucking-common"))
     .aggregate(commonJVM, commonJS)
@@ -50,6 +48,7 @@ lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
     commonSettings,
     name := "trucking-schema-registrar",
     resolvers += Resolver.mavenLocal,
+    resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
     libraryDependencies ++= Dependencies.schemaRegistrarDeps
   )
 
