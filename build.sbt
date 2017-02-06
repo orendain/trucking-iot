@@ -58,6 +58,7 @@ lazy val topology = (project in file("trucking-topology"))
     commonSettings,
     name := "trucking-topology",
     resolvers += Resolver.mavenLocal,
+    resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
     libraryDependencies ++= Dependencies.topologyDeps,
 
     // TODO: Temporary, change once schema registry release updated
@@ -89,7 +90,7 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
       (publishM2 in Compile in simulator).value
       Process("mvn clean package", baseDirectory.value) !
     } ,
-    (`compile` in Compile) <<= (compile in Compile).dependsOn(execScript)
+    (`compile` in Compile) := (compile in Compile).dependsOn(execScript).value
   )
 
 
@@ -109,7 +110,7 @@ lazy val webAppBackend = (project in file("trucking-web-app/backend"))
 
     pipelineStages in Assets := Seq(scalaJSPipeline),
     //pipelineStages := Seq(digest, gzip),
-    compile in Compile <<= (compile in Compile) dependsOn scalaJSPipeline,
+    compile in Compile := (compile in Compile).dependsOn(scalaJSPipeline).value,
     resolvers += Resolver.mavenLocal, // For topology > schema-registry-serdes
     libraryDependencies ++= (Seq(filters, cache, ws) ++ Dependencies.webAppBackendDeps),
     scalacOptions += "-Yresolve-term-conflict:package",
