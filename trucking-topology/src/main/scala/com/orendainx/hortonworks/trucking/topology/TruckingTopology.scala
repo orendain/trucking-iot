@@ -131,7 +131,7 @@ class TruckingTopology(config: TypeConfig) {
     val bolt = new TruckAndTrafficMergeBolt().withTumblingWindow(new BaseWindowedBolt.Duration(duration, MILLISECONDS))
 
     // Place the bolt in the topology blueprint
-    builder.setBolt("mergeData", bolt, taskCount).shuffleGrouping("EnrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("mergeData", bolt, taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
   }
 
   def buildNifiBolt()(implicit builder: TopologyBuilder): Unit = {

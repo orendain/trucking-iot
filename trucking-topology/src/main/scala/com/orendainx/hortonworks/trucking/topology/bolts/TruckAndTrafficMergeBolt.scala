@@ -111,7 +111,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
                 // Get latest version of merged schema and merge the two data objects into one record
                 val mergedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("EnrichedTruckAndTrafficData")
                 //val mergedRecord = mergedEnrichedTruckAndTrafficRecord(new GenericData.Record(new Schema.Parser().parse(mergedSchemaInfo.getSchemaText)), truckData, trafficData)
-                val mergedRecord = mergedTruckAndTrafficData(truckData, trafficData)
+                val mergedRecord = mergedEnrichedTruckAndTrafficData(truckData, trafficData)
                 log.debug(s"Unserialized data: ${mergedRecord.toString}")
 
                 // TODO: Temporarily emit non-serialized data instead of serialized
@@ -150,7 +150,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
     record
 }
 
-  private def mergedTruckAndTrafficData(truckData: EnrichedTruckData, trafficData: TrafficData) = {
+  private def mergedEnrichedTruckAndTrafficData(truckData: EnrichedTruckData, trafficData: TrafficData) = {
     EnrichedTruckAndTrafficData(
       truckData.eventTime,
       truckData.truckId,
