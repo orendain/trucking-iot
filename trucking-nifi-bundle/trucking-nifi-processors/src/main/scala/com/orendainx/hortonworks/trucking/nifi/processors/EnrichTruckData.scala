@@ -48,12 +48,16 @@ class EnrichTruckData extends AbstractProcessor {
   override def onTrigger(context: ProcessContext, session: ProcessSession): Unit = {
 
     val flowFile = session.get
+
+    log.debug(s"Flowfile1: ${flowFile}")
+
     val content = new AtomicReference[String]
 
     session.read(flowFile, new InputStreamCallback {
       override def process(inputStream: InputStream) = {
         val scanner = new Scanner(inputStream).useDelimiter("\\A")
         val result = if (scanner.hasNext()) scanner.next() else ""
+        log.debug(s"Flowfile2: ${result}")
         content.set(result)
       }
     })
@@ -67,14 +71,14 @@ class EnrichTruckData extends AbstractProcessor {
     log.debug(s"Content: ${content.get()}")
     log.debug(s"EnrichedData: ${enrichedTruckData}")
 
-    var newFlowFile = session.create()
-    newFlowFile = session.write(newFlowFile, new OutputStreamCallback {
+    val newFlowFile = session.create()
+    newFlowFile = session.write(flowFile, new OutputStreamCallback {
       override def process(outputStream: OutputStream) = {
         outputStream.write(enrichedTruckData.toCSV.getBytes(StandardCharsets.UTF_8))
       }
     })
 
-    session.getProvenanceReporter.route(newFlowFile, RelSuccess)
+    //session.getProvenanceReporter.route(flowFile, RelSuccess)
     session.transfer(newFlowFile, RelSuccess)
     session.commit()
   }
