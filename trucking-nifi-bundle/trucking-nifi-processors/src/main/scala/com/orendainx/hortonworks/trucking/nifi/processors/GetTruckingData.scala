@@ -3,7 +3,6 @@ package com.orendainx.hortonworks.trucking.nifi.processors
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
-import com.orendainx.hortonworks.trucking.simulator.simulators.ManualTickAndFetchSimulator
 import com.typesafe.config.ConfigFactory
 import org.apache.nifi.annotation.behavior._
 import org.apache.nifi.annotation.documentation.{CapabilityDescription, Tags}
@@ -12,12 +11,13 @@ import org.apache.nifi.components.PropertyDescriptor
 import org.apache.nifi.logging.ComponentLog
 import org.apache.nifi.processor._
 import org.apache.nifi.processor.io.OutputStreamCallback
+import com.orendainx.hortonworks.trucking.simulator.simulators.ManualTickAndFetchSimulator
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 @Tags(Array("trucking", "data", "event", "generator", "simulator", "iot"))
-@CapabilityDescription("Generates data for a trucking application. Sample project <a href=\"https://github.com/orendain/trucking-nifi-bundle\">found here</a>")
+@CapabilityDescription("Generates data for a trucking application. Master project <a href=\"https://github.com/orendain/trucking-iot\">found here</a>")
 @WritesAttributes(Array(
   new WritesAttribute(attribute = "dataType", description = "The class name of the of the TruckingData this flowfile carries (e.g. \"TruckData\" or \"TrafficData\").")
 ))

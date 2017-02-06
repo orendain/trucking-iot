@@ -16,6 +16,7 @@
   <properties>
     <trucking.nifi.version>0.3.2</trucking.nifi.version>
     <trucking.simulator.version>0.3.2</trucking.simulator.version>
+    <trucking.enrichment.version>0.3.2</trucking.enrichment.version>
     <scala.version>2.11.8</scala.version>
     <scala.major.version>2.11</scala.major.version>
     <typesafe.config.version>1.3.1</typesafe.config.version>

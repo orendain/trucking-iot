@@ -18,6 +18,11 @@
       <version>${trucking.simulator.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.orendainx.hortonworks</groupId>
+      <artifactId>trucking-enrichment_${scala.major.version}</artifactId>
+      <version>${trucking.enrichment.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.typesafe</groupId>
       <artifactId>config</artifactId>
       <version>${typesafe.config.version}</version>

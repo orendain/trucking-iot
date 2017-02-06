@@ -32,6 +32,7 @@ lazy val simulator = (project in file("trucking-simulator"))
     commonSettings,
     name := "trucking-simulator",
     libraryDependencies ++= Dependencies.simulatorDeps
+
   )
 
 lazy val enrichment = (project in file("trucking-enrichment"))
@@ -39,7 +40,8 @@ lazy val enrichment = (project in file("trucking-enrichment"))
   .settings(
     commonSettings,
     name := "trucking-enrichment",
-    libraryDependencies ++= Dependencies.enrichmentDeps
+    libraryDependencies ++= Dependencies.enrichmentDeps,
+    isSnapshot := true
   )
 
 lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
@@ -82,17 +84,17 @@ lazy val topology = (project in file("trucking-topology"))
 lazy val execScript = taskKey[Unit]("Execute the shell script")
 
 lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
-  .dependsOn(simulator)
+  .dependsOn(simulator, enrichment)
   .settings(
     commonSettings,
     execScript := {
       (publishM2 in Compile in commonJVM).value
       (publishM2 in Compile in simulator).value
+      (publishM2 in Compile in enrichment).value
       Process("mvn clean package", baseDirectory.value) !
-    } ,
+    },
     (`compile` in Compile) := (compile in Compile).dependsOn(execScript).value
   )
-
 
 
 lazy val webAppBackend = (project in file("trucking-web-app/backend"))
