@@ -7,7 +7,7 @@ package com.orendainx.hortonworks.trucking.common.models
   */
 case class EnrichedTruckAndTrafficData(eventTime: Long, truckId: Int, driverId: Int, driverName: String,
                                        routeId: Int, routeName: String, latitude: Double, longitude: Double,
-                                       speed: Int, eventType: String, congestionLevel: Int) extends TruckingData {
+                                       speed: Int, eventType: String, foggy: Int, rainy: Int, windy: Int, congestionLevel: Int) extends TruckingData {
 
-  lazy val toCSV: String = s"$eventTime|$truckId|$driverId|$driverName|$routeId|$routeName|$latitude|$longitude|$speed|$eventType|$congestionLevel"
+  lazy val toCSV: String = s"$eventTime|$truckId|$driverId|$driverName|$routeId|$routeName|$latitude|$longitude|$speed|$eventType|$foggy|$rainy|$windy|$congestionLevel"
 }

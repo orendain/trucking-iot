@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.topology.bolts
 import java.io.ByteArrayInputStream
 import java.util
 
-import com.orendainx.hortonworks.trucking.common.models.{TruckData, TrafficData, EnrichedTruckAndTrafficData}
+import com.orendainx.hortonworks.trucking.common.models.{EnrichedTruckAndTrafficData, EnrichedTruckData, TrafficData, TruckData}
 import com.hortonworks.registries.schemaregistry.SchemaMetadata
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
@@ -65,7 +65,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
 
     schemaRegistryClient = new SchemaRegistryClient(clientConfig)
 
-    truckDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TruckData").getSchemaMetadata
+    truckDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckData").getSchemaMetadata
     trafficDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TrafficData").getSchemaMetadata
     mergedSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckAndTrafficData").getSchemaMetadata
 
@@ -78,18 +78,18 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
   override def execute(inputWindow: TupleWindow): Unit = {
 
     // Collections to collect data into
-    val truckDataPerRoute = mutable.HashMap.empty[Int, ListBuffer[TruckData]]
+    val truckDataPerRoute = mutable.HashMap.empty[Int, ListBuffer[EnrichedTruckData]]
     val trafficDataPerRoute = mutable.HashMap.empty[Int, ListBuffer[TrafficData]]
 
     // Process each one of the tuples captured in the input window, separating data into bins according to routeId
     inputWindow.get().foreach { tuple =>
       val dp = tuple.getValueByField("nifiDataPacket").asInstanceOf[NiFiDataPacket]
 
-      // Deserialize each tuple and convert it into its proper case class (e.g. TruckData or TrafficData)
+      // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
       dp.getAttributes.get("dataType") match {
-        case "TruckData" =>
-          val data: TruckData = deserializer.deserialize(new ByteArrayInputStream(dp.getContent), truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]
-          truckDataPerRoute += (data.routeId -> (truckDataPerRoute.getOrElse(data.routeId, ListBuffer.empty[TruckData]) += data))
+        case "EnrichedTruckData" =>
+          val data: EnrichedTruckData = deserializer.deserialize(new ByteArrayInputStream(dp.getContent), truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]
+          truckDataPerRoute += (data.routeId -> (truckDataPerRoute.getOrElse(data.routeId, ListBuffer.empty[EnrichedTruckData]) += data))
 
         case "TrafficData" =>
           val data: TrafficData = deserializer.deserialize(new ByteArrayInputStream(dp.getContent), trafficDataSchemaMetadata, null).asInstanceOf[GenericData.Record]
@@ -99,7 +99,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
       //outputCollector.ack(tuple)
     }
 
-    // For each TruckData object, find the TrafficData object with the closest timestamp
+    // For each EnrichedTruckData object, find the TrafficData object with the closest timestamp
     truckDataPerRoute.foreach { case (routeId, truckDataList) =>
       trafficDataPerRoute.get(routeId) match {
         case None => // No traffic data for this routeId, so drop/ignore truck data
@@ -110,7 +110,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
               case Some(trafficData) =>
                 // Get latest version of merged schema and merge the two data objects into one record
                 val mergedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("EnrichedTruckAndTrafficData")
-                //val mergedRecord = mergedTruckAndTrafficRecord(new GenericData.Record(new Schema.Parser().parse(mergedSchemaInfo.getSchemaText)), truckData, trafficData)
+                //val mergedRecord = mergedEnrichedTruckAndTrafficRecord(new GenericData.Record(new Schema.Parser().parse(mergedSchemaInfo.getSchemaText)), truckData, trafficData)
                 val mergedRecord = mergedTruckAndTrafficData(truckData, trafficData)
                 log.debug(s"Unserialized data: ${mergedRecord.toString}")
 
@@ -132,7 +132,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("serializedData"))
 
-  private def mergedTruckAndTrafficRecord(record: GenericRecord, truckData: TruckData, trafficData: TrafficData) = {
+  private def mergedEnrichedTruckAndTrafficRecord(record: GenericRecord, truckData: EnrichedTruckData, trafficData: TrafficData) = {
     record.put("eventTime", truckData.eventTime.toString)
     record.put("truckId", truckData.truckId.toString)
     record.put("driverId", truckData.driverId.toString)
@@ -143,11 +143,14 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
     record.put("longitude", truckData.longitude.toString)
     record.put("speed", truckData.speed.toString)
     record.put("eventType", truckData.eventType)
+    record.put("foggy", truckData.foggy)
+    record.put("rainy", truckData.rainy)
+    record.put("windy", truckData.windy)
     record.put("congestionLevel", trafficData.congestionLevel.toString)
     record
-  }
+}
 
-  private def mergedTruckAndTrafficData(truckData: TruckData, trafficData: TrafficData) = {
+  private def mergedTruckAndTrafficData(truckData: EnrichedTruckData, trafficData: TrafficData) = {
     EnrichedTruckAndTrafficData(
       truckData.eventTime,
       truckData.truckId,
@@ -159,12 +162,15 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
       truckData.longitude,
       truckData.speed,
       truckData.eventType,
+      truckData.foggy,
+      truckData.rainy,
+      truckData.windy,
       trafficData.congestionLevel
     )
   }
 
-  private implicit def genericRecordToTruckData(record: GenericRecord): TruckData =
-    TruckData(
+  private implicit def genericRecordToEnrichedTruckData(record: GenericRecord): EnrichedTruckData =
+    EnrichedTruckData(
       record.get("eventTime").toString.toLong,
       record.get("truckId").toString.toInt,
       record.get("driverId").toString.toInt,
@@ -174,7 +180,10 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
       record.get("latitude").toString.toDouble,
       record.get("longitude").toString.toDouble,
       record.get("speed").toString.toInt,
-      record.get("eventType").toString
+      record.get("eventType").toString,
+      record.get("foggy").toString.toInt,
+      record.get("rainy").toString.toInt,
+      record.get("windy").toString.toInt
     )
 
   private implicit def genericRecordToTrafficData(record: GenericRecord): TrafficData =
