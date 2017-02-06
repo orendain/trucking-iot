@@ -2,7 +2,7 @@ package com.orendainx.hortonworks.trucking.webapp
 
 import angulate2.std.{Component, OnInit}
 import com.felstar.scalajs.leaflet._
-import com.orendainx.hortonworks.trucking.common.models.TruckDataTypes
+import com.orendainx.hortonworks.trucking.common.models.TruckEventTypes
 
 import scala.collection.mutable
 
@@ -28,11 +28,11 @@ class MapComponent(webSocketService: WebSocketService) extends OnInit {
   private val MarkerRadius = 15000
   private val MarkerBorderWeight = 2
   private val MarkerTypeColors = Map[String, String](
-    TruckDataTypes.Normal -> "#0f0",
-    TruckDataTypes.Speeding -> "#f00",
-    TruckDataTypes.LaneDeparture -> "#ff0",
-    TruckDataTypes.UnsafeFollowDistance -> "#0ff",
-    TruckDataTypes.UnsafeTailDistance -> "#00f"
+    TruckEventTypes.Normal -> "#0f0",
+    TruckEventTypes.Speeding -> "#f00",
+    TruckEventTypes.LaneDeparture -> "#ff0",
+    TruckEventTypes.UnsafeFollowDistance -> "#0ff",
+    TruckEventTypes.UnsafeTailDistance -> "#00f"
   )
 
   // Collections

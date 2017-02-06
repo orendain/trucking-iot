@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.common.models
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-object TruckDataTypes {
+object TruckEventTypes {
   val Normal = "Normal"
   val Speeding = "Speeding"
   val LaneDeparture = "Lane Departure"

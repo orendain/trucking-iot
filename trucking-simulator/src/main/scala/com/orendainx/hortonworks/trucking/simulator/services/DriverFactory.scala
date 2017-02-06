@@ -19,7 +19,7 @@ object DriverFactory {
     // Generate driving patterns
     val patterns = config.getConfigList("driver.driving-patterns").map { conf =>
       val name = conf.getString("name")
-      (name, DrivingPattern(name, conf.getInt("min-speed"), conf.getInt("max-speed"), conf.getInt("risk-frequency")))
+      (name, DrivingPattern(name, conf.getInt("min-speed"), conf.getInt("max-speed"), conf.getInt("spree-frequency"), conf.getInt("spree-length"), conf.getInt("violation-percentage")))
     }.toMap
 
     // First, initialize all special drivers

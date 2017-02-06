@@ -5,7 +5,7 @@ import java.time.Instant
 import java.util.Date
 
 import akka.actor.{ActorLogging, ActorRef, Props, Stash}
-import com.orendainx.hortonworks.trucking.common.models.{TrafficData, TruckData, TruckDataTypes}
+import com.orendainx.hortonworks.trucking.common.models.{TrafficData, TruckData, TruckEventTypes}
 import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator
 import com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot.{RequestRoute, RequestTruck, ReturnRoute, ReturnTruck}
 import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}
@@ -37,9 +37,11 @@ object TruckAndTrafficGenerator {
 class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: ActorRef)(implicit config: Config) extends DataGenerator with Stash with ActorLogging {
 
   // Some settings
+  val SpeedDelta = config.getInt("generator.speed-delta")
   val SpeedingThreshold = config.getInt("generator.speeding-threshold")
   val MaxRouteCompletedCount = config.getInt("generator.max-route-completed-count")
   val CongestionDelta = config.getInt("generator.congestion.delta")
+  val TrafficDataFrequency = config.getInt("generator.traffic-data-frequency")
 
   // Truck and route being used, locations this driving agent has driven to and congestion level
   var truck: Truck = EmptyTruck
@@ -48,7 +50,9 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
   var locationsRemaining = locations.iterator
 
   // Counters and congestion
-  var driveCount = 0
+  var currentSpeed = (driver.drivingPattern.minSpeed + driver.drivingPattern.maxSpeed)/2
+  var spreeRemaining = 0
+  var tickCount = 0
   var routeCompletedCount = 0
   var congestionLevel = config.getInt("generator.congestion.start")
 
@@ -78,30 +82,40 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
 
   def driverActive: Receive = {
     case GenerateData =>
-      driveCount += 1
-      log.debug(s"Driver #${driver.id} processing event #$driveCount")
+      tickCount += 1
+      log.debug(s"Driver #${driver.id} processing event #$tickCount")
 
       val currentLoc = locationsRemaining.next()
-      val speed =
-        driver.drivingPattern.minSpeed + Random.nextInt(driver.drivingPattern.maxSpeed - driver.drivingPattern.minSpeed + 1)
+      currentSpeed += (Random.nextInt(3) - 1) * SpeedDelta
 
-      // If driver is speeding or is set to trigger risky behavior, generate an appropriate TruckDataType
+      if (startSpreeCheck) {
+        spreeRemaining = driver.drivingPattern.spreeLength
+      }
+
+      // If currently spreeing, generate an appropriate event
       val eventType =
-        if (speed >= SpeedingThreshold || driveCount % driver.drivingPattern.riskFrequency == 0)
-          TruckDataTypes.NonNormalTypes(Random.nextInt(TruckDataTypes.NonNormalTypes.length))
-        else
-          TruckDataTypes.Normal
+        if (spreeRemaining > 0) {
+          spreeRemaining -= 1
+          if (Random.nextInt(100) < driver.drivingPattern.violationPercentage)
+            TruckEventTypes.NonNormalTypes(Random.nextInt(TruckEventTypes.NonNormalTypes.length))
+          else
+            TruckEventTypes.Normal
+        } else
+          TruckEventTypes.Normal
+
 
       // Create trucking event and transmit it
       val eventTime = Instant.now().toEpochMilli
       val event = TruckData(eventTime, truck.id, driver.id, driver.name,
-        route.id, route.name, currentLoc.latitude, currentLoc.longitude, speed, eventType)
+        route.id, route.name, currentLoc.latitude, currentLoc.longitude, currentSpeed, eventType)
       flowManager ! Transmit(event)
 
       // Create traffic data and emit it
-      congestionLevel += -CongestionDelta + Random.nextInt(CongestionDelta*2 + 1)
-      val traffic = TrafficData(eventTime, route.id, congestionLevel)
-      flowManager ! Transmit(traffic)
+      if (tickCount % TrafficDataFrequency == 0) {
+        congestionLevel += -CongestionDelta + Random.nextInt(CongestionDelta * 2 + 1)
+        val traffic = TrafficData(eventTime, route.id, congestionLevel)
+        flowManager ! Transmit(traffic)
+      }
 
       // If driver completed the route, switch trucks
       if (locationsRemaining.isEmpty) {
@@ -132,6 +146,8 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
   def receive = {
     case _ => log.error("This message should never be seen.")
   }
+
+  def startSpreeCheck = tickCount % driver.drivingPattern.spreeFrequency == 0
 
   //When waiting for resources, make sure we have both a truck and a route before driving
   def considerDriving(): Unit = {

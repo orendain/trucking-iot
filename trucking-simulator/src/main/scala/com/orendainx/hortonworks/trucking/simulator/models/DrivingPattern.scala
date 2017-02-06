@@ -5,4 +5,4 @@ package com.orendainx.hortonworks.trucking.simulator.models
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-case class DrivingPattern(name: String, minSpeed: Int, maxSpeed: Int, riskFrequency: Int)
+case class DrivingPattern(name: String, minSpeed: Int, maxSpeed: Int, spreeFrequency: Int, spreeLength: Int, violationPercentage: Int)
