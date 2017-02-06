@@ -1,0 +1,21 @@
+{
+   "type" : "record",
+   "namespace" : "com.orendainx.hortonworks.trucking",
+   "name" : "EnrichedTruckData",
+   "fields" : [
+      { "name" : "eventTime" , "type" : "string" },
+      { "name" : "truckId" , "type" : "string" },
+      { "name" : "driverId" , "type" : "string" },
+      { "name" : "driverName" , "type" : "string" },
+      { "name" : "routeId" , "type" : "string" },
+      { "name" : "routeName" , "type" : "string" },
+      { "name" : "latitude" , "type" : "string" },
+      { "name" : "longitude" , "type" : "string" },
+      { "name" : "speed" , "type" : "string" },
+      { "name" : "eventType" , "type" : "string" },
+
+      { "name" : "foggy" , "type" : "string" },
+      { "name" : "rainy" , "type" : "string" },
+      { "name" : "windy" , "type" : "string" }
+   ]
+}

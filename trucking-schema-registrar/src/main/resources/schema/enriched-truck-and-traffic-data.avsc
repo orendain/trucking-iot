@@ -1,7 +1,7 @@
 {
    "type" : "record",
    "namespace" : "com.orendainx.hortonworks.trucking",
-   "name" : "TruckAndTrafficData",
+   "name" : "EnrichedTruckAndTrafficData",
    "fields" : [
       { "name" : "eventTime" , "type" : "string" },
       { "name" : "truckId" , "type" : "string" },
@@ -13,6 +13,11 @@
       { "name" : "longitude" , "type" : "string" },
       { "name" : "speed" , "type" : "string" },
       { "name" : "eventType" , "type" : "string" },
+
+      { "name" : "foggy" , "type" : "string" },
+      { "name" : "rainy" , "type" : "string" },
+      { "name" : "windy" , "type" : "string" },
+
       { "name" : "congestionLevel" , "type" : "string" }
    ]
 }

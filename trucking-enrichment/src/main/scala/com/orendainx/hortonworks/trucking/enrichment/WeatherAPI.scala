@@ -10,11 +10,6 @@ import scala.util.Random
   */
 object WeatherAPI {
 
-  lazy val apply = new WeatherAPI()
-}
-
-class WeatherAPI {
-
   private val conf = ConfigFactory.load()
 
   /** Queries the weatherAPI for fog status.

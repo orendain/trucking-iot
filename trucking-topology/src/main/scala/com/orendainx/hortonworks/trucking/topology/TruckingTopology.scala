@@ -59,10 +59,10 @@ object TruckingTopology {
   * Create a topology with the following components.
   *
   * Spouts:
-  *   - NiFiSpout (for injesting TruckData from NiFi)
+  *   - NiFiSpout (for injesting EnrichedTruckData from NiFi)
   *   - NiFiSpout (for injesting TrafficData from NiFi)
   * Bolt:
-  *   - TruckAndTrafficMergeBolt (for merging TruckData and TrafficData streams into one)
+  *   - TruckAndTrafficMergeBolt (for merging EnrichedTruckData and TrafficData streams into one)
   *   - NiFiBolt (for sending merged data back out to NiFi)
   *
   * @author Edgar Orendain <edgar@orendainx.com>
@@ -81,7 +81,7 @@ class TruckingTopology(config: TypeConfig) {
     implicit val builder = new TopologyBuilder()
 
     // Build Nifi Spouts to ingest trucking data
-    buildNifiTruckDataSpout()
+    buildNifiEnrichedTruckDataSpout()
     buildNifiTrafficDataSpout()
 
     // Build Bolt to merge data streams together with windowing and another to push back out to NiFi
@@ -94,7 +94,7 @@ class TruckingTopology(config: TypeConfig) {
     builder.createTopology()
   }
 
-  def buildNifiTruckDataSpout()(implicit builder: TopologyBuilder): Unit = {
+  def buildNifiEnrichedTruckDataSpout()(implicit builder: TopologyBuilder): Unit = {
     // Extract values from config
     val nifiUrl = config.getString(TruckingTopology.NiFiUrl)
     val nifiPortName = config.getString("nifi.truck-data.port-name")
@@ -105,7 +105,7 @@ class TruckingTopology(config: TypeConfig) {
     val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchSize).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
-    builder.setSpout("truckData", new NiFiSpout(client), taskCount)
+    builder.setSpout("enrichedTruckData", new NiFiSpout(client), taskCount)
   }
 
   def buildNifiTrafficDataSpout()(implicit builder: TopologyBuilder): Unit = {
@@ -131,7 +131,7 @@ class TruckingTopology(config: TypeConfig) {
     val bolt = new TruckAndTrafficMergeBolt().withTumblingWindow(new BaseWindowedBolt.Duration(duration, MILLISECONDS))
 
     // Place the bolt in the topology blueprint
-    builder.setBolt("mergeData", bolt, taskCount).shuffleGrouping("truckData").shuffleGrouping("trafficData")
+    builder.setBolt("mergeData", bolt, taskCount).shuffleGrouping("EnrichedTruckData").shuffleGrouping("trafficData")
   }
 
   def buildNifiBolt()(implicit builder: TopologyBuilder): Unit = {

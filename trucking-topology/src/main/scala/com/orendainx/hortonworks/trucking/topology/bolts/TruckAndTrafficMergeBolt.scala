@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.topology.bolts
 import java.io.ByteArrayInputStream
 import java.util
 
-import com.orendainx.hortonworks.trucking.common.models.{TruckData, TrafficData, TruckAndTrafficData}
+import com.orendainx.hortonworks.trucking.common.models.{TruckData, TrafficData, EnrichedTruckAndTrafficData}
 import com.hortonworks.registries.schemaregistry.SchemaMetadata
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
@@ -45,7 +45,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
 //  private lazy val trafficDataSchemaMetadata = new SchemaMetadata.Builder("TrafficData")
 //    .`type`(AvroSchemaProvider.TYPE).schemaGroup("trucking").description("Traffic data on routes being streamed in from an outside source")
 //    .compatibility(SchemaCompatibility.BACKWARD).build()
-//  private lazy val mergedSchemaMetadata = new SchemaMetadata.Builder("TruckAndTrafficData")
+//  private lazy val mergedSchemaMetadata = new SchemaMetadata.Builder("EnrichedTruckAndTrafficData")
 //    .`type`(AvroSchemaProvider.TYPE).schemaGroup("trucking").description("Merged data")
 //    .compatibility(SchemaCompatibility.BACKWARD).build()
 
@@ -67,7 +67,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
 
     truckDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TruckData").getSchemaMetadata
     trafficDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TrafficData").getSchemaMetadata
-    mergedSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TruckAndTrafficData").getSchemaMetadata
+    mergedSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckAndTrafficData").getSchemaMetadata
 
     serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotSerializer]
     deserializer = schemaRegistryClient.getDefaultDeserializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotDeserializer]
@@ -109,7 +109,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
               case None => // Window didn't capture any traffic data for this truck's route
               case Some(trafficData) =>
                 // Get latest version of merged schema and merge the two data objects into one record
-                val mergedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("TruckAndTrafficData")
+                val mergedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("EnrichedTruckAndTrafficData")
                 //val mergedRecord = mergedTruckAndTrafficRecord(new GenericData.Record(new Schema.Parser().parse(mergedSchemaInfo.getSchemaText)), truckData, trafficData)
                 val mergedRecord = mergedTruckAndTrafficData(truckData, trafficData)
                 log.debug(s"Unserialized data: ${mergedRecord.toString}")
@@ -148,7 +148,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
   }
 
   private def mergedTruckAndTrafficData(truckData: TruckData, trafficData: TrafficData) = {
-    TruckAndTrafficData(
+    EnrichedTruckAndTrafficData(
       truckData.eventTime,
       truckData.truckId,
       truckData.driverId,

@@ -9,10 +9,16 @@ import org.apache.nifi.annotation.lifecycle.{OnRemoved, OnShutdown}
 import org.apache.nifi.components.PropertyDescriptor
 import org.apache.nifi.logging.ComponentLog
 import org.apache.nifi.processor._
-
 import java.util.Scanner
+
 import org.apache.nifi.processor.io.InputStreamCallback
-import java.io.InputStream
+import org.apache.nifi.processor.io.OutputStreamCallback
+import java.io.{InputStream, OutputStream}
+
+import com.orendainx.hortonworks.trucking.common.models.EnrichedTruckData
+import com.orendainx.hortonworks.trucking.enrichment.WeatherAPI
+
+import scala.language.implicitConversions
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
@@ -21,7 +27,7 @@ import java.io.InputStream
 @CapabilityDescription("Enriches data for a trucking application. Master project <a href=\"https://github.com/orendain/trucking-iot\">found here</a>")
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @TriggerSerially
-class EnrichTruckingData extends AbstractProcessor {
+class EnrichTruckData extends AbstractProcessor {
 
   // Relationships
   val RelSuccess = new Relationship.Builder()
@@ -52,10 +58,24 @@ class EnrichTruckingData extends AbstractProcessor {
       }
     })
 
-    log.debug(s"Content: ${content.get()}")
+    implicit def bool2Int(bool: Boolean): Int = if (bool) 1 else 0
+    val Array(eventTime, truckId, driverId, driverName, routeId, routeName, latitude, longitude, speed, eventType) = content.get().split("\\|")
+    val enrichedTruckData = EnrichedTruckData(eventTime.toLong, truckId.toInt, driverId.toInt, driverName, routeId.toInt,
+      routeName, latitude.toDouble, longitude.toDouble, speed.toInt, eventType,
+      WeatherAPI.isFoggy(eventType), WeatherAPI.isRainy(eventType), WeatherAPI.isWindy(eventType))
 
-    session.getProvenanceReporter.route(flowFile, RelSuccess)
-    session.transfer(flowFile, RelSuccess)
+    log.debug(s"Content: ${content.get()}")
+    log.debug(s"EnrichedData: ${enrichedTruckData}")
+
+    var newFlowFile = session.create()
+    newFlowFile = session.write(newFlowFile, new OutputStreamCallback {
+      override def process(outputStream: OutputStream) = {
+        outputStream.write(enrichedTruckData.toCSV.getBytes(StandardCharsets.UTF_8))
+      }
+    })
+
+    session.getProvenanceReporter.route(newFlowFile, RelSuccess)
+    session.transfer(newFlowFile, RelSuccess)
     session.commit()
   }
 

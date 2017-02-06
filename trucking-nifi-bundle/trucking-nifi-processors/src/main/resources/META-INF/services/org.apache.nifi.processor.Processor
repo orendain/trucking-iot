@@ -1,2 +1,2 @@
 com.orendainx.hortonworks.trucking.nifi.processors.GetTruckingData
-com.orendainx.hortonworks.trucking.nifi.processors.EnrichTruckingData
+com.orendainx.hortonworks.trucking.nifi.processors.EnrichTruckData

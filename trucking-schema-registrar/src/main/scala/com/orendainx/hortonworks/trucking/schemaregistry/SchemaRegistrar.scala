@@ -38,12 +38,13 @@ object SchemaRegistrar {
     * Register all built-in schemas with the Schema Registry service.  These include the following schemas:
     * - TruckData
     * - TrafficData
-    * - TruckAndTrafficData
+    * - EnrichedTruckAndTrafficData
     */
   def register(): Unit = {
     setupSchema("schema.truck-data")
+    setupSchema("schema.enriched-truck-data")
     setupSchema("schema.traffic-data")
-    setupSchema("schema.truck-and-traffic-data")
+    setupSchema("schema.enriched-truck-and-traffic-data")
   }
 
 
