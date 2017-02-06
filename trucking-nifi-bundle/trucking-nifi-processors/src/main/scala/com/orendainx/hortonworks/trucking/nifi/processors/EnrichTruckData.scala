@@ -47,7 +47,7 @@ class EnrichTruckData extends AbstractProcessor {
 
   override def onTrigger(context: ProcessContext, session: ProcessSession): Unit = {
 
-    val flowFile = session.get
+    var flowFile = session.get
 
     log.debug(s"Flowfile1: ${flowFile}")
 
@@ -71,15 +71,15 @@ class EnrichTruckData extends AbstractProcessor {
     log.debug(s"Content: ${content.get()}")
     log.debug(s"EnrichedData: ${enrichedTruckData}")
 
-    val newFlowFile = session.create()
-    newFlowFile = session.write(flowFile, new OutputStreamCallback {
+    //var flowFile = session.create()
+    flowFile = session.write(flowFile, new OutputStreamCallback {
       override def process(outputStream: OutputStream) = {
         outputStream.write(enrichedTruckData.toCSV.getBytes(StandardCharsets.UTF_8))
       }
     })
 
-    //session.getProvenanceReporter.route(flowFile, RelSuccess)
-    session.transfer(newFlowFile, RelSuccess)
+    session.getProvenanceReporter.route(flowFile, RelSuccess)
+    session.transfer(flowFile, RelSuccess)
     session.commit()
   }
 
