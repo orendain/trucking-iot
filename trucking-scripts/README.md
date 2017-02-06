@@ -14,4 +14,4 @@ To scriptify:
 - Disable NiFi SSL
 
 Assumptions made in setup-environment.sh:
-- Schema Registry is not installed.
+- Kafka and its necessary dependent services are up and running (do this via Ambari.)
