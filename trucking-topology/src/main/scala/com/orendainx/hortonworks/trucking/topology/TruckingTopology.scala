@@ -108,7 +108,7 @@ class TruckingTopology(config: TypeConfig) {
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
 
     // To sync up with MergeBolt ... keeping back pressure in NiFi
-    val duration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
+    val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
     val durationUnit = scala.concurrent.duration.MILLISECONDS
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
@@ -127,7 +127,7 @@ class TruckingTopology(config: TypeConfig) {
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
 
     // To sync up with MergeBolt ... keeping back pressure in NiFi
-    val duration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
+    val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
     val durationUnit = scala.concurrent.duration.MILLISECONDS
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
