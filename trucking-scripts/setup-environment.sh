@@ -21,10 +21,10 @@ hash mvn 2>/dev/null || {
   mv apache-maven-3.3.9 /opt/apache-maven-3.3.9
 
   # Write Maven into profile and source it
-  cat >/etc/profile.d/maven.sh <<EOL
+  cat > /etc/profile.d/maven.sh <<- EndOfMessage
   export M2_HOME=/opt/apache-maven-3.3.9
   export PATH=${M2_HOME}/bin:${PATH}
-  EOL
+  EndOfMessage
   source /etc/profile.d/maven.sh
 }
 
