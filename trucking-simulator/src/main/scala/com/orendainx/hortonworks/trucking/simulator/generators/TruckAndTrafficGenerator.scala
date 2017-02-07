@@ -86,7 +86,12 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
       log.debug(s"Driver #${driver.id} processing event #$tickCount")
 
       val currentLoc = locationsRemaining.next()
-      currentSpeed += (Random.nextInt(3) - 1) * SpeedDelta
+
+      currentSpeed = (currentSpeed + (Random.nextInt(3) - 1) * SpeedDelta) match {
+        case s if s < driver.drivingPattern.minSpeed => driver.drivingPattern.minSpeed
+        case s if s > driver.drivingPattern.maxSpeed => driver.drivingPattern.maxSpeed
+        case s => s
+      }
 
       if (startSpreeCheck) {
         spreeRemaining = driver.drivingPattern.spreeLength

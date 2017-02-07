@@ -109,12 +109,11 @@ class TruckingTopology(config: TypeConfig) {
 
     // To sync up with MergeBolt ... keeping back pressure in NiFi
     val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
-    //val durationUnit = scala.concurrent.duration.MILLISECONDS
-    val durationUnit = java.util.concurrent.TimeUnit.MILLISECONDS
+    val durationUnit = scala.concurrent.duration.MILLISECONDS
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
-    val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchSize).buildConfig()
-    //val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchDuration(duration, durationUnit).buildConfig()
+    //val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchSize).buildConfig()
+    val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchDuration(duration, durationUnit).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("enrichedTruckData", new NiFiSpout(client), taskCount)
@@ -129,7 +128,7 @@ class TruckingTopology(config: TypeConfig) {
 
     // To sync up with MergeBolt ... keeping back pressure in NiFi
     val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
-    val durationUnit = java.util.concurrent.TimeUnit.MILLISECONDS
+    val durationUnit = scala.concurrent.duration.MILLISECONDS
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
     //val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchSize).buildConfig()
