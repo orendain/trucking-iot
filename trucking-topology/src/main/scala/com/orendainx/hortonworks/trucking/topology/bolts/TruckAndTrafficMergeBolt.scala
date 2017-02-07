@@ -111,11 +111,12 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
                 // Get latest version of merged schema and merge the two data objects into one record
                 val mergedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("EnrichedTruckAndTrafficData")
                 //val mergedRecord = mergedEnrichedTruckAndTrafficRecord(new GenericData.Record(new Schema.Parser().parse(mergedSchemaInfo.getSchemaText)), truckData, trafficData)
-                val mergedRecord = mergedEnrichedTruckAndTrafficData(truckData, trafficData)
-                log.debug(s"Unserialized data: ${mergedRecord.toString}")
+                val mergedData = mergedEnrichedTruckAndTrafficData(truckData, trafficData)
+                log.debug(s"Unserialized data: ${mergedData.toString}")
 
                 // TODO: Temporarily emit non-serialized data instead of serialized
-                outputCollector.emit(new Values(mergedRecord.toCSV))
+                outputCollector.emit(new Values(mergedData.toCSV))
+                outputCollector.emit("caseclass", new Values(mergedData))
 
                 // Serialize the merged record and emit it
                 //val serializedData = serializer.serialize(mergedRecord, mergedSchemaMetadata)
@@ -123,14 +124,16 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
 
 
                 //outputCollector.emit(new Values(new String(serializedData, StandardCharsets.UTF_8)))
-
             }
           }
       }
     }
   }
 
-  override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("serializedData"))
+  override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = {
+    declarer.declare(new Fields("mergedData"))
+    declarer.declareStream("caseclass", new Fields("mergedData"))
+  }
 
   private def mergedEnrichedTruckAndTrafficRecord(record: GenericRecord, truckData: EnrichedTruckData, trafficData: TrafficData) = {
     record.put("eventTime", truckData.eventTime.toString)

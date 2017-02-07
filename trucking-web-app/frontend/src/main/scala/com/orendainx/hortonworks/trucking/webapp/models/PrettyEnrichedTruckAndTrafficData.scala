@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.webapp
+package com.orendainx.hortonworks.trucking.webapp.models
 
 import angulate2.std.Data
 
@@ -6,7 +6,7 @@ import angulate2.std.Data
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 @Data
-case class PrettyTruckAndTrafficData(eventTime: Long, truckId: Int, driverId: Int, driverName: String,
+case class PrettyEnrichedTruckAndTrafficData(eventTime: Long, truckId: Int, driverId: Int, driverName: String,
                                      routeId: Int, routeName: String, latitude: Double, longitude: Double,
-                                     speed: Int, eventType: String, congestionLevel: Int,
+                                     speed: Int, eventType: String, foggy: Int, rainy: Int, windy: Int, congestionLevel: Int,
                                      prettyEventTime: String, prettyLatitude: String, prettyLongitude: String)

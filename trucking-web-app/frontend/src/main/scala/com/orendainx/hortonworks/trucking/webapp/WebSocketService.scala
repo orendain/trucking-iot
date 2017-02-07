@@ -1,6 +1,7 @@
 package com.orendainx.hortonworks.trucking.webapp
 
 import angulate2.std.Injectable
+import com.orendainx.hortonworks.trucking.webapp.models.{PrettyEnrichedTruckAndTrafficData, PrettyEnrichedTruckAndTrafficDataFactory, PrettyTruckAndTrafficData, PrettyTruckAndTrafficDataFactory}
 import org.scalajs.dom.raw.{CloseEvent, ErrorEvent, Event, MessageEvent, WebSocket}
 
 import scala.collection.mutable
@@ -12,7 +13,7 @@ import scala.collection.mutable
 class WebSocketService {
 
   private var ws: WebSocket = _
-  private var callbacks = mutable.Buffer.empty[(PrettyTruckAndTrafficData) => _]
+  private var callbacks = mutable.Buffer.empty[(PrettyEnrichedTruckAndTrafficData) => _]
   initialize()
 
   def initialize(): Unit = {
@@ -36,10 +37,10 @@ class WebSocketService {
   }
 
   def onMessage(msgEvent: MessageEvent): Unit = {
-    callbacks.foreach(_(PrettyTruckAndTrafficDataFactory(msgEvent.data.toString)))
+    callbacks.foreach(_(PrettyEnrichedTruckAndTrafficDataFactory(msgEvent.data.toString)))
   }
 
-  def registerCallback(func: (PrettyTruckAndTrafficData) => _): Unit = {
+  def registerCallback(func: (PrettyEnrichedTruckAndTrafficData) => _): Unit = {
     callbacks += func
   }
 

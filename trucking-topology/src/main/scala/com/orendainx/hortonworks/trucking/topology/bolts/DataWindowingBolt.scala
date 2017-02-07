@@ -42,12 +42,13 @@ class DataWindowingBolt extends BaseWindowedBolt {
 
     val driverTotals = inputWindow.get()
       // Tuple => String
-      .map(t => new String(t.getValueByField("nifiDataPacket").asInstanceOf[NiFiDataPacket].getContent, StandardCharsets.UTF_8))
-      .map { str => // String => EnrichedTruckAndTrafficData
-        val Array(eventTime, truckId, driverId, driverName, routeId, routeName, latitude, longitude, speed, eventType, foggy, rainy, windy, congestionLevel) = str.split("\\|")
-        EnrichedTruckAndTrafficData(eventTime.toLong, truckId.toInt, driverId.toInt, driverName, routeId.toInt,
-          routeName, latitude.toDouble, longitude.toDouble, speed.toInt, eventType, foggy.toInt, rainy.toInt, windy.toInt, congestionLevel.toInt)
-      }
+      //.map(t => new String(t.getValueByField("nifiDataPacket").asInstanceOf[NiFiDataPacket].getContent, StandardCharsets.UTF_8))
+      .map(t => t.getValueByField("nifiDataPacket").asInstanceOf[EnrichedTruckAndTrafficData])
+//      .map { str => // String => EnrichedTruckAndTrafficData
+//        val Array(eventTime, truckId, driverId, driverName, routeId, routeName, latitude, longitude, speed, eventType, foggy, rainy, windy, congestionLevel) = str.split("\\|")
+//        EnrichedTruckAndTrafficData(eventTime.toLong, truckId.toInt, driverId.toInt, driverName, routeId.toInt,
+//          routeName, latitude.toDouble, longitude.toDouble, speed.toInt, eventType, foggy.toInt, rainy.toInt, windy.toInt, congestionLevel.toInt)
+//      }
       .groupBy(d => d.driverId) // List[EnrichedTruckAndTrafficData] => Map[driverId, List[EnrichedTruckAndTrafficData]]
       .mapValues(lst => lst // List[EnrichedTruckAndTrafficData] => Map[driverId, (tupleOfTotals)]
         .map(e => (e.speed, e.foggy, e.rainy, e.windy, if (e.eventType == TruckEventTypes.Normal) 0 else 1))
@@ -56,7 +57,8 @@ class DataWindowingBolt extends BaseWindowedBolt {
 
     driverTotals.foreach({case (driverId, sums) =>
       val v = (driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5)
-      outputCollector.emit(new Values(WindowedDriverStats(driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5)))
+      //outputCollector.emit(new Values(WindowedDriverStats(driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5)))
+      outputCollector.emit(new Values(WindowedDriverStats(driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5).toCSV))
       //outputCollector.emit(new Values(s"${v._1}|${v._2}|${v._3}|${v._4}|${v._5}|${v._6}"))
     })
   }

@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.webapp
+package com.orendainx.hortonworks.trucking.webapp.models
 
 import scala.scalajs.js.Date
 
