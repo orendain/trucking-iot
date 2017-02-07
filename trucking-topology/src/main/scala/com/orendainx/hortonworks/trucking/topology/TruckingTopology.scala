@@ -96,6 +96,8 @@ class TruckingTopology(config: TypeConfig) {
 
     // Finally, create the topology
     builder.createTopology()
+
+    // TODO: set max buffers, keep backpressure in NiFi
   }
 
   def buildNifiEnrichedTruckDataSpout()(implicit builder: TopologyBuilder): Unit = {
@@ -119,8 +121,14 @@ class TruckingTopology(config: TypeConfig) {
     val batchSize = config.getInt("nifi.traffic-data.batch-size")
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
 
+
+    // To sync up with MergeBolt ... keeping back pressure in NiFi
+    val duration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
+    val durationUnit = scala.concurrent.duration.MILLISECONDS
+
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
-    val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchSize).buildConfig()
+    //val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchSize).buildConfig()
+    val client = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchDuration(duration, durationUnit).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("trafficData", new NiFiSpout(client), taskCount)
@@ -145,7 +153,10 @@ class TruckingTopology(config: TypeConfig) {
     val interval = new BaseWindowedBolt.Duration(1000, MILLISECONDS)
 
     // Create a bolt with a sliding window (10sec window length, sliding every 1 sec)
-    val bolt = new DataWindowingBolt().withWindow(windowDuration, interval)
+    //val bolt = new DataWindowingBolt().withWindow(windowDuration, interval)
+
+    // Create a tuple count based window that slides with every incoming tuple.  Has a 10 tuple window.
+    val bolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(10))
 
     // Place the bolt in the topology blueprint
     //builder.setBolt("driverStats", bolt, taskCount).shuffleGrouping("mergeData")
