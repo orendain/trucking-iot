@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.webapp
 import angulate2.std.{Component, OnInit}
 import com.felstar.scalajs.leaflet._
 import com.orendainx.hortonworks.trucking.common.models.TruckEventTypes
-import com.orendainx.hortonworks.trucking.webapp.models.PrettyTruckAndTrafficData
+import com.orendainx.hortonworks.trucking.webapp.models.{PrettyEnrichedTruckAndTrafficData}
 
 import scala.collection.mutable
 
@@ -37,7 +37,7 @@ class MapComponent(webSocketService: WebSocketService) extends OnInit {
   )
 
   // Collections
-  private val events = mutable.Buffer.empty[PrettyTruckAndTrafficData]
+  private val events = mutable.Buffer.empty[PrettyEnrichedTruckAndTrafficData]
   private val markers = mutable.Buffer.empty[Layer] // TODO: best collection for trimming/appending?
   private var lmap: LMap = _
 
@@ -46,7 +46,7 @@ class MapComponent(webSocketService: WebSocketService) extends OnInit {
     webSocketService.registerCallback(addEvent _)
   }
 
-  def addEvent(event: PrettyTruckAndTrafficData): Unit = {
+  def addEvent(event: PrettyEnrichedTruckAndTrafficData): Unit = {
     events += event
     addMarker(event)
   }
@@ -68,10 +68,10 @@ class MapComponent(webSocketService: WebSocketService) extends OnInit {
     * This method will automatically remove marker layers from the map in a FIFO fashion
     * when MaxMarkers markers are already displayed.
     *
-    * @param event The PrettyTruckAndTrafficData event to add to the map
+    * @param event The PrettyEnrichedTruckAndTrafficData event to add to the map
     * @return The changed [[LMap]] with the new marker, for chaining purposes.
     */
-  def addMarker(event: PrettyTruckAndTrafficData): LMap = {
+  def addMarker(event: PrettyEnrichedTruckAndTrafficData): LMap = {
     val color = MarkerTypeColors(event.eventType)
     val circle = L.circle((event.latitude.toDouble, event.longitude.toDouble),
       CircleOptions.color(color).weight(MarkerBorderWeight).fillColor(color).fillOpacity(MarkerFillOpacity).radius(MarkerRadius)
@@ -86,7 +86,7 @@ class MapComponent(webSocketService: WebSocketService) extends OnInit {
     lmap
   }
 
-  private def markerMarkup(event: PrettyTruckAndTrafficData) = {
+  private def markerMarkup(event: PrettyEnrichedTruckAndTrafficData) = {
     s"""<b>Driver:</b> ${event.driverName}<br>
        |<b>Route:</b> ${event.routeName}<br>
        |<b>Event:</b> ${event.eventType}""".stripMargin

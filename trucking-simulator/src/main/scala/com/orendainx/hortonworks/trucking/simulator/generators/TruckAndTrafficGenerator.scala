@@ -117,7 +117,13 @@ class TruckAndTrafficGenerator(driver: Driver, depot: ActorRef, flowManager: Act
 
       // Create traffic data and emit it
       if (tickCount % TrafficDataFrequency == 0) {
-        congestionLevel += -CongestionDelta + Random.nextInt(CongestionDelta * 2 + 1)
+
+        congestionLevel = (congestionLevel + (Random.nextInt(3) - 1) * CongestionDelta) match {
+          case c < 0 => 0
+          case c > 100 => 100
+          case c => c
+        }
+
         val traffic = TrafficData(eventTime, route.id, congestionLevel)
         flowManager ! Transmit(traffic)
       }
