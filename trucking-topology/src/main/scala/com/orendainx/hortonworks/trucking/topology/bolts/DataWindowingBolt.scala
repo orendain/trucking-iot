@@ -50,15 +50,16 @@ class DataWindowingBolt extends BaseWindowedBolt {
 //          routeName, latitude.toDouble, longitude.toDouble, speed.toInt, eventType, foggy.toInt, rainy.toInt, windy.toInt, congestionLevel.toInt)
 //      }
       .groupBy(d => d.driverId) // List[EnrichedTruckAndTrafficData] => Map[driverId, List[EnrichedTruckAndTrafficData]]
-      .mapValues(lst => lst // List[EnrichedTruckAndTrafficData] => Map[driverId, (tupleOfTotals)]
-        .map(e => (e.speed, e.foggy, e.rainy, e.windy, if (e.eventType == TruckEventTypes.Normal) 0 else 1))
-        .foldLeft((0,0,0,0,0))((sums, valu) => (sums._1 + valu._1, sums._2 + valu._2, sums._3 + valu._3, sums._4 + valu._4, sums._5 + valu._5))
-      )
+      .mapValues({ lst => // List[EnrichedTruckAndTrafficData] => Map[driverId, (tupleOfTotals)]
+        val sums = lst.map(e => (e.speed, e.foggy, e.rainy, e.windy, if (e.eventType == TruckEventTypes.Normal) 0 else 1))
+          .foldLeft((0, 0, 0, 0, 0))((sums, valu) => (sums._1 + valu._1, sums._2 + valu._2, sums._3 + valu._3, sums._4 + valu._4, sums._5 + valu._5))
+        (sums._1 / lst.size, sums._2, sums._3, sums._4, sums._5)
+      })
 
-    driverTotals.foreach({case (driverId, sums) =>
-      val v = (driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5)
+    driverTotals.foreach({case (driverId, valu) =>
+      //val v = (driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5)
       //outputCollector.emit(new Values(WindowedDriverStats(driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5)))
-      outputCollector.emit(new Values(WindowedDriverStats(driverId, sums._1 / driverTotals.size, sums._2, sums._3, sums._4, sums._5).toCSV))
+      outputCollector.emit(new Values(WindowedDriverStats(driverId, valu._1, valu._2, valu._3, valu._4, valu._5).toCSV))
       //outputCollector.emit(new Values(s"${v._1}|${v._2}|${v._3}|${v._4}|${v._5}|${v._6}"))
     })
   }
