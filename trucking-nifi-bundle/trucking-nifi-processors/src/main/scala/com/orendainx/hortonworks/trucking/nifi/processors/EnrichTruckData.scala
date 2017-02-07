@@ -25,6 +25,9 @@ import scala.language.implicitConversions
   */
 @Tags(Array("trucking", "data", "event", "enrich", "iot"))
 @CapabilityDescription("Enriches data for a trucking application. Master project <a href=\"https://github.com/orendain/trucking-iot\">found here</a>")
+@WritesAttributes(Array(
+  new WritesAttribute(attribute = "dataType", description = "The class name of the resulting enriched data type.")
+))
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @TriggerSerially
 class EnrichTruckData extends AbstractProcessor {
@@ -70,6 +73,9 @@ class EnrichTruckData extends AbstractProcessor {
 
     log.debug(s"Content: ${content.get()}")
     log.debug(s"EnrichedData: ${enrichedTruckData}")
+
+    // Update dataType
+    flowFile = session.putAttribute(flowFile, "dataType", enrichedTruckData.getClass.getSimpleName)
 
     //var flowFile = session.create()
     flowFile = session.write(flowFile, new OutputStreamCallback {
