@@ -90,7 +90,7 @@ class TruckingTopology(config: TypeConfig) {
 
     // Two bolts to push back to NiFi
     buildNifiBolt()
-    buildNifiDriverStatsBolt
+    buildNifiDriverStatsBolt()
 
     logger.info("Storm topology finished building.")
 
