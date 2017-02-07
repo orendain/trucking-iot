@@ -22,7 +22,7 @@ import scala.util.parsing.json.JSONObject
   */
 @Singleton
 class Storm @Inject() extends Controller {
-
+/*
   /**
     * Create an Action to render an HTML page with the main guiding message.
     */
@@ -72,7 +72,7 @@ class Storm @Inject() extends Controller {
 
     Ok("Deployed.")
   }
-
+*/
 
   /*
   def info = Action {

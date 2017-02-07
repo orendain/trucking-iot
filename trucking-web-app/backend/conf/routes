@@ -9,7 +9,7 @@ GET     /                           controllers.HomeController.index
 #GET     /                           controllers.Guide.index
 
 # Deploy a Storm topology to the cluster
-GET     /storm/deploy               controllers.Storm.deploy
+#GET     /storm/deploy               controllers.Storm.deploy
 
 # View the Trucking application
 GET     /truck/monitor              controllers.Truck.monitor
