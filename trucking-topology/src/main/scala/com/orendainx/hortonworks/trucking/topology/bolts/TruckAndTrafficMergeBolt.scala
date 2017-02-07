@@ -96,7 +96,7 @@ class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
           trafficDataPerRoute += (data.routeId -> (trafficDataPerRoute.getOrElse(data.routeId, ListBuffer.empty[TrafficData]) += data))
       }
 
-      //outputCollector.ack(tuple)
+      outputCollector.ack(tuple)
     }
 
     // For each EnrichedTruckData object, find the TrafficData object with the closest timestamp
