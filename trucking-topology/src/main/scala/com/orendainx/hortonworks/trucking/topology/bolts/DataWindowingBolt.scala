@@ -43,7 +43,7 @@ class DataWindowingBolt extends BaseWindowedBolt {
     val driverTotals = inputWindow.get()
       // Tuple => String
       //.map(t => new String(t.getValueByField("nifiDataPacket").asInstanceOf[NiFiDataPacket].getContent, StandardCharsets.UTF_8))
-      .map(t => t.getValueByField("nifiDataPacket").asInstanceOf[EnrichedTruckAndTrafficData])
+      .map(t => t.getValueByField("mergedData").asInstanceOf[EnrichedTruckAndTrafficData])
 //      .map { str => // String => EnrichedTruckAndTrafficData
 //        val Array(eventTime, truckId, driverId, driverName, routeId, routeName, latitude, longitude, speed, eventType, foggy, rainy, windy, congestionLevel) = str.split("\\|")
 //        EnrichedTruckAndTrafficData(eventTime.toLong, truckId.toInt, driverId.toInt, driverName, routeId.toInt,
