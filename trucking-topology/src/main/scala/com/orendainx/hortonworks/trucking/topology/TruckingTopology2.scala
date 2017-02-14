@@ -2,10 +2,7 @@ package com.orendainx.hortonworks.trucking.topology
 
 import java.util.Properties
 
-import better.files.File
-import com.hortonworks.orendainx.trucking.topology.bolts.TruckGeoSpeedJoinBolt
-import com.hortonworks.orendainx.trucking.topology.schemes.{TruckGeoScheme, TruckSpeedScheme}
-import com.orendainx.hortonworks.trucking.topology.bolts.TruckAndTrafficStreamJoinBolt
+import com.orendainx.hortonworks.trucking.topology.bolts.TruckAndTrafficJoinBolt
 import com.orendainx.hortonworks.trucking.topology.schemes.{TrafficDataScheme, TruckDataScheme}
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
@@ -142,7 +139,7 @@ class TruckingTopology2(config: TypeConfig) {
     val duration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
 
     // Create a bolt with a tumbling window
-    val bolt = new TruckAndTrafficStreamJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(duration, MILLISECONDS))
+    val bolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(duration, MILLISECONDS))
 
     // Place the bolt in the topology blueprint
     builder.setBolt("joinedData", bolt, taskCount).globalGrouping("truckData").globalGrouping("trafficData")
@@ -156,7 +153,7 @@ class TruckingTopology2(config: TypeConfig) {
     val mapper = new SimpleHBaseMapper()
       .withRowKeyField("") // TODO: not connected to actual HBase yet - implement when ready
       .withColumnFamily(config.getString("hbase.column-family"))
-      .withColumnFields(TruckAndTrafficStreamJoinBolt.OutputFields)
+      .withColumnFields(new Fields("joinedData"))
 
     // Create a bolt, with its configurations stored under the configuration keyed "emptyConfig"
     val bolt = new HBaseBolt(config.getString(config.getString("hbase.trucking-data.table")), mapper).withConfigKey("emptyConfig")

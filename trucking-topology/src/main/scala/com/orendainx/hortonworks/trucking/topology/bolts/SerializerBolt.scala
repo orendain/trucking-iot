@@ -1,24 +1,21 @@
 package com.orendainx.hortonworks.trucking.topology.bolts
 
-import java.io.ByteArrayInputStream
 import java.util
 
-import com.hortonworks.registries.schemaregistry.{SchemaMetadata, SchemaVersionInfo}
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.hortonworks.registries.schemaregistry.serdes.avro.{AvroSnapshotDeserializer, AvroSnapshotSerializer}
-import com.orendainx.hortonworks.trucking.common.models.{EnrichedTruckAndTrafficData, EnrichedTruckData, TrafficData}
+import com.hortonworks.registries.schemaregistry.serdes.avro.AvroSnapshotSerializer
+import com.hortonworks.registries.schemaregistry.{SchemaMetadata, SchemaVersionInfo}
+import com.orendainx.hortonworks.trucking.common.models.EnrichedTruckAndTrafficData
 import com.typesafe.scalalogging.Logger
 import org.apache.avro.Schema
-import org.apache.avro.generic.{GenericData, GenericRecord}
-import org.apache.nifi.storm.NiFiDataPacket
+import org.apache.avro.generic.GenericData
 import org.apache.storm.task.{OutputCollector, TopologyContext}
 import org.apache.storm.topology.OutputFieldsDeclarer
 import org.apache.storm.topology.base.BaseRichBolt
 import org.apache.storm.tuple.{Fields, Tuple, Values}
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>

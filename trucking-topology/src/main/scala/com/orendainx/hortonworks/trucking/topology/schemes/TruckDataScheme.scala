@@ -1,7 +1,6 @@
 package com.orendainx.hortonworks.trucking.topology.schemes
 
 import java.nio.ByteBuffer
-import java.sql.Timestamp
 
 import org.apache.storm.tuple.{Fields, Values}
 

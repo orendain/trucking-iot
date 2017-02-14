@@ -77,8 +77,8 @@ lazy val topology = (project in file("trucking-topology"))
         oldStrategy(x)
     },
 
-    scalacOptions ++= Seq("-feature")
-  )
+    scalacOptions ++= Seq("-feature", "-Yresolve-term-conflict:package")
+)
 
 
 lazy val execScript = taskKey[Unit]("Execute the shell script")

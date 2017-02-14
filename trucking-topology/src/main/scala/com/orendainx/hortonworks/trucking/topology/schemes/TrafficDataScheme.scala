@@ -1,9 +1,7 @@
 package com.orendainx.hortonworks.trucking.topology.schemes
 
 import java.nio.ByteBuffer
-import java.sql.Timestamp
 
-import com.typesafe.scalalogging.Logger
 import org.apache.storm.tuple.{Fields, Values}
 
 /**

@@ -6,7 +6,7 @@ import java.util
 import com.hortonworks.registries.schemaregistry.SchemaMetadata
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.hortonworks.registries.schemaregistry.serdes.avro.{AvroSnapshotDeserializer, AvroSnapshotSerializer}
+import com.hortonworks.registries.schemaregistry.serdes.avro.AvroSnapshotDeserializer
 import com.orendainx.hortonworks.trucking.common.models.{EnrichedTruckData, TrafficData}
 import com.typesafe.scalalogging.Logger
 import org.apache.avro.generic.{GenericData, GenericRecord}
@@ -17,7 +17,6 @@ import org.apache.storm.topology.base.BaseRichBolt
 import org.apache.storm.tuple.{Fields, Tuple, Values}
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
