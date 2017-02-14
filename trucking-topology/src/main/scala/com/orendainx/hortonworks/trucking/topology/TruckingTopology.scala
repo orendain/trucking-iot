@@ -2,7 +2,7 @@ package com.orendainx.hortonworks.trucking.topology
 
 import better.files.File
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.orendainx.hortonworks.trucking.topology.bolts.{DataWindowingBolt, TruckAndTrafficNiFiStreamJoinBolt}
+import com.orendainx.hortonworks.trucking.topology.bolts.{DataWindowingBolt, TruckAndTrafficJoinBolt}
 import com.orendainx.hortonworks.trucking.topology.nifi.DataPacketBuilder
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
@@ -23,12 +23,6 @@ import scala.concurrent.duration._
   */
 object TruckingTopology {
 
-  // NiFi constants
-  private val NiFiUrl = "nifi.url"
-  private val NiFiInputPortName = "nifi.input.port-name"
-  private val NiFiInputBatchSize = "nifi.input.batch-size"
-  private val NiFiInputTickFrequency = "nifi.input.tick-frequency"
-
   // TODO: http://storm.apache.org/releases/1.0.2/SECURITY.html
 
   def main(args: Array[String]): Unit = {
@@ -38,7 +32,7 @@ object TruckingTopology {
   }
 
   // TODO: Default string as param? Eww - clean up before v1.0 release
-  def buildStormConfigAndTopology(configPath: String = "") = {
+  def buildStormConfigAndTopology(configPath: String = ""): (Config, StormTopology) = {
     // Either read in a path to a config file, or use the default one
     val config = if (configPath.nonEmpty) ConfigFactory.parseFile(File(configPath).toJava) else ConfigFactory.load()
 
@@ -62,8 +56,9 @@ object TruckingTopology {
   *   - NiFiSpout (for injesting EnrichedTruckData from NiFi)
   *   - NiFiSpout (for injesting TrafficData from NiFi)
   * Bolt:
-  *   - TruckAndTrafficMergeBolt (for merging EnrichedTruckData and TrafficData streams into one)
-  *   - NiFiBolt (for sending merged data back out to NiFi)
+  *   - TruckAndTrafficStreamJoinBolt (for joining EnrichedTruckData and TrafficData streams into one)
+  *   - DataWindowingBolt (generating driver stats from trucking data)
+  *   - NiFiBolt (for sending data back out to NiFi)
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
@@ -72,7 +67,7 @@ class TruckingTopology(config: TypeConfig) {
   private lazy val logger = Logger(classOf[TruckingTopology])
 
   // Commonly used values
-  val NiFiUrl = config.getString(TruckingTopology.NiFiUrl)
+  val NiFiUrl: String = config.getString("nifi.url")
 
   /**
     *
@@ -88,8 +83,8 @@ class TruckingTopology(config: TypeConfig) {
     buildNifiTrafficDataSpout()
 
     // Build Bolt to merge windowed data streams, and then generate sliding windowed driving stats
-    buildMergeBolt()
-    buildStatsBolt()
+    buildJoinBolt()
+    buildWindowedDriverStatsBolt()
 
     // Two bolts to push back to NiFi
     buildJoinedDataToNifiBolt()
@@ -107,13 +102,11 @@ class TruckingTopology(config: TypeConfig) {
     // Extract values from config
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
     val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
-    val nifiPortName = config.getString("nifi.truck-data.port-name")
-    val batchCount = config.getInt("nifi.truck-data.batch-count")
+    val nifiPort = config.getString("nifi.truck-data.port-name")
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
-    // Attempt to sync up with MergeBolt, keeping back pressure in NiFi
-    //val clientConfig = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchCount).buildConfig()
-    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPortName)
+    // Attempt to sync up with the join bolt, keeping back pressure in NiFi
+    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPort)
       .requestBatchDuration(duration, MILLISECONDS).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
@@ -124,73 +117,71 @@ class TruckingTopology(config: TypeConfig) {
     // Extract values from config
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
     val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
-    val nifiPortName = config.getString("nifi.traffic-data.port-name")
-    val batchCount = config.getInt("nifi.traffic-data.batch-size")
+    val nifiPort = config.getString("nifi.traffic-data.port-name")
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
-    // Attempt to sync up with MergeBolt, keeping back pressure in NiFi
-    //val clientConfig = new SiteToSiteClient.Builder().url(nifiUrl).portName(nifiPortName).requestBatchCount(batchCount).buildConfig()
-    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPortName)
+    // Attempt to sync up with the join bolt, keeping back pressure in NiFi
+    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPort)
       .requestBatchDuration(duration, MILLISECONDS).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("trafficData", new NiFiSpout(clientConfig), taskCount)
   }
 
-  def buildMergeBolt()(implicit builder: TopologyBuilder): Unit = {
+  def buildJoinBolt()(implicit builder: TopologyBuilder): Unit = {
     // Extract values from config
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
     val duration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
 
     // Create a bolt with a tumbling window
-    val bolt = new TruckAndTrafficNiFiStreamJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(duration, MILLISECONDS))
+    val bolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(duration, MILLISECONDS))
 
     // Place the bolt in the topology blueprint
-    builder.setBolt("joinedData", bolt, taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("joinedData", bolt, taskCount).globalGrouping("enrichedTruckData").globalGrouping("trafficData")
   }
 
-  def buildStatsBolt()(implicit builder: TopologyBuilder): Unit = {
+  def buildWindowedDriverStatsBolt()(implicit builder: TopologyBuilder): Unit = {
     // Extract values from config
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
-    val windowDuration = new BaseWindowedBolt.Duration(10000, MILLISECONDS)
-    val interval = new BaseWindowedBolt.Duration(1000, MILLISECONDS)
+    //val windowDuration = new BaseWindowedBolt.Duration(10000, MILLISECONDS) // TODO: Decide between sliding or not
+    //val interval = new BaseWindowedBolt.Duration(1000, MILLISECONDS)
+    val intervalCount = config.getInt(Config.TOPOLOGY_BOLTS_SLIDING_INTERVAL_COUNT)
 
-    // Create a bolt with a sliding window (10sec window length, sliding every 1 sec)
+    // Create a bolt with a sliding window
+    // Create a tuple count based window that slides with every incoming tuple
     //val bolt = new DataWindowingBolt().withWindow(windowDuration, interval)
-
-    // Create a tuple count based window that slides with every incoming tuple.  Has a 10 tuple window.
-    val bolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(10))
+    val bolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount))
 
     // Place the bolt in the topology blueprint
-    //builder.setBolt("driverStats", bolt, taskCount).shuffleGrouping("joinedData")
-    builder.setBolt("driverStats", bolt, taskCount).shuffleGrouping("joinedData", "caseclass")
+    //builder.setBolt("windowedDriverStats", bolt, taskCount).shuffleGrouping("joinedData")
+    builder.setBolt("windowedDriverStats", bolt, taskCount).shuffleGrouping("joinedData", "caseclass")
   }
 
   def buildJoinedDataToNifiBolt()(implicit builder: TopologyBuilder): Unit = {
     // Extract values from config
-    val nifiPortName = config.getString(TruckingTopology.NiFiInputPortName)
-    val tickFrequency = config.getInt(TruckingTopology.NiFiInputTickFrequency)
-    val batchSize = config.getInt(TruckingTopology.NiFiInputBatchSize)
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
+    val nifiPort = config.getString("nifi.truck-and-traffic-data.port-name")
+    val frequency = config.getInt("nifi.truck-and-traffic-data.tick-frequency")
+    val batchSize = config.getInt("nifi.truck-and-traffic-data.batch-size")
 
     // Construct a clientConfig and a NiFi bolt
-    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPortName).buildConfig()
-    val nifiBolt = new NiFiBolt(clientConfig, new DataPacketBuilder(), tickFrequency).withBatchSize(batchSize)
+    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPort).buildConfig()
+    val nifiBolt = new NiFiBolt(clientConfig, new DataPacketBuilder(), frequency).withBatchSize(batchSize)
 
     builder.setBolt("joinedDataToNiFi", nifiBolt, taskCount).shuffleGrouping("joinedData")
   }
 
   def buildDriverStatsNiFiBolt()(implicit builder: TopologyBuilder): Unit = {
     // Extract values from config
-    val nifiPortName = config.getString("nifi.driver-stats.port-name")
-    val tickFrequency = config.getInt("nifi.driver-stats.tick-frequency")
-    val batchSize = config.getInt("nifi.driver-stats.batch-size")
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
+    val nifiPort = config.getString("nifi.driver-stats.port-name")
+    val frequency = config.getInt("nifi.driver-stats.tick-frequency")
+    val batchSize = config.getInt("nifi.driver-stats.batch-size")
 
-    // Construct a clientConfig and then the NiFi bolt
-    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPortName).buildConfig()
-    val nifiBolt = new NiFiBolt(clientConfig, new DataPacketBuilder(), tickFrequency).withBatchSize(batchSize)
+    // Construct a clientConfig and a NiFi bolt
+    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPort).buildConfig()
+    val nifiBolt = new NiFiBolt(clientConfig, new DataPacketBuilder(), frequency).withBatchSize(batchSize)
 
-    builder.setBolt("driverStatsToNifi", nifiBolt, taskCount).shuffleGrouping("driverStats")
+    builder.setBolt("driverStatsToNifi", nifiBolt, taskCount).shuffleGrouping("windowedDriverStats")
   }
 }

@@ -24,6 +24,5 @@ object TrafficDataScheme extends DelimitedScheme("\\|") {
     new Values(eventTime, routeId, congestionLevel)
   }
 
-  override def getOutputFields: Fields =
-    new Fields("eventTime", "routeId", "congestionLevel")
+  override def getOutputFields: Fields = new Fields("eventTime", "routeId", "congestionLevel")
 }
