@@ -4,13 +4,16 @@
 projVer="0.3.2"
 projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
 nifiLibs=($(find / -path "/usr/*/nifi/lib"))
+nifiSh=($(find / -type f -name "nifi.sh"))
 
 # Jump to the project directory for executing SBT commands
 cd $projDir
 
 # NiFI: Compile the trucking-nifi-bundle project, generating a nar file to copy to the NiFi lib directory.
+$nifiSh stop
 sbt nifiBundle/compile
 cp $projDir/trucking-nifi-bundle/nifi-trucking-nar/target/nifi-trucking-nar-${projVer}.nar ${nifiLibs[0]}
+$nifiSh start
 
 # Schema Registry: Register the project schemas with the registry
 sbt schemaRegistrar/run

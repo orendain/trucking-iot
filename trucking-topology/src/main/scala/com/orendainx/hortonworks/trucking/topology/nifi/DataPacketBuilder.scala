@@ -9,7 +9,7 @@ import org.apache.storm.tuple.Tuple
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class MergedDataPacketBuilder extends NiFiDataPacketBuilder with Serializable {
+class DataPacketBuilder extends NiFiDataPacketBuilder with Serializable {
 
   lazy val logger = Logger(this.getClass)
 

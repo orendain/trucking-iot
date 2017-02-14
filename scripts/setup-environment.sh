@@ -15,3 +15,11 @@ yum install -y apache-maven
 # Find "kafka-topics.sh" and create the necessary topics
 kafkaArr=($(find / -type f -name "kafka-topics.sh"))
 ${kafkaArr[0]} --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 1 --topic trucking.data.truckandtraffic
+
+# Move NiFi template into proper location
+projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
+
+nifiSh=($(find / -type f -name "nifi.sh"))
+$nifiSh stop
+cp -f $projDir/trucking-nifi-templates/flow.xml.gz /var/lib/nifi/conf
+$nifiSh start

@@ -27,7 +27,7 @@ import scala.language.implicitConversions
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class TruckAndTrafficMergeBolt() extends BaseWindowedBolt {
+class TruckAndTrafficNiFiStreamJoinBolt() extends BaseWindowedBolt {
 
   private lazy val log = Logger(this.getClass)
 
