@@ -56,7 +56,7 @@ object TruckingTopology {
   *   - NiFiSpout (for injesting EnrichedTruckData from NiFi)
   *   - NiFiSpout (for injesting TrafficData from NiFi)
   * Bolt:
-  *   - TruckAndTrafficStreamJoinBolt (for joining EnrichedTruckData and TrafficData streams into one)
+  *   - TruckAndTrafficJoinBolt (for joining EnrichedTruckData and TrafficData streams into one)
   *   - DataWindowingBolt (generating driver stats from trucking data)
   *   - NiFiBolt (for sending data back out to NiFi)
   *

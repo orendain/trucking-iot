@@ -36,7 +36,7 @@ object Dependencies {
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT" from "file://~/.m2/repository/com/hortonworks/registries/schema-registry-serdes/0.1.0-SNAPSHOT/schema-registry-serdes-0.1.0-SNAPSHOT.jar")
   //val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-5" from "http://nexus-private.hortonworks.com/nexus/content/groups/public/com/hortonworks/registries/schema-registry-serdes/0.0.1.2.2.0.0-5/schema-registry-serdes-0.0.1.2.2.0.0-5.jar")
     .exclude("org.slf4j", "log4j-over-slf4j")
-    .exclude("javax.ws.rs", "javax.ws.rs-api") // vs stormHBase - com.sun.jersey/jersey-core/bundles/jersey-core-1.9.jar
+    //.exclude("javax.ws.rs", "javax.ws.rs-api") // vs stormHBase - com.sun.jersey/jersey-core/bundles/jersey-core-1.9.jar
     .exclude("javax.servlet", "servlet-api") // vs stormHBase - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
     .exclude("commons-beanutils", "commons-beanutils-core")
     .exclude("org.mortbay.jetty", "jsp-api-2.1") // vs stormHBase - org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar
