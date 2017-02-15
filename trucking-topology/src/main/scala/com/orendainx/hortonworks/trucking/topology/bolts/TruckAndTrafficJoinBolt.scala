@@ -32,7 +32,7 @@ class TruckAndTrafficJoinBolt() extends BaseWindowedBolt {
 
   override def execute(inputWindow: TupleWindow): Unit = {
 
-    // Collections to collect data into
+    // Collections to store data in
     val truckDataPerRoute = mutable.HashMap.empty[Int, ListBuffer[EnrichedTruckData]].withDefaultValue(ListBuffer.empty[EnrichedTruckData])
     val trafficDataPerRoute = mutable.HashMap.empty[Int, ListBuffer[TrafficData]].withDefaultValue(ListBuffer.empty[TrafficData])
 
@@ -46,6 +46,8 @@ class TruckAndTrafficJoinBolt() extends BaseWindowedBolt {
           val data = tuple.getValueByField("data").asInstanceOf[TrafficData]
           trafficDataPerRoute += ((data.routeId, trafficDataPerRoute(data.routeId) += data))
       }
+
+      // TODO: Best practice for ack'ing?  Before or after tuple having been full processed?
       outputCollector.ack(tuple)
     }
 

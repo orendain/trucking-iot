@@ -29,8 +29,6 @@ class DeserializerBolt extends BaseRichBolt {
   // Declare schema-related fields to be initialized when this component's prepare() method is called
   private var schemaRegistryClient: SchemaRegistryClient = _
   private var deserializer: AvroSnapshotDeserializer = _
-
-  // Define necessary schema metadata
   private var truckDataSchemaMetadata: SchemaMetadata = _
   private var trafficDataSchemaMetadata: SchemaMetadata = _
 
@@ -42,10 +40,8 @@ class DeserializerBolt extends BaseRichBolt {
     val clientConfig = Map(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name() -> schemaRegistryUrl)
 
     schemaRegistryClient = new SchemaRegistryClient(clientConfig)
-
     truckDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckData").getSchemaMetadata
     trafficDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TrafficData").getSchemaMetadata
-
     deserializer = schemaRegistryClient.getDefaultDeserializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotDeserializer]
     deserializer.init(clientConfig)
   }

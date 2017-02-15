@@ -23,18 +23,19 @@ import scala.concurrent.duration._
   */
 object TruckingTopology {
 
-  // TODO: http://storm.apache.org/releases/1.0.2/SECURITY.html
-
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
-    val (stormConfig, topology) = buildStormConfigAndTopology(if (args.nonEmpty) args(0) else "")
-    StormSubmitter.submitTopology("truckingTopology", stormConfig, topology) // TODO: Q: Naming convention?
+    val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
+    StormSubmitter.submitTopology("truckingTopology", stormConfig, topology)
   }
 
-  // TODO: Default string as param? Eww - clean up before v1.0 release
-  def buildStormConfigAndTopology(configPath: String = ""): (Config, StormTopology) = {
-    // Either read in a path to a config file, or use the default one
-    val config = if (configPath.nonEmpty) ConfigFactory.parseFile(File(configPath).toJava) else ConfigFactory.load()
+  /**
+    * Build a Storm Config and Topology with the default configuration.
+    *
+    * @return A 2-tuple ([[Config]], [[StormTopology]])
+    */
+  def buildDefaultStormConfigAndTopology(): (Config, StormTopology) = {
+    val config = ConfigFactory.load()
 
     // Set up configuration for the Storm Topology
     val stormConfig = new Config()
@@ -43,7 +44,6 @@ object TruckingTopology {
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
     stormConfig.put(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name(), config.getString("schema-registry.url"))
     stormConfig.put("emptyConfig", new java.util.HashMap[String, String])
-    // TODO: would be nice if storm.Config had "setProperty" to hide hashmap implementation
 
     (stormConfig, new TruckingTopology(config).buildTopology())
   }
@@ -65,9 +65,7 @@ object TruckingTopology {
 class TruckingTopology(config: TypeConfig) {
 
   private lazy val logger = Logger(classOf[TruckingTopology])
-
-  // Commonly used values
-  val NiFiUrl: String = config.getString("nifi.url")
+  private lazy val NiFiUrl: String = config.getString("nifi.url")
 
   /**
     *
@@ -94,8 +92,6 @@ class TruckingTopology(config: TypeConfig) {
 
     // Finally, create the topology
     builder.createTopology()
-
-    // TODO: set max buffers, keep backpressure in NiFi
   }
 
   def buildNifiTruckDataSpout()(implicit builder: TopologyBuilder): Unit = {
@@ -143,13 +139,9 @@ class TruckingTopology(config: TypeConfig) {
   def buildWindowedDriverStatsBolt()(implicit builder: TopologyBuilder): Unit = {
     // Extract values from config
     val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
-    //val windowDuration = new BaseWindowedBolt.Duration(10000, MILLISECONDS) // TODO: Decide between sliding or not
-    //val interval = new BaseWindowedBolt.Duration(1000, MILLISECONDS)
     val intervalCount = config.getInt(Config.TOPOLOGY_BOLTS_SLIDING_INTERVAL_COUNT)
 
-    // Create a bolt with a sliding window
     // Create a tuple count based window that slides with every incoming tuple
-    //val bolt = new DataWindowingBolt().withWindow(windowDuration, interval)
     val bolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount))
 
     // Place the bolt in the topology blueprint

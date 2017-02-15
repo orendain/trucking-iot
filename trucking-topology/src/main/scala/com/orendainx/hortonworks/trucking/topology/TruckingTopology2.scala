@@ -49,6 +49,7 @@ object TruckingTopology2 {
     stormConfig.setMessageTimeoutSecs(config.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
     stormConfig.put("emptyConfig", new java.util.HashMap[String, String])
+    // TODO: Q: reason for requiring empty config?  I might have a pull request ready to address this
 
     (stormConfig, new TruckingTopology2(config).buildTopology())
   }
@@ -151,7 +152,7 @@ class TruckingTopology2(config: TypeConfig) {
 
     // Create an HBaseMapper that maps Storm tuples to HBase columns
     val mapper = new SimpleHBaseMapper()
-      .withRowKeyField("") // TODO: not connected to actual HBase yet - implement when ready
+      .withRowKeyField("") // TODO: not connected to HBase yet - implement later
       .withColumnFamily(config.getString("hbase.column-family"))
       .withColumnFields(new Fields("joinedData"))
 

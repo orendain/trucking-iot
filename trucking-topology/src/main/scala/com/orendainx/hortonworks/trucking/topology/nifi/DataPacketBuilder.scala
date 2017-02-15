@@ -19,6 +19,7 @@ class DataPacketBuilder extends NiFiDataPacketBuilder with Serializable {
   override def createNiFiDataPacket(tuple: Tuple): NiFiDataPacket = {
     val newAttributes = Map("processed" -> "true")
 
+    // TODO: Q: Here, we have a single component that handles multiple topologies (different upstreams).  Best practice to use separate components?
     val outData = tuple.getSourceComponent match {
       case "joinedData" => tuple.getValue(0).asInstanceOf[EnrichedTruckAndTrafficData].toCSV.getBytes(StandardCharsets.UTF_8)
       case "windowedDriverStats" => tuple.getValue(0).asInstanceOf[WindowedDriverStats].toCSV.getBytes(StandardCharsets.UTF_8)
