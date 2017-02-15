@@ -28,6 +28,7 @@ object Dependencies {
     .exclude("tomcat", "jasper-runtime") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
     .exclude("javax.servlet", "servlet-api") // vs itself - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
     .exclude("javax.servlet", "jsp-api") // vs itself - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
+    .exclude("com.sun.jersey", "jersey-core") // vs SR - javax.ws.rs/javax.ws.rs-api/jars/javax.ws.rs-api-2.0.1.jar
     //.exclude("org.mortbay.jetty", "jsp-api-2.1") // vs itself/SRSerdes - org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT")
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-19")
