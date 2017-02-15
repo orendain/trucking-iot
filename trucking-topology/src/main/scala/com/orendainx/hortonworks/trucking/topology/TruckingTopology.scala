@@ -153,8 +153,7 @@ class TruckingTopology(config: TypeConfig) {
     val bolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount))
 
     // Place the bolt in the topology blueprint
-    //builder.setBolt("windowedDriverStats", bolt, taskCount).shuffleGrouping("joinedData")
-    builder.setBolt("windowedDriverStats", bolt, taskCount).shuffleGrouping("joinedData", "caseclass")
+    builder.setBolt("windowedDriverStats", bolt, taskCount).shuffleGrouping("joinedData")
   }
 
   def buildJoinedDataToNifiBolt()(implicit builder: TopologyBuilder): Unit = {
