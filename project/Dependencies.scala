@@ -23,15 +23,23 @@ object Dependencies {
   //lazy val kafka = "org.apache.kafka" %% "kafka" % "0.10.1.1"
   lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.1.1"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.2"
-  lazy val stormHbase = "org.apache.storm" % "storm-hbase" % "1.0.2"
+  lazy val stormHbase = ("org.apache.storm" % "storm-hbase" % "1.0.2")
+    .exclude("tomcat", "jasper-compiler") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
+    .exclude("tomcat", "jasper-runtime") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
+    .exclude("javax.servlet", "servlet-api") // vs itself - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
+    .exclude("javax.servlet", "jsp-api") // vs itself - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
+    //.exclude("org.mortbay.jetty", "jsp-api-2.1") // vs itself/SRSerdes - org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT")
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-19")
-  lazy val schemaRegistryClient = ("com.hortonworks.registries" % "schema-registry-client" % "0.0.1.2.2.0.0-19")
+  //lazy val schemaRegistryClient = ("com.hortonworks.registries" % "schema-registry-client" % "0.0.1.2.2.0.0-19")
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry" % "0.0.1.2.2.0.0-18")
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT" from "file://~/.m2/repository/com/hortonworks/registries/schema-registry-serdes/0.1.0-SNAPSHOT/schema-registry-serdes-0.1.0-SNAPSHOT.jar")
   //val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-5" from "http://nexus-private.hortonworks.com/nexus/content/groups/public/com/hortonworks/registries/schema-registry-serdes/0.0.1.2.2.0.0-5/schema-registry-serdes-0.0.1.2.2.0.0-5.jar")
     .exclude("org.slf4j", "log4j-over-slf4j")
+    .exclude("javax.ws.rs", "javax.ws.rs-api") // vs stormHBase - com.sun.jersey/jersey-core/bundles/jersey-core-1.9.jar
+    .exclude("javax.servlet", "servlet-api") // vs stormHBase - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
     .exclude("commons-beanutils", "commons-beanutils-core")
+    .exclude("org.mortbay.jetty", "jsp-api-2.1") // vs stormHBase - org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar
     //.exclude("org.slf4j", "log4j-over-slf4j")
     //.exclude("commons-beanutils", "commons-beanutils-core")
     //.exclude("commons-collections", "commons-collections")
