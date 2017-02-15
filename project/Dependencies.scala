@@ -23,6 +23,7 @@ object Dependencies {
   //lazy val kafka = "org.apache.kafka" %% "kafka" % "0.10.1.1"
   lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.1.1"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.2"
+
   lazy val stormHbase = ("org.apache.storm" % "storm-hbase" % "1.0.2")
     .exclude("tomcat", "jasper-compiler") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
     .exclude("tomcat", "jasper-runtime") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
@@ -31,6 +32,7 @@ object Dependencies {
     //.exclude("com.sun.jersey", "jersey-core") // vs SR - javax.ws.rs/javax.ws.rs-api/jars/javax.ws.rs-api-2.0.1.jar
     //.exclude("org.mortbay.jetty", "jsp-api-2.1") // vs itself/SRSerdes - org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT")
+
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-19")
   //lazy val schemaRegistryClient = ("com.hortonworks.registries" % "schema-registry-client" % "0.0.1.2.2.0.0-19")
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry" % "0.0.1.2.2.0.0-18")

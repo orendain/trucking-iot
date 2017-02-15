@@ -65,7 +65,7 @@ lazy val topology = (project in file("trucking-topology"))
 
     // TODO: Temporary, change once schema registry release updated
     assemblyMergeStrategy in assembly := {
-      case PathList("javax", "ws", xs @ _*)      => MergeStrategy.last // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
+      case PathList("javax", "ws", xs @ _*)      => MergeStrategy.first // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
       case PathList("javax", "el", xs @ _*)      => MergeStrategy.first // javax.servlet.jsp vs org.mortbay.jetty
       case PathList("javax", "servlet", xs @ _*)      => MergeStrategy.first // javax.servlet.jsp vs org.mortbay.jetty
       case PathList("org", "apache", "commons", "collections", xs @ _*)      => MergeStrategy.first
