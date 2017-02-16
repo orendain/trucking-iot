@@ -1,17 +1,18 @@
 # Trucking Scripts
 
-A collection of scripts to help automate the build/setup/deployment process of different components of the application.
+A collection of scripts to help automate the environment setup and project building process.
+
+- `setup-environment.sh` - Initial environment setup, only needs to be run once when the project is downloaded.
+- `on-server-restart.sh` - Restarts necessary services that aren't brought up on a server restart.
+- `run-project.sh` - Run the project, rebuilding changed components if necessary. 
 
 ### Notes
 Ports used:
-- 8090 - scemeregsitry
-- 8091 - jettyws
-- 8765 - nifi remote
-- 4557 - distributedmapcacheclientservice
+- 8090 - Schema Registry Webservice
+- 8091 - NiFi Jetty WebSockets
+- 8765 - NiFi Remote/SiteToSite
+- 4557 - NiFi DistributedMapCacheClientService
 
-To scriptify:
-- Created Storm View via Ambari
-- Disable NiFi SSL
-
-Assumptions made in setup-environment.sh:
-- Kafka and its necessary dependent services are up and running (do this via Ambari.)
+###TODO: Things to scriptify:
+- Create Storm View in Ambari if necessary
+- Disable NiFi SSL if necessary
