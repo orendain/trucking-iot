@@ -11,7 +11,7 @@ Next, run the script to set up the environment, then run the on-server-start scr
 
 ```
 cd trucking-iot
-./trucking-scripts/setup-environment.sh
-./trucking-scripts/on-server-start.sh
-./trucking-scripts/run-project.sh
+./scripts/setup-environment.sh
+./scripts/on-server-restart.sh
+./scripts/run-project.sh
 ```
