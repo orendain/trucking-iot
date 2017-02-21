@@ -3,9 +3,6 @@
 # Variables
 projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
 
-## Start Kafka, for topic creation (Sandbox only, due to default username/pass)
-##curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo":{"context":"_PARSE_.START.KAFKA","operation_level":{"level":"SERVICE","cluster_name":"Sandbox","service_name":"KAFKA"}},"Body":{"ServiceInfo":{"state":"STARTED"}}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services
-
 # Install SBT if missing
 echo "Checking for SBT, installing if missing"
 curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo

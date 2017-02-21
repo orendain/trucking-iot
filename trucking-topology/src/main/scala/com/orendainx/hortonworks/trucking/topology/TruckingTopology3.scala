@@ -79,34 +79,34 @@ class TruckingTopology3(config: TypeConfig) {
     // Builder to perform the construction of the topology.
     implicit val builder = new TopologyBuilder()
 
+    // Default number of tasks (instances) of components to spawn
+    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
+
     // Build Nifi Spouts to ingest trucking data
     // Extract values from config
-    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
-    val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
-    val nifiPort = config.getString("nifi.truck-data.port-name")
+    val batchDuration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
+    val truckNifiPort = config.getString("nifi.truck-data.port-name")
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
     // Attempt to sync up with the join bolt, keeping back pressure in NiFi
-    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPort)
-      .requestBatchDuration(duration, MILLISECONDS).buildConfig()
+    val truckSpoutConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(truckNifiPort)
+      .requestBatchDuration(batchDuration, MILLISECONDS).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
-    builder.setSpout("enrichedTruckData", new NiFiSpout(clientConfig), taskCount)
+    builder.setSpout("enrichedTruckData", new NiFiSpout(truckSpoutConfig), taskCount)
 
 
 
     // Extract values from config
-    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
-    val duration = config.getLong(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
-    val nifiPort = config.getString("nifi.traffic-data.port-name")
+    val trafficNifiPort = config.getString("nifi.traffic-data.port-name")
 
     // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
     // Attempt to sync up with the join bolt, keeping back pressure in NiFi
-    val clientConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(nifiPort)
-      .requestBatchDuration(duration, MILLISECONDS).buildConfig()
+    val trafficSpoutConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(trafficNifiPort)
+      .requestBatchDuration(batchDuration, MILLISECONDS).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
-    builder.setSpout("trafficData", new NiFiSpout(clientConfig), taskCount)
+    builder.setSpout("trafficData", new NiFiSpout(trafficSpoutConfig), taskCount)
 
 
 
@@ -115,7 +115,6 @@ class TruckingTopology3(config: TypeConfig) {
 
     // Build a DeserializerBolt to deserialize data from NiFi
     // Extract values from config
-    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
 
     // Create bolt and place it into the topology
     builder.setBolt("deserializedData", new DeserializerBolt(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
@@ -127,7 +126,6 @@ class TruckingTopology3(config: TypeConfig) {
 
     // Build Bolt to merge windowed data streams, and then generate sliding windowed driving stats
     // Extract values from config
-    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
     val duration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
 
     // Create a bolt with a tumbling window
