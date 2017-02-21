@@ -189,7 +189,7 @@ class TruckingTopology(config: TypeConfig) {
 
     // Build a KafkaBolt
     val kafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.trucking-data.topic")))
+      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driverstats-data.topic")))
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper())
       .withProducerProperties(props)
 
