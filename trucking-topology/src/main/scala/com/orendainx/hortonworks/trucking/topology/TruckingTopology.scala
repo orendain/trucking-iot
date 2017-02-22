@@ -4,7 +4,7 @@ import java.util.Properties
 
 import better.files.File
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.orendainx.hortonworks.trucking.topology.bolts.{DataWindowingBolt, DeserializerBolt, TruckAndTrafficJoinBolt}
+import com.orendainx.hortonworks.trucking.topology.bolts._
 import com.orendainx.hortonworks.trucking.topology.nifi.DataPacketBuilder
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
@@ -175,6 +175,10 @@ class TruckingTopology(config: TypeConfig) {
 
 
 
+    /*
+     * Serialize data right before feeding to Kafka bolt
+     */
+    builder.setBolt("serializedData", new StringSerializerBolt()).shuffleGrouping("joinedData")
 
 
 
@@ -194,7 +198,7 @@ class TruckingTopology(config: TypeConfig) {
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "joinedData"))
       .withProducerProperties(props)
 
-    builder.setBolt("joinedDataToKafka", kafkaBolt, taskCount).shuffleGrouping("joinedData")
+    builder.setBolt("joinedDataToKafka", kafkaBolt, taskCount).shuffleGrouping("serializedData")
 
 
 
