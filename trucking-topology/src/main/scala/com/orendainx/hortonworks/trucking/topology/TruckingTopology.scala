@@ -2,9 +2,9 @@ package com.orendainx.hortonworks.trucking.topology
 
 import java.util.Properties
 
- import better.files.File
+import better.files.File
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.orendainx.hortonworks.trucking.topology.bolts.{DataWindowingBolt, TruckAndTrafficJoinBolt}
+import com.orendainx.hortonworks.trucking.topology.bolts.{DataWindowingBolt, DeserializerBolt, TruckAndTrafficJoinBolt}
 import com.orendainx.hortonworks.trucking.topology.nifi.DataPacketBuilder
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
@@ -108,6 +108,7 @@ class TruckingTopology(config: TypeConfig) {
 
 
 
+    builder.setBolt("deserializedData", new DeserializerBolt(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
 
 
@@ -121,7 +122,7 @@ class TruckingTopology(config: TypeConfig) {
     // and "trafficData" streams. globalGrouping suggests that data from both streams be sent to *each* instance of this bolt
     // (in case there are more than one in the cluster)
     val joinBolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(windowDuration, MILLISECONDS))
-    builder.setBolt("joinedData", joinBolt, taskCount).globalGrouping("enrichedTruckData").globalGrouping("trafficData")
+    builder.setBolt("joinedData", joinBolt, taskCount).globalGrouping("deserializedData")
 
 
 
