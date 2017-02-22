@@ -191,7 +191,7 @@ class TruckingTopology(config: TypeConfig) {
     // Build a KafkaBolt
     val kafkaBolt = new KafkaBolt()
       .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driverstats-data.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper())
+      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "joinedData"))
       .withProducerProperties(props)
 
     builder.setBolt("joinedDataToKafka", kafkaBolt, taskCount).shuffleGrouping("joinedData")
