@@ -100,7 +100,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val truckSpoutConfig = new SpoutConfig(zkHosts, truckTopic, zkRoot, groupId)
     truckSpoutConfig.scheme = new SchemeAsMultiScheme(new BytesToStringScheme("EnrichedTruckData"))
-    truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
+    truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("enrichedTruckData", new KafkaSpout(truckSpoutConfig), defaultTaskCount)
@@ -117,7 +117,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val trafficSpoutConfig = new SpoutConfig(zkHosts, trafficTopic, zkRoot, groupId)
     trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BytesToStringScheme("TrafficData"))
-    trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
+    trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("trafficData", new KafkaSpout(trafficSpoutConfig), defaultTaskCount)
@@ -182,7 +182,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Build a KafkaBolt
     val truckingKafkaBolt = new KafkaBolt()
       .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.truck-data.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper())
+      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
     builder.setBolt("joinedDataToKafka", truckingKafkaBolt, defaultTaskCount).shuffleGrouping("serializedJoinedData")
@@ -196,7 +196,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Build a KafkaBolt
     val statsKafkaBolt = new KafkaBolt()
       .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driverstats-data.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "stringSerializedData"))
+      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
     builder.setBolt("driverStatsToKafka", statsKafkaBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats")
