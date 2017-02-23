@@ -3,15 +3,15 @@
    "namespace" : "com.orendainx.hortonworks.trucking",
    "name" : "TruckData",
    "fields" : [
-      { "name" : "eventTime" , "type" : "string" },
-      { "name" : "truckId" , "type" : "string" },
-      { "name" : "driverId" , "type" : "string" },
+      { "name" : "eventTime" , "type" : "long" },
+      { "name" : "truckId" , "type" : "int" },
+      { "name" : "driverId" , "type" : "int" },
       { "name" : "driverName" , "type" : "string" },
-      { "name" : "routeId" , "type" : "string" },
+      { "name" : "routeId" , "type" : "int" },
       { "name" : "routeName" , "type" : "string" },
-      { "name" : "latitude" , "type" : "string" },
-      { "name" : "longitude" , "type" : "string" },
-      { "name" : "speed" , "type" : "string" },
+      { "name" : "latitude" , "type" : "double" },
+      { "name" : "longitude" , "type" : "double" },
+      { "name" : "speed" , "type" : "int" },
       { "name" : "eventType" , "type" : "string" }
    ]
 }

@@ -3,8 +3,8 @@
    "namespace" : "com.orendainx.hortonworks.trucking",
    "name" : "TrafficData",
    "fields" : [
-      { "name" : "eventTime" , "type" : "string" },
-      { "name" : "routeId" , "type" : "string" },
-      { "name" : "congestionLevel" , "type" : "string" }
+      { "name" : "eventTime" , "type" : "long" },
+      { "name" : "routeId" , "type" : "int" },
+      { "name" : "congestionLevel" , "type" : "int" }
    ]
 }
