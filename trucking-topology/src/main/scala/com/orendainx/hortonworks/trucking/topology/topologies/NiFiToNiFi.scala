@@ -159,7 +159,7 @@ class NiFiToNiFi(config: TypeConfig) {
     val joinedBoltConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(joinedNifiPort).buildConfig()
     val joinedNifiBolt = new NiFiBolt(joinedBoltConfig, new ByteArrayToNiFiPacket(), joinedNififrequency).withBatchSize(joinNifiBatchSize)
 
-    builder.setBolt("joinedDataToNiFi", joinedNifiBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats")
+    builder.setBolt("joinedDataToNiFi", joinedNifiBolt, defaultTaskCount).shuffleGrouping("serializedJoinedData")
 
 
     val statsNifiPort = config.getString("nifi.driver-stats.port-name")
@@ -170,7 +170,7 @@ class NiFiToNiFi(config: TypeConfig) {
     val statsBoltConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(statsNifiPort).buildConfig()
     val statsNifiBolt = new NiFiBolt(statsBoltConfig, new ByteArrayToNiFiPacket(), statsNifiFrequency).withBatchSize(statsNifiBatchSize)
 
-    builder.setBolt("driverStatsToNifi", statsNifiBolt, defaultTaskCount).shuffleGrouping("serializedData")
+    builder.setBolt("driverStatsToNifi", statsNifiBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats")
 
 
 
