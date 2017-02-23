@@ -29,7 +29,7 @@ class DataWindowingBolt extends BaseWindowedBolt {
   override def execute(inputWindow: TupleWindow): Unit = {
 
     val driverStats = inputWindow.get().asScala
-      .map(_.getValueByField("joinedData").asInstanceOf[EnrichedTruckAndTrafficData]) // List[Tuple] => List[EnrichedTruckAndTrafficData]
+      .map(_.getValueByField("data").asInstanceOf[EnrichedTruckAndTrafficData]) // List[Tuple] => List[EnrichedTruckAndTrafficData]
       .groupBy(d => d.driverId) // List[EnrichedTruckAndTrafficData] => Map[driverId, List[EnrichedTruckAndTrafficData]]
       .mapValues({ dataLst => // Map[driverId, List[EnrichedTruckAndTrafficData]] => Map[driverId, (tupleOfStats)]
         val sums = dataLst
