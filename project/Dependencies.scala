@@ -20,7 +20,7 @@ object Dependencies {
   lazy val nifiStormSpout = "org.apache.nifi" % "nifi-storm-spout" % "1.1.0"
   lazy val stormCore = "org.apache.storm" % "storm-core" % "1.0.2"
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
-  //lazy val kafka = "org.apache.kafka" %% "kafka" % "0.10.1.1"
+  lazy val kafka = "org.apache.kafka" %% "kafka" % "0.10.1.1"
   lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.1.1"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.2"
 
@@ -89,7 +89,7 @@ object Dependencies {
   val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback, kafkaProducer)
   val enrichmentDeps = Seq(scalaCsv, config, betterFiles)
   val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
-  val topologyDeps = Seq(nifiStormSpout, stormCoreProvided, stormKafka, stormHbase, schemaRegistrySerdes, config, betterFiles, scalaLogging)
+  val topologyDeps = Seq(nifiStormSpout, stormCoreProvided, kafka, stormKafka, stormHbase, schemaRegistrySerdes, config, betterFiles, scalaLogging)
   //val topologyDeps = Seq(nifiStormSpout, stormCore, glass, schemaRegistrySerdes, schemaRegistryClient, schemaRegistryCommon, schemaRegistryCore, config, betterFiles, scalaLogging)
 
   val webAppBackendDeps = angular2Deps ++ Seq(scalaJsScripts, webjars, compass, bootstrap, stormCore)
