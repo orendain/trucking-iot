@@ -2,6 +2,7 @@ package com.orendainx.hortonworks.trucking.topology.schemes
 
 import java.nio.ByteBuffer
 
+import com.orendainx.hortonworks.trucking.topology.schemes.TrafficDataScheme.deserializeStringAndSplit
 import org.apache.storm.tuple.{Fields, Values}
 
 /**
@@ -14,7 +15,7 @@ object TruckDataScheme extends DelimitedScheme("\\|") {
   override def deserialize(buffer: ByteBuffer): Values = {
 
     // Extract data from buffer
-    val strings = deserializeString(buffer)
+    val strings = deserializeStringAndSplit(buffer)
     val eventTime = strings(0)
     val truckId = strings(1)
     val driverId = strings(2)

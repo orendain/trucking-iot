@@ -14,7 +14,7 @@ object TrafficDataScheme extends DelimitedScheme("\\|") {
   override def deserialize(buffer: ByteBuffer): Values = {
 
     // Extract data from buffer
-    val strings = deserializeString(buffer)
+    val strings = deserializeStringAndSplit(buffer)
     val eventTime = strings(0)
     val routeId = strings(1)
     val congestionLevel = strings(2)

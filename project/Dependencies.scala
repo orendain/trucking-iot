@@ -33,7 +33,7 @@ object Dependencies {
     //.exclude("org.mortbay.jetty", "jsp-api-2.1") // vs itself/SRSerdes - org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT")
 
-  lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.2.2.0.0-19")
+  lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.3.0.0.0-55")
   //lazy val schemaRegistryClient = ("com.hortonworks.registries" % "schema-registry-client" % "0.0.1.2.2.0.0-19")
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry" % "0.0.1.2.2.0.0-18")
   //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.1.0-SNAPSHOT" from "file://~/.m2/repository/com/hortonworks/registries/schema-registry-serdes/0.1.0-SNAPSHOT/schema-registry-serdes-0.1.0-SNAPSHOT.jar")
