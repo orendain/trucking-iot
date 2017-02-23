@@ -20,8 +20,9 @@ object Dependencies {
   lazy val nifiStormSpout = "org.apache.nifi" % "nifi-storm-spout" % "1.1.0"
   lazy val stormCore = "org.apache.storm" % "storm-core" % "1.0.2"
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
-  lazy val kafka = "org.apache.kafka" %% "kafka" % "0.10.1.1"
-  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.1.1"
+  lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")
+    .exclude("org.apache.zookeeper", "zookeeper")
+  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.1"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.2"
 
   lazy val stormHbase = ("org.apache.storm" % "storm-hbase" % "1.0.2")
