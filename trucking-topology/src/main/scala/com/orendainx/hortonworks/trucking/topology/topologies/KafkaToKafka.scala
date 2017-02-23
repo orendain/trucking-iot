@@ -181,7 +181,7 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Build a KafkaBolt
     val truckingKafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.truck-data.topic")))
+      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.joined-data.topic")))
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
@@ -195,7 +195,7 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Build a KafkaBolt
     val statsKafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driverstats-data.topic")))
+      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driver-stats.topic")))
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
