@@ -28,7 +28,8 @@ class ObjectToSerialized extends BaseRichBolt {
       case "WindowedDriverStats" => tuple.getValueByField("data").asInstanceOf[WindowedDriverStats].toCSV
     }
 
-    outputCollector.emit(new Values(str.getBytes(StandardCharsets.UTF_8)))
+    //outputCollector.emit(new Values(str.getBytes(StandardCharsets.UTF_8)))
+    outputCollector.emit(new Values(str))
     outputCollector.ack(tuple)
   }
 
