@@ -42,7 +42,6 @@ object NiFiToNiFiWithSchema {
     stormConfig.setMessageTimeoutSecs(config.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
     stormConfig.put(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name(), config.getString("schema-registry.url"))
-    stormConfig.put("emptyConfig", new java.util.HashMap[String, String])
 
     (stormConfig, new NiFiToNiFi(config).buildTopology())
   }
@@ -78,7 +77,7 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     implicit val builder = new TopologyBuilder()
 
     // Default number of tasks (instances) of components to spawn
-    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
+    val defaultTaskCount = config.getInt(Config.TOPOLOGY_TASKS)
 
 
 
@@ -99,14 +98,14 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
       .requestBatchDuration(batchDuration, MILLISECONDS).buildConfig()
 
     // Create a spout with the specified configuration, and place it in the, now empty, topology blueprint
-    builder.setSpout("enrichedTruckData", new NiFiSpout(truckSpoutConfig), taskCount)
-    builder.setSpout("trafficData", new NiFiSpout(trafficSpoutConfig), taskCount)
+    builder.setSpout("enrichedTruckData", new NiFiSpout(truckSpoutConfig), defaultTaskCount)
+    builder.setSpout("trafficData", new NiFiSpout(trafficSpoutConfig), defaultTaskCount)
 
 
 
-    builder.setBolt("serializedData", new NiFiPacketToSerialized(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("serializedData", new NiFiPacketToSerialized(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
-    builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), taskCount).shuffleGrouping("serializedData")
+    builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), defaultTaskCount).shuffleGrouping("serializedData")
 
 
 
@@ -119,7 +118,7 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     // and "trafficData" streams. globalGrouping suggests that data from both streams be sent to *each* instance of this bolt
     // (in case there are more than one in the cluster)
     val joinBolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(windowDuration, MILLISECONDS))
-    builder.setBolt("joinedData", joinBolt, taskCount).globalGrouping("unpackagedData")
+    builder.setBolt("joinedData", joinBolt, defaultTaskCount).globalGrouping("unpackagedData")
 
 
 
@@ -134,7 +133,7 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     // Build bold and then place in the topology blueprint connected to the "joinedData" stream.  ShuffleGrouping suggests
     // that tuples from that stream are distributed across this bolt's tasks (instances), so as to keep load levels even.
     val statsBolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount))
-    builder.setBolt("windowedDriverStats", statsBolt, taskCount).shuffleGrouping("joinedData")
+    builder.setBolt("windowedDriverStats", statsBolt, defaultTaskCount).shuffleGrouping("joinedData")
 
 
 
@@ -143,8 +142,8 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     /*
      * Serialize data before pushing out to anywhere.
      */
-    builder.setBolt("serializedData", new ObjectToSerializedWithSchema()).shuffleGrouping("joinedData")
-    builder.setBolt("serializedData", new ObjectToSerializedWithSchema()).shuffleGrouping("windowedDriverStats")
+    builder.setBolt("serializedJoinedData", new ObjectToSerializedWithSchema()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedDriverStats", new ObjectToSerializedWithSchema()).shuffleGrouping("windowedDriverStats")
 
 
 
@@ -161,7 +160,7 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     val joinedBoltConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(joinedNifiPort).buildConfig()
     val joinedNifiBolt = new NiFiBolt(joinedBoltConfig, new ByteArrayToNiFiPacket(), joinedNififrequency).withBatchSize(joinNifiBatchSize)
 
-    builder.setBolt("joinedDataToNiFi", joinedNifiBolt, taskCount).shuffleGrouping("serializedData")
+    builder.setBolt("joinedDataToNiFi", joinedNifiBolt, defaultTaskCount).shuffleGrouping("serializedJoinedData")
 
 
 
@@ -174,7 +173,7 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     val statsBoltConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(statsNifiPort).buildConfig()
     val statsNifiBolt = new NiFiBolt(statsBoltConfig, new ByteArrayToNiFiPacket(), statsNifiFrequency).withBatchSize(statsNifiBatchSize)
 
-    builder.setBolt("driverStatsToNifi", statsNifiBolt, taskCount).shuffleGrouping("serializedData")
+    builder.setBolt("driverStatsToNifi", statsNifiBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats")
 
 
 

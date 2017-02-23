@@ -77,7 +77,7 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     // Default number of tasks (instances) of components to spawn
-    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
+    val defaultTaskCount = config.getInt(Config.TOPOLOGY_TASKS)
     val zkHosts = new ZkHosts(config.getString(Config.STORM_ZOOKEEPER_SERVERS))
     val zkRoot = config.getString(Config.STORM_ZOOKEEPER_ROOT)
     val groupId = config.getString("kafka.group-id")
@@ -93,11 +93,6 @@ class KafkaToKafka(config: TypeConfig) {
 
 
 
-
-
-
-    // TODO: TruckDataScheme to know how to read serialized version of data
-
     // Build Kafka spouts for ingesting trucking data
     // Extract values from config
     val truckTopic = config.getString("kafka.truck-data.topic")
@@ -108,7 +103,7 @@ class KafkaToKafka(config: TypeConfig) {
     truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
-    builder.setSpout("enrichedTruckData", new KafkaSpout(truckSpoutConfig), taskCount)
+    builder.setSpout("enrichedTruckData", new KafkaSpout(truckSpoutConfig), defaultTaskCount)
 
 
 
@@ -125,7 +120,7 @@ class KafkaToKafka(config: TypeConfig) {
     trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
-    builder.setSpout("trafficData", new KafkaSpout(trafficSpoutConfig), taskCount)
+    builder.setSpout("trafficData", new KafkaSpout(trafficSpoutConfig), defaultTaskCount)
 
 
 
@@ -133,7 +128,7 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     // Ser
-    builder.setBolt("unpackagedData", new SerializedToObject(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("unpackagedData", new SerializedToObject(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
 
 
@@ -145,7 +140,7 @@ class KafkaToKafka(config: TypeConfig) {
     // and "trafficData" streams. globalGrouping suggests that data from both streams be sent to *each* instance of this bolt
     // (in case there are more than one in the cluster)
     val joinBolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(windowDuration, MILLISECONDS))
-    builder.setBolt("joinedData", joinBolt, taskCount).globalGrouping("unpackagedData")
+    builder.setBolt("joinedData", joinBolt, defaultTaskCount).globalGrouping("unpackagedData")
 
 
 
@@ -160,7 +155,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Build bold and then place in the topology blueprint connected to the "joinedData" stream.  ShuffleGrouping suggests
     // that tuples from that stream are distributed across this bolt's tasks (instances), so as to keep load levels even.
     val statsBolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount))
-    builder.setBolt("windowedDriverStats", statsBolt, taskCount).shuffleGrouping("joinedData")
+    builder.setBolt("windowedDriverStats", statsBolt, defaultTaskCount).shuffleGrouping("joinedData")
 
 
 
@@ -190,7 +185,7 @@ class KafkaToKafka(config: TypeConfig) {
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper())
       .withProducerProperties(kafkaBoltProps)
 
-    builder.setBolt("joinedDataToKafka", truckingKafkaBolt, taskCount).shuffleGrouping("serializedJoinedData")
+    builder.setBolt("joinedDataToKafka", truckingKafkaBolt, defaultTaskCount).shuffleGrouping("serializedJoinedData")
 
 
 
@@ -204,7 +199,7 @@ class KafkaToKafka(config: TypeConfig) {
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "stringSerializedData"))
       .withProducerProperties(kafkaBoltProps)
 
-    builder.setBolt("driverStatsToKafka", statsKafkaBolt, taskCount).shuffleGrouping("serializedDriverStats")
+    builder.setBolt("driverStatsToKafka", statsKafkaBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats")
 
 
 
