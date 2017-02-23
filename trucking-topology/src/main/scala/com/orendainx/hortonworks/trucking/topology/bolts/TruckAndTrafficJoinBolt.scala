@@ -4,14 +4,13 @@ import java.util
 
 import com.orendainx.hortonworks.trucking.common.models.{EnrichedTruckAndTrafficData, EnrichedTruckData, TrafficData}
 import com.typesafe.scalalogging.Logger
-import org.apache.nifi.storm.NiFiDataPacket
 import org.apache.storm.task.{OutputCollector, TopologyContext}
 import org.apache.storm.topology.OutputFieldsDeclarer
 import org.apache.storm.topology.base.BaseWindowedBolt
 import org.apache.storm.tuple.{Fields, Values}
 import org.apache.storm.windowing.TupleWindow
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 import scala.collection.{Map, mutable}
 import scala.language.implicitConversions
@@ -37,7 +36,7 @@ class TruckAndTrafficJoinBolt() extends BaseWindowedBolt {
     val trafficDataPerRoute = mutable.HashMap.empty[Int, ListBuffer[TrafficData]].withDefaultValue(ListBuffer.empty[TrafficData])
 
     // Process each one of the tuples captured in the input window, separating data according to routeId
-    inputWindow.get().foreach { tuple =>
+    inputWindow.get().asScala.foreach { tuple =>
       tuple.getStringByField("dataType") match {
         case "EnrichedTruckData" =>
           val data = tuple.getValueByField("data").asInstanceOf[EnrichedTruckData]
@@ -46,12 +45,12 @@ class TruckAndTrafficJoinBolt() extends BaseWindowedBolt {
           val data = tuple.getValueByField("data").asInstanceOf[TrafficData]
           trafficDataPerRoute += ((data.routeId, trafficDataPerRoute(data.routeId) += data))
       }
-
-      // TODO: Best practice for ack'ing?  Before or after tuple having been full processed?
-      outputCollector.ack(tuple)
     }
 
     processAndEmitData(truckDataPerRoute, trafficDataPerRoute)
+
+    // Acknowledge all tuples processed.  It is best practice to perform this after all processing has been completed.
+    inputWindow.get().asScala.foreach(outputCollector.ack)
   }
 
   /**
@@ -78,12 +77,12 @@ class TruckAndTrafficJoinBolt() extends BaseWindowedBolt {
                   truckData.routeId, truckData.routeName, truckData.latitude, truckData.longitude, truckData.speed,
                   truckData.eventType, truckData.foggy, truckData.rainy, truckData.windy, trafficData.congestionLevel)
 
-                outputCollector.emit(new Values(joinedData))
+                outputCollector.emit(new Values("EnrichedTruckAndTrafficData", joinedData))
             }
           }
       }
     }
   }
 
-  override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("joinedData"))
+  override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("dataType", "data"))
 }

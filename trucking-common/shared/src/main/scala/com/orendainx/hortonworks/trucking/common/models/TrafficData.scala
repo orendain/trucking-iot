@@ -7,3 +7,10 @@ case class TrafficData(eventTime: Long, routeId: Int, congestionLevel: Int) exte
 
   lazy val toCSV = s"$eventTime|$routeId|$congestionLevel"
 }
+
+object TrafficData {
+  def fromCSV(str: String): TrafficData = {
+    val Array(eventTime, routeId, congestionLevel) = str.split("\\|")
+    TrafficData(eventTime.toLong, routeId.toInt, congestionLevel.toInt)
+  }
+}

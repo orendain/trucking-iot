@@ -10,7 +10,7 @@ import org.apache.storm.topology.base.BaseWindowedBolt
 import org.apache.storm.tuple.{Fields, Values}
 import org.apache.storm.windowing.TupleWindow
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 /**
   * Takes EnrichedTruckAndTrafficData and generates driver statistics.  It emits WindowedDriverStats onto its stream.
@@ -28,11 +28,8 @@ class DataWindowingBolt extends BaseWindowedBolt {
 
   override def execute(inputWindow: TupleWindow): Unit = {
 
-    val driverStats = inputWindow.get()
-      .map { t => // List[Tuple] => List[EnrichedTruckAndTrafficData]
-        outputCollector.ack(t)
-        t.getValueByField("joinedData").asInstanceOf[EnrichedTruckAndTrafficData]
-      }
+    val driverStats = inputWindow.get().asScala
+      .map(_.getValueByField("joinedData").asInstanceOf[EnrichedTruckAndTrafficData]) // List[Tuple] => List[EnrichedTruckAndTrafficData]
       .groupBy(d => d.driverId) // List[EnrichedTruckAndTrafficData] => Map[driverId, List[EnrichedTruckAndTrafficData]]
       .mapValues({ dataLst => // Map[driverId, List[EnrichedTruckAndTrafficData]] => Map[driverId, (tupleOfStats)]
         val sums = dataLst
@@ -43,17 +40,18 @@ class DataWindowingBolt extends BaseWindowedBolt {
 
     /*
      * At this point, driverStats is a map where its values are the following over the span of the window:
+     * - Driver id
      * - Average speed
      * - Total fog
      * - Total rain
      * - Total wind
      * - Total violations
      */
+    driverStats.foreach({case (id, s) => outputCollector.emit("WindowedDriverStats", new Values(WindowedDriverStats(id, s._1, s._2, s._3, s._4, s._5)))})
 
-    driverStats.foreach({case (driverId, s) =>
-      outputCollector.emit(new Values(WindowedDriverStats(driverId, s._1, s._2, s._3, s._4, s._5)))
-    })
+    // Acknowledge all tuples processed.  It is best practice to perform this after all processing has been completed.
+    inputWindow.get().asScala.foreach(outputCollector.ack)
   }
 
-  override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("windowedDriverStats"))
+  override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("dataType", "data"))
 }

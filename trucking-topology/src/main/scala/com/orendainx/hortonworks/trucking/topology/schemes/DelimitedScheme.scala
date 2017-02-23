@@ -19,7 +19,12 @@ abstract class DelimitedScheme(delimiter: String) extends Scheme {
     * @param string The [[ByteBuffer]] to be parsed as a raw string.
     * @return The array of strings resulting from splitting the [[ByteBuffer]] on the object's specified delimiter.
     */
-  def deserializeString(string: ByteBuffer): Array[String] = {
+  def deserializeString(string: ByteBuffer): String = {
+    if (string.hasArray) new String(string.array(), string.arrayOffset() + string.position(), string.remaining())
+    else new String(StormUtils.toByteArray(string), UTF_8)
+  }
+
+  def deserializeStringAndSplit(string: ByteBuffer): Array[String] = {
     val rawString = if (string.hasArray)
       new String(string.array(), string.arrayOffset() + string.position(), string.remaining())
     else

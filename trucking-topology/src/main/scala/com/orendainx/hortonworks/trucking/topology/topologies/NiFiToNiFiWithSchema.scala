@@ -1,19 +1,13 @@
-package com.orendainx.hortonworks.trucking.topology
+package com.orendainx.hortonworks.trucking.topology.topologies
 
-import java.util.Properties
-
-import better.files.File
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
 import com.orendainx.hortonworks.trucking.topology.bolts._
-import com.orendainx.hortonworks.trucking.topology.nifi.DataPacketBuilder
+import com.orendainx.hortonworks.trucking.topology.nifi.ByteArrayToNiFiPacket
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
 import org.apache.nifi.remote.client.SiteToSiteClient
 import org.apache.nifi.storm.{NiFiBolt, NiFiSpout}
 import org.apache.storm.generated.StormTopology
-import org.apache.storm.kafka.bolt.KafkaBolt
-import org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper
-import org.apache.storm.kafka.bolt.selector.DefaultTopicSelector
 import org.apache.storm.topology.TopologyBuilder
 import org.apache.storm.topology.base.BaseWindowedBolt
 import org.apache.storm.{Config, StormSubmitter}
@@ -21,17 +15,17 @@ import org.apache.storm.{Config, StormSubmitter}
 import scala.concurrent.duration._
 
 /**
-  * Companion object to [[TruckingTopology]] class.
+  * Companion object to [[NiFiToNiFi]] class.
   * Provides an entry point for passing in a custom configuration.
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-object TruckingTopology {
+object NiFiToNiFiWithSchema {
 
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
-    StormSubmitter.submitTopology("truckingTopology", stormConfig, topology)
+    StormSubmitter.submitTopology("NiFiToNiFiWithSchema", stormConfig, topology)
   }
 
   /**
@@ -50,7 +44,7 @@ object TruckingTopology {
     stormConfig.put(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name(), config.getString("schema-registry.url"))
     stormConfig.put("emptyConfig", new java.util.HashMap[String, String])
 
-    (stormConfig, new TruckingTopology(config).buildTopology())
+    (stormConfig, new NiFiToNiFi(config).buildTopology())
   }
 }
 
@@ -61,15 +55,17 @@ object TruckingTopology {
   *   - NiFiSpout (for injesting EnrichedTruckData from NiFi)
   *   - NiFiSpout (for injesting TrafficData from NiFi)
   * Bolt:
-  *   - TruckAndTrafficJoinBolt (for joining EnrichedTruckData and TrafficData streams into one)
-  *   - DataWindowingBolt (generating driver stats from trucking data)
+  *   - NiFiPacketWithSchemaToObject (for converting from NiFi packet with schema to JVM object)
+  *   - TruckAndTrafficJoinBolt (for joining EnrichedTruckData and TrafficData streams into EnrichedTruckAndTrafficData)
+  *   - DataWindowingBolt (for generating driver stats from trucking data)
+  *   - ObjectToSerializedWithSchema (for serializing JVM object into array of bytes with schema)
   *   - NiFiBolt (for sending data back out to NiFi)
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class TruckingTopology(config: TypeConfig) {
+class NiFiToNiFiWithSchema(config: TypeConfig) {
 
-  private lazy val logger = Logger(classOf[TruckingTopology])
+  private lazy val logger = Logger(classOf[NiFiToNiFi])
   private lazy val NiFiUrl: String = config.getString("nifi.url")
 
   /**
@@ -108,8 +104,9 @@ class TruckingTopology(config: TypeConfig) {
 
 
 
-    builder.setBolt("deserializedData", new DeserializerBolt(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("serializedData", new NiFiPacketToSerialized(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
+    builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), taskCount).shuffleGrouping("serializedData")
 
 
 
@@ -122,7 +119,7 @@ class TruckingTopology(config: TypeConfig) {
     // and "trafficData" streams. globalGrouping suggests that data from both streams be sent to *each* instance of this bolt
     // (in case there are more than one in the cluster)
     val joinBolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(windowDuration, MILLISECONDS))
-    builder.setBolt("joinedData", joinBolt, taskCount).globalGrouping("deserializedData")
+    builder.setBolt("joinedData", joinBolt, taskCount).globalGrouping("unpackagedData")
 
 
 
@@ -143,6 +140,14 @@ class TruckingTopology(config: TypeConfig) {
 
 
 
+    /*
+     * Serialize data before pushing out to anywhere.
+     */
+    builder.setBolt("serializedData", new ObjectToSerializedWithSchema()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedData", new ObjectToSerializedWithSchema()).shuffleGrouping("windowedDriverStats")
+
+
+
 
 
     /*
@@ -154,9 +159,9 @@ class TruckingTopology(config: TypeConfig) {
 
     // Construct a clientConfig and a NiFi bolt
     val joinedBoltConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(joinedNifiPort).buildConfig()
-    val joinedNifiBolt = new NiFiBolt(joinedBoltConfig, new DataPacketBuilder(), joinedNififrequency).withBatchSize(joinNifiBatchSize)
+    val joinedNifiBolt = new NiFiBolt(joinedBoltConfig, new ByteArrayToNiFiPacket(), joinedNififrequency).withBatchSize(joinNifiBatchSize)
 
-    builder.setBolt("joinedDataToNiFi", joinedNifiBolt, taskCount).shuffleGrouping("joinedData")
+    builder.setBolt("joinedDataToNiFi", joinedNifiBolt, taskCount).shuffleGrouping("serializedData")
 
 
 
@@ -167,38 +172,9 @@ class TruckingTopology(config: TypeConfig) {
 
     // Construct a clientConfig and a NiFi bolt
     val statsBoltConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(statsNifiPort).buildConfig()
-    val statsNifiBolt = new NiFiBolt(statsBoltConfig, new DataPacketBuilder(), statsNifiFrequency).withBatchSize(statsNifiBatchSize)
+    val statsNifiBolt = new NiFiBolt(statsBoltConfig, new ByteArrayToNiFiPacket(), statsNifiFrequency).withBatchSize(statsNifiBatchSize)
 
-    builder.setBolt("driverStatsToNifi", statsNifiBolt, taskCount).shuffleGrouping("windowedDriverStats")
-
-
-
-
-
-    /*
-     * Serialize data right before feeding to Kafka bolt
-     */
-    builder.setBolt("serializedData", new StringSerializerBolt()).shuffleGrouping("joinedData")
-
-
-
-
-    /*
-     * Push driver stats to Kafka
-     */
-    // Define properties to pass along to the KafkaBolt
-    val props = new Properties()
-    props.setProperty("bootstrap.servers", config.getString("kafka.bootstrap-servers"))
-    props.setProperty("key.serializer", config.getString("kafka.key-serializer"))
-    props.setProperty("value.serializer", config.getString("kafka.value-serializer"))
-
-    // Build a KafkaBolt
-    val kafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driverstats-data.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "stringSerializedData"))
-      .withProducerProperties(props)
-
-    builder.setBolt("joinedDataToKafka", kafkaBolt, taskCount).shuffleGrouping("serializedData")
+    builder.setBolt("driverStatsToNifi", statsNifiBolt, taskCount).shuffleGrouping("serializedData")
 
 
 

@@ -19,9 +19,11 @@ import org.apache.storm.tuple.{Fields, Tuple, Values}
 import scala.collection.JavaConversions._
 
 /**
+  * Convert Tuples in the form of NiFiDataPackets, serialized with Schema Registry, into Tuples of their respective JVM objects.
+  *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class DeserializerBolt extends BaseRichBolt {
+class NiFiPacketWithSchemaToObject extends BaseRichBolt {
 
   private lazy val log = Logger(this.getClass)
   private var outputCollector: OutputCollector = _
@@ -51,8 +53,8 @@ class DeserializerBolt extends BaseRichBolt {
 
     // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
     val (dataType, data) = dp.getAttributes.get("dataType") match {
-      case t @ "EnrichedTruckData" => (t, recordToEnrichedTruckData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
-      case t @ "TrafficData" => (t, recordToTrafficData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), trafficDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
+      case typ @ "EnrichedTruckData" => (typ, recordToEnrichedTruckData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
+      case typ @ "TrafficData" => (typ, recordToTrafficData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), trafficDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
     }
 
     outputCollector.emit(new Values(data, dataType))
@@ -61,6 +63,7 @@ class DeserializerBolt extends BaseRichBolt {
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("data", "dataType"))
 
+  // Helper function to convert GenericRecord (result of deserializing via Schema Registry) into JVM object
   private def recordToEnrichedTruckData(r: GenericRecord): EnrichedTruckData =
     EnrichedTruckData(
       r.get("eventTime").toString.toLong,
@@ -77,6 +80,7 @@ class DeserializerBolt extends BaseRichBolt {
       r.get("rainy").toString.toInt,
       r.get("windy").toString.toInt)
 
+  // Helper function to convert GenericRecord (result of deserializing via Schema Registry) into JVM object
   private def recordToTrafficData(r: GenericRecord): TrafficData =
     TrafficData(r.get("eventTime").toString.toLong, r.get("routeId").toString.toInt, r.get("congestionLevel").toString.toInt)
 }
