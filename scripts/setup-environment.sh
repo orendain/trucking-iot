@@ -17,6 +17,8 @@ yum install -y apache-maven
 echo "Starting Kafka and creating Kafka topics"
 $(find / -type f -wholename '/usr/hd*/kafka' -print -quit) start
 kafkaTopicsSh=$(find / -type f -wholename '/usr/hd*/kafka-topics.sh' -print -quit)
+$kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 1 --topic trucking_data_truck
+$kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 1 --topic trucking_data_traffic
 $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 1 --topic trucking_data_joined
 $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 1 --topic trucking_data_driverstats
 
