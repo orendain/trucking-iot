@@ -45,6 +45,7 @@ object SchemaRegistrar {
     setupSchema("schema.enriched-truck-data")
     setupSchema("schema.traffic-data")
     setupSchema("schema.enriched-truck-and-traffic-data")
+    setupSchema("schema.windowed-driver-stats")
   }
 
 
