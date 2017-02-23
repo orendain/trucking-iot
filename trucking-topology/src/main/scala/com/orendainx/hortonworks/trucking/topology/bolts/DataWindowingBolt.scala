@@ -47,7 +47,7 @@ class DataWindowingBolt extends BaseWindowedBolt {
      * - Total wind
      * - Total violations
      */
-    driverStats.foreach({case (id, s) => outputCollector.emit("WindowedDriverStats", new Values(WindowedDriverStats(id, s._1, s._2, s._3, s._4, s._5)))})
+    driverStats.foreach({case (id, s) => outputCollector.emit(new Values("WindowedDriverStats", WindowedDriverStats(id, s._1, s._2, s._3, s._4, s._5)))})
 
     // Acknowledge all tuples processed.  It is best practice to perform this after all processing has been completed.
     inputWindow.get().asScala.foreach(outputCollector.ack)

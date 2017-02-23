@@ -17,6 +17,17 @@ class ByteArrayToNiFiPacket extends NiFiDataPacketBuilder with Serializable {
 
   override def createNiFiDataPacket(tuple: Tuple): NiFiDataPacket = {
     val newAttributes = Map("processed" -> "true").asJava
-    new StandardNiFiDataPacket(tuple.getStringByField("data").getBytes(StandardCharsets.UTF_8), newAttributes)
+    new StandardNiFiDataPacket(tuple.getBinaryByField("data"), newAttributes)
   }
 }
+
+/*
+
+// [B cannot be cast to String
+tuple.getStringByField("data").getBytes(StandardCharsets.UTF_8)
+
+
+// String cannot be cast to [B
+tuple.getValueByField("data").asInstanceof[array[by]]
+
+ */
