@@ -3,10 +3,7 @@ package com.orendainx.hortonworks.trucking.topology.topologies
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
 import org.apache.storm.generated.StormTopology
-import org.apache.storm.hbase.bolt.HBaseBolt
-import org.apache.storm.hbase.bolt.mapper.SimpleHBaseMapper
 import org.apache.storm.topology.TopologyBuilder
-import org.apache.storm.tuple.Fields
 import org.apache.storm.{Config, StormSubmitter}
 
 /**
@@ -66,6 +63,7 @@ class DraftTopology(config: TypeConfig) {
 
 
 
+    /*
 
 
 
@@ -83,7 +81,7 @@ class DraftTopology(config: TypeConfig) {
 
 
 
-
+    */
 
 
 

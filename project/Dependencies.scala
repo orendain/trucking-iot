@@ -22,6 +22,7 @@ object Dependencies {
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
   lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")
     .exclude("org.apache.zookeeper", "zookeeper")
+    .exclude("org.slf4j", "slf4j-log4j12")
   lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.1"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.2"
 
@@ -49,8 +50,8 @@ object Dependencies {
     //.exclude("commons-collections", "commons-collections")
     //.exclude("commons-beanutils", "commons-beanutils")
   //lazy val schemaRegistryClient = ("com.hortonworks.registries" % "schema-registry-client" % "0.0.1.2.2.0.0-5" from "http://nexus-private.hortonworks.com/nexus/content/groups/public/com/hortonworks/registries/schema-registry-client/0.0.1.2.2.0.0-5/schema-registry-client-0.0.1.2.2.0.0-5.jar")
-      .exclude("org.slf4j", "log4j-over-slf4j")
-      .exclude("commons-beanutils", "commons-beanutils-core")
+      //.exclude("org.slf4j", "log4j-over-slf4j")
+      //.exclude("commons-beanutils", "commons-beanutils-core")
   //lazy val schemaRegistryCommon = ("com.hortonworks.registries" % "schema-registry-common" % "0.0.1.2.2.0.0-5" from "http://nexus-private.hortonworks.com/nexus/content/groups/public/com/hortonworks/registries/schema-registry-common/0.0.1.2.2.0.0-5/schema-registry-common-0.0.1.2.2.0.0-5.jar")
   //lazy val glass = "org.glassfish.jersey.core" % "jersey-client" % "2.25"
 //  lazy val schemaRegistryCore = ("com.hortonworks.registries" % "schema-registry-core" % "0.0.1.2.2.0.0-5" from "http://nexus-private.hortonworks.com/nexus/content/groups/public/com/hortonworks/registries/schema-registry-core/0.0.1.2.2.0.0-5/schema-registry-core-0.0.1.2.2.0.0-5.jar")
@@ -90,7 +91,7 @@ object Dependencies {
   val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback, kafkaProducer)
   val enrichmentDeps = Seq(scalaCsv, config, betterFiles)
   val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
-  val topologyDeps = Seq(nifiStormSpout, stormCoreProvided, kafka, stormKafka, stormHbase, schemaRegistrySerdes, config, betterFiles, scalaLogging)
+  val topologyDeps = Seq(nifiStormSpout, stormCoreProvided, kafka, stormKafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
   //val topologyDeps = Seq(nifiStormSpout, stormCore, glass, schemaRegistrySerdes, schemaRegistryClient, schemaRegistryCommon, schemaRegistryCore, config, betterFiles, scalaLogging)
 
   val webAppBackendDeps = angular2Deps ++ Seq(scalaJsScripts, webjars, compass, bootstrap, stormCore)
