@@ -17,4 +17,11 @@ object EnrichedTruckData {
     val Array(eventTime, truckId, driverId, driverName, routeId, routeName, latitude, longitude, speed, eventType, foggy, rainy, windy) = str.split("\\|")
     EnrichedTruckData(eventTime.toLong, truckId.toInt, driverId.toInt, driverName, routeId.toInt, routeName, latitude.toDouble, longitude.toDouble, speed.toInt, eventType, foggy.toInt, rainy.toInt, windy.toInt)
   }
+
+  /**
+    * Create an EnrichedTruckData object by passing in a TruckData object and enriching arguments
+    */
+  def apply(truckData: TruckData, foggy: Int, rainy: Int, windy: Int): EnrichedTruckData =
+    EnrichedTruckData(truckData.eventTime, truckData.truckId, truckData.driverId, truckData.driverName, truckData.routeId,
+      truckData.routeName, truckData.latitude, truckData.longitude, truckData.speed, truckData.eventType, foggy, rainy, windy)
 }

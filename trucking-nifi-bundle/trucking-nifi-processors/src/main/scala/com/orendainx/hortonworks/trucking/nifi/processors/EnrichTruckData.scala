@@ -15,10 +15,11 @@ import org.apache.nifi.processor.io.InputStreamCallback
 import org.apache.nifi.processor.io.OutputStreamCallback
 import java.io.{InputStream, OutputStream}
 
-import com.orendainx.hortonworks.trucking.common.models.EnrichedTruckData
+import com.orendainx.hortonworks.trucking.common.models.{EnrichedTruckData, TruckData}
 import com.orendainx.hortonworks.trucking.enrichment.WeatherAPI
 
 import scala.language.implicitConversions
+import scala.collection.JavaConverters._
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
@@ -39,8 +40,6 @@ class EnrichTruckData extends AbstractProcessor {
     .build
   lazy val relationships = Set(RelSuccess)
   lazy val properties = List.empty[PropertyDescriptor]
-
-  import scala.collection.JavaConverters._
 
   private var log: ComponentLog = _
 
@@ -66,7 +65,9 @@ class EnrichTruckData extends AbstractProcessor {
     })
 
     implicit def bool2Int(bool: Boolean): Int = if (bool) 1 else 0
-    val enrichedTruckData = EnrichedTruckData.fromCSV(content.get())
+    val truckData = TruckData.fromCSV(content.get()
+    val enrichedTruckData = EnrichedTruckData(truckData, WeatherAPI.isFoggy(truckData.eventType),
+      WeatherAPI.isRainy(truckData.eventType), WeatherAPI.isWindy(truckData.eventType))
 
     log.debug(s"Content: ${content.get()}")
     log.debug(s"EnrichedData: ${enrichedTruckData}")
