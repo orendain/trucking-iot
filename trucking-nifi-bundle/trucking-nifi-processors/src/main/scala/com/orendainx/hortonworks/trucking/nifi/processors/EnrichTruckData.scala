@@ -66,11 +66,7 @@ class EnrichTruckData extends AbstractProcessor {
     })
 
     implicit def bool2Int(bool: Boolean): Int = if (bool) 1 else 0
-    EnrichedTruckData.fromCSV(content.get())
-    //val Array(eventTime, truckId, driverId, driverName, routeId, routeName, latitude, longitude, speed, eventType) =
-    //val enrichedTruckData = EnrichedTruckData(eventTime.toLong, truckId.toInt, driverId.toInt, driverName, routeId.toInt,
-//      routeName, latitude.toDouble, longitude.toDouble, speed.toInt, eventType,
-//      WeatherAPI.isFoggy(eventType), WeatherAPI.isRainy(eventType), WeatherAPI.isWindy(eventType))
+    val enrichedTruckData = EnrichedTruckData.fromCSV(content.get())
 
     log.debug(s"Content: ${content.get()}")
     log.debug(s"EnrichedData: ${enrichedTruckData}")
