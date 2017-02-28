@@ -8,7 +8,7 @@ A collection of scripts to help automate the environment setup and project build
 
 ### Notes
 Ports used:
-- 8090 - Schema Registry Webservice
+- 15005 - Schema Registry Webservice
 - 8091 - NiFi Jetty WebSockets
 - 8765 - NiFi Remote/SiteToSite
 - 4557 - NiFi DistributedMapCacheClientService
