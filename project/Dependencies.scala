@@ -23,7 +23,7 @@ object Dependencies {
   lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")
     .exclude("org.apache.zookeeper", "zookeeper")
     .exclude("org.slf4j", "slf4j-log4j12")
-  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.1"
+  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
 
   lazy val stormHbase = ("org.apache.storm" % "storm-hbase" % "1.0.2")
     .exclude("tomcat", "jasper-compiler") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
