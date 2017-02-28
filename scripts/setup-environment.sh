@@ -23,7 +23,7 @@ $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-f
 $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 10 --topic trucking_data_driverstats
 
 # Move NiFi template into proper location
-echo "Importing NiFi template and restart NiFi.  Existing flow is renamed to flow.xml.gz.bak, and NiFi"
+echo "Importing NiFi template and restarting NiFi.  Existing flow is renamed to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
 cp -f $projDir/trucking-nifi-templates/flow.xml.gz /var/lib/nifi/conf
 $(find / -type f -wholename '/usr/hd*/nifi.sh' -print -quit) restart
