@@ -1,6 +1,7 @@
 package com.orendainx.hortonworks.trucking.topology.nifi
 
 import java.nio.charset.StandardCharsets
+import java.util.Base64
 
 import com.typesafe.scalalogging.Logger
 import org.apache.nifi.storm.{NiFiDataPacket, NiFiDataPacketBuilder, StandardNiFiDataPacket}
@@ -17,7 +18,7 @@ class ByteArrayToNiFiPacket extends NiFiDataPacketBuilder with Serializable {
 
   override def createNiFiDataPacket(tuple: Tuple): NiFiDataPacket = {
     val newAttributes = Map("processed" -> "true").asJava
-    new StandardNiFiDataPacket(tuple.getBinaryByField("data"), newAttributes)
+    new StandardNiFiDataPacket(tuple.getStringByField("data").getBytes(), newAttributes)
   }
 }
 
