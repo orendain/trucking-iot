@@ -22,6 +22,9 @@ $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-f
 $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 10 --topic trucking_data_joined
 $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 10 --topic trucking_data_driverstats
 
+# Stop NiFi
+curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Stop NIFi"}, "ServiceInfo": {"state": "INSTALLED"}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI
+
 # Move NiFi template into proper location
 echo "Importing NiFi template.  Existing flow is renamed to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
@@ -30,6 +33,5 @@ cp -f $projDir/trucking-nifi-templates/flow.xml.gz /var/lib/nifi/conf
 # Set nifi.remote.input.socket.port via Ambari
 /var/lib/ambari-server/resources/scripts/configs.py admin admin 8080 http set sandbox.hortonworks.com Sandbox nifi-properties nifi.remote.input.socket.port 15000
 
-# Restart NiFi via Ambari
-curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Stop NIFi"}, "ServiceInfo": {"state": "INSTALLED"}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI
+# Start NiFi via Ambari
 curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Start NIFi"}, "ServiceInfo": {"state": "STARTED"}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI
