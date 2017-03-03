@@ -1,16 +1,16 @@
 <?xml version="1.0" ?>
 <template encoding-version="1.0">
   <description></description>
-  <groupId>835b3426-015a-1000-d64f-163c3b128166</groupId>
+  <groupId>90e748c3-015a-1000-f68d-292036f42e8f</groupId>
   <name>NiFi-to-NiFi</name>
   <snippet>
     <connections>
       <id>a89c381f-c8b9-1b3a-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
       <backPressureObjectThreshold>10000</backPressureObjectThreshold>
       <destination>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>8c1933f7-0159-1000-0000-000000000000</id>
         <type>PROCESSOR</type>
       </destination>
@@ -18,7 +18,7 @@
       <labelIndex>1</labelIndex>
       <name></name>
       <source>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>1ddd750e-0159-1000-0000-000000000000</id>
         <type>INPUT_PORT</type>
       </source>
@@ -26,11 +26,11 @@
     </connections>
     <connections>
       <id>a89c3822-c8b9-1b3a-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
       <backPressureObjectThreshold>10000</backPressureObjectThreshold>
       <destination>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>a89c3814-c8b9-1b3a-0000-000000000000</id>
         <type>PROCESSOR</type>
       </destination>
@@ -38,7 +38,7 @@
       <labelIndex>1</labelIndex>
       <name></name>
       <source>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>16434fcc-015a-1000-0000-000000000000</id>
         <type>INPUT_PORT</type>
       </source>
@@ -46,11 +46,11 @@
     </connections>
     <connections>
       <id>a89c3a6d-c8b9-1b3a-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
       <backPressureObjectThreshold>10000</backPressureObjectThreshold>
       <destination>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>1ddc4386-0159-1000-0000-000000000000</id>
         <type>OUTPUT_PORT</type>
       </destination>
@@ -59,7 +59,7 @@
       <name></name>
       <selectedRelationships>success</selectedRelationships>
       <source>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>15fddf0f-015a-1000-0000-000000000000</id>
         <type>PROCESSOR</type>
       </source>
@@ -67,11 +67,11 @@
     </connections>
     <connections>
       <id>a89c3a6f-c8b9-1b3a-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
       <backPressureObjectThreshold>10000</backPressureObjectThreshold>
       <destination>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>01591000-4386-1ddc-0000-000000000000</id>
         <type>OUTPUT_PORT</type>
       </destination>
@@ -80,7 +80,7 @@
       <name></name>
       <selectedRelationships>TrafficData</selectedRelationships>
       <source>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>6a3130e0-d0a7-1a73-0000-000000000000</id>
         <type>PROCESSOR</type>
       </source>
@@ -88,11 +88,11 @@
     </connections>
     <connections>
       <id>af8fc573-0159-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
       <backPressureObjectThreshold>10000</backPressureObjectThreshold>
       <destination>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>6a3130e0-d0a7-1a73-0000-000000000000</id>
         <type>PROCESSOR</type>
       </destination>
@@ -101,7 +101,7 @@
       <name></name>
       <selectedRelationships>success</selectedRelationships>
       <source>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>af8fa808-0159-1000-0000-000000000000</id>
         <type>PROCESSOR</type>
       </source>
@@ -109,11 +109,11 @@
     </connections>
     <connections>
       <id>6a313104-d0a7-1a73-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <backPressureDataSizeThreshold>1 GB</backPressureDataSizeThreshold>
       <backPressureObjectThreshold>10000</backPressureObjectThreshold>
       <destination>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>15fddf0f-015a-1000-0000-000000000000</id>
         <type>PROCESSOR</type>
       </destination>
@@ -122,7 +122,7 @@
       <name></name>
       <selectedRelationships>TruckData</selectedRelationships>
       <source>
-        <groupId>835b3426-015a-1000-0000-000000000000</groupId>
+        <groupId>90e748c3-015a-1000-0000-000000000000</groupId>
         <id>6a3130e0-d0a7-1a73-0000-000000000000</id>
         <type>PROCESSOR</type>
       </source>
@@ -130,7 +130,7 @@
     </connections>
     <controllerServices>
       <id>a89c3974-c8b9-1b3a-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <comments></comments>
       <descriptors>
         <entry>
@@ -175,12 +175,15 @@
       <properties>
         <entry>
           <key>input-buffer-size</key>
+          <value>4 kb</value>
         </entry>
         <entry>
           <key>max-text-message-size</key>
+          <value>64 kb</value>
         </entry>
         <entry>
           <key>max-binary-message-size</key>
+          <value>64 kb</value>
         </entry>
         <entry>
           <key>listen-port</key>
@@ -191,6 +194,7 @@
         </entry>
         <entry>
           <key>client-authentication</key>
+          <value>no</value>
         </entry>
       </properties>
       <state>DISABLED</state>
@@ -198,7 +202,7 @@
     </controllerServices>
     <controllerServices>
       <id>a89c3977-c8b9-1b3a-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <comments></comments>
       <descriptors>
         <entry>
@@ -235,12 +239,14 @@
         </entry>
         <entry>
           <key>Server Port</key>
+          <value>4557</value>
         </entry>
         <entry>
           <key>SSL Context Service</key>
         </entry>
         <entry>
           <key>Communications Timeout</key>
+          <value>30 secs</value>
         </entry>
       </properties>
       <state>DISABLED</state>
@@ -248,7 +254,7 @@
     </controllerServices>
     <inputPorts>
       <id>16434fcc-015a-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>1295.7953824528463</x>
         <y>751.1916468652353</y>
@@ -262,7 +268,7 @@
     </inputPorts>
     <inputPorts>
       <id>1ddd750e-0159-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>885.6748836451859</x>
         <y>749.613337760082</y>
@@ -276,7 +282,7 @@
     </inputPorts>
     <outputPorts>
       <id>01591000-4386-1ddc-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>484.2694533757535</x>
         <y>746.5050765762198</y>
@@ -290,7 +296,7 @@
     </outputPorts>
     <outputPorts>
       <id>1ddc4386-0159-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>54.96987566274095</x>
         <y>746.3251449355948</y>
@@ -304,7 +310,7 @@
     </outputPorts>
     <processGroups>
       <id>f2529106-0158-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>1003.6633879904891</x>
         <y>0.0</y>
@@ -975,7 +981,7 @@
     </processGroups>
     <processGroups>
       <id>f25939d2-0158-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>1001.8137082529618</x>
         <y>234.0016866096576</y>
@@ -1548,7 +1554,7 @@
     </processGroups>
     <processors>
       <id>8c1933f7-0159-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>824.3721914073285</x>
         <y>546.1447941391509</y>
@@ -1720,7 +1726,7 @@
     </processors>
     <processors>
       <id>a89c3814-c8b9-1b3a-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>1240.0433339854535</x>
         <y>545.5465885727447</y>
@@ -1892,7 +1898,7 @@
     </processors>
     <processors>
       <id>af8fa808-0159-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>246.2218990379913</x>
         <y>102.57451577690978</y>
@@ -1901,23 +1907,11 @@
         <bulletinLevel>WARN</bulletinLevel>
         <comments></comments>
         <concurrentlySchedulableTaskCount>1</concurrentlySchedulableTaskCount>
-        <descriptors>
-          <entry>
-            <key>Example Property</key>
-            <value>
-              <name>Example Property</name>
-            </value>
-          </entry>
-        </descriptors>
+        <descriptors></descriptors>
         <executionNode>ALL</executionNode>
         <lossTolerant>false</lossTolerant>
         <penaltyDuration>30 sec</penaltyDuration>
-        <properties>
-          <entry>
-            <key>Example Property</key>
-            <value>Something</value>
-          </entry>
-        </properties>
+        <properties></properties>
         <runDurationMillis>0</runDurationMillis>
         <schedulingPeriod>1 sec</schedulingPeriod>
         <schedulingStrategy>TIMER_DRIVEN</schedulingStrategy>
@@ -1933,7 +1927,7 @@
     </processors>
     <processors>
       <id>15fddf0f-015a-1000-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>0.0</x>
         <y>533.1621063312411</y>
@@ -1962,7 +1956,7 @@
     </processors>
     <processors>
       <id>6a3130e0-d0a7-1a73-0000-000000000000</id>
-      <parentGroupId>835b3426-015a-1000-0000-000000000000</parentGroupId>
+      <parentGroupId>90e748c3-015a-1000-0000-000000000000</parentGroupId>
       <position>
         <x>243.8542989794148</x>
         <y>315.3829837031961</y>
@@ -2030,5 +2024,5 @@
       <type>org.apache.nifi.processors.standard.RouteOnAttribute</type>
     </processors>
   </snippet>
-  <timestamp>02/28/2017 08:24:38 UTC</timestamp>
+  <timestamp>03/03/2017 02:48:07 UTC</timestamp>
 </template>
