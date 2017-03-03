@@ -22,4 +22,4 @@ sbt schemaRegistrar/run
 # Storm: Build and deploy the Storm topology
 echo "Building and deploying a Storm topology"
 sbt topology/assembly
-storm jar $projDir/trucking-topology/target/scala-2.11/trucking-topology-assembly-$projVer.jar com.orendainx.hortonworks.trucking.topology.topologies.NiFiToNiFi
+storm jar $projDir/trucking-topology/target/scala-2.11/trucking-topology-assembly-$projVer.jar com.orendainx.hortonworks.trucking.topology.topologies.KafkaToKafka

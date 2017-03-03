@@ -28,7 +28,7 @@ $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-f
 # Move NiFi template into proper location
 echo "Importing NiFi template.  Existing flow is renamed to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
-cp -f $projDir/trucking-nifi-templates/flows/nifi-to-nifi.xml.gz /var/lib/nifi/conf/flow.xml.gz
+cp -f $projDir/trucking-nifi-templates/flows/kafka-to-kafka.xml.gz /var/lib/nifi/conf/flow.xml.gz
 
 # Set nifi.remote.input.socket.port via Ambari
 /var/lib/ambari-server/resources/scripts/configs.py admin admin 8080 http set sandbox.hortonworks.com Sandbox nifi-properties nifi.remote.input.socket.port 15000
