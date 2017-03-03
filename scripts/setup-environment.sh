@@ -3,6 +3,10 @@
 # Variables
 projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
 
+
+# Set nifi.remote.input.socket.port via Ambari (note: Ambari and NiFi should be on at this point)
+/var/lib/ambari-server/resources/scripts/configs.py admin admin 8080 http set sandbox.hortonworks.com Sandbox nifi-properties nifi.remote.input.socket.port 15000
+
 # Stop NiFi via Ambari
 curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Stop NIFi"}, "ServiceInfo": {"state": "INSTALLED"}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI
 
@@ -29,9 +33,6 @@ $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-f
 echo "Importing NiFi template.  Existing flow is renamed to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
 cp -f $projDir/trucking-nifi-templates/flows/kafka-to-kafka.xml.gz /var/lib/nifi/conf/flow.xml.gz
-
-# Set nifi.remote.input.socket.port via Ambari
-/var/lib/ambari-server/resources/scripts/configs.py admin admin 8080 http set sandbox.hortonworks.com Sandbox nifi-properties nifi.remote.input.socket.port 15000
 
 # Start NiFi via Ambari
 curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Start NIFi"}, "ServiceInfo": {"state": "STARTED"}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI
