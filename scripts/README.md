@@ -1,18 +1,13 @@
 # Trucking Scripts
 
-A collection of scripts to help automate the environment setup and project building process.
+A collection of scripts to help automate the setup, deployment and project building process.
 
-- `setup-environment.sh` - Initial environment setup, only needs to be run once when the project is downloaded.
-- `on-server-restart.sh` - Restarts necessary services that aren't brought up on a server restart.
-- `run-project.sh` - Run the project, rebuilding changed components if necessary. 
+> Note: With the exception of build/web-application.sh, all scripts below should be run server-side (i.e. your cluster or sandbox and not on your local machine.)
 
-### Notes
-Ports used:
-- 15005 - Schema Registry Webservice
-- 8091 - NiFi Jetty WebSockets
-- 8765 - NiFi Remote/SiteToSite
-- 4557 - NiFi DistributedMapCacheClientService
-
-###TODO: Things to scriptify:
-- Create Storm View in Ambari if necessary
-- Disable NiFi SSL if necessary
+-   `auto-setup.sh` - Run-once deployment script for auto deploying this reference application.  This uses the other scripts listed below as necessary.
+-   `registry-restart.sh` - Finds the Schema Registry service and (re)starts it.
+-   `setup-environment.sh` - Initial environment setup, only needs to be run once when the project is downloaded.
+-   `build/nifi-bundle.sh` - Build and install the trucking-nifi-bundle subproject, generating a NiFi nar for use.
+-   `build/schema-registrar.sh` - Build and run the trucking-schema-registrar subproject, registering schema with the registry
+-   `build/storm-topology.sh` - Build and deploy the trucking-storm-topology subproject, deploying a Storm topology
+-   `build/web-appication.sh` - Build and run the web application (client-side) to connect to the cluster/sandox and visualize the processed data.

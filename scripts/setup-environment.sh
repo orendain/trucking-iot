@@ -1,10 +1,13 @@
 #!/bin/bash
 
+#
+# Note: This script assumes that Ambari, NiFi and Kafka are up and running at this point.
+#
+
 # Variables
 projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
 
-
-# Set nifi.remote.input.socket.port via Ambari (note: Ambari and NiFi should be on at this point)
+# Set nifi.remote.input.socket.port via Ambari
 /var/lib/ambari-server/resources/scripts/configs.py admin admin 8080 http set sandbox.hortonworks.com Sandbox nifi-properties nifi.remote.input.socket.port 15000
 
 # Stop NiFi via Ambari
@@ -29,7 +32,7 @@ $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-f
 $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 10 --topic trucking_data_joined
 $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-factor 1 --partition 10 --topic trucking_data_driverstats
 
-# Move NiFi template into proper location
+# Move NiFi flow into proper location
 echo "Importing NiFi template.  Existing flow is renamed to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
 cp -f $projDir/trucking-nifi-templates/flows/kafka-to-kafka.xml.gz /var/lib/nifi/conf/flow.xml.gz

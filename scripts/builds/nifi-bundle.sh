@@ -2,7 +2,7 @@
 
 # Variables
 projVer="0.3.2"
-projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd)"
+projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd)"
 nifiLibDir=$(find / -type d -path "/usr/*/nifi/lib" -print -quit)
 nifiSh=$(find / -type f -wholename "/usr/*/nifi.sh" -print -quit)
 
@@ -14,12 +14,3 @@ echo "Building and installing a NiFi nar to NiFi.  NiFi will be restarted"
 sbt nifiBundle/compile
 cp -f $projDir/trucking-nifi-bundle/nifi-trucking-nar/target/nifi-trucking-nar-$projVer.nar $nifiLibDir
 $nifiSh restart
-
-# Schema Registry: Register the project schemas with the registry
-echo "Registering schema with Schema Registry"
-sbt schemaRegistrar/run
-
-# Storm: Build and deploy the Storm topology
-echo "Building and deploying a Storm topology"
-sbt topology/assembly
-storm jar $projDir/trucking-topology/target/scala-2.11/trucking-topology-assembly-$projVer.jar com.orendainx.hortonworks.trucking.topology.topologies.KafkaToKafka
