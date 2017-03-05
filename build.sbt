@@ -1,40 +1,59 @@
-
+/*
+ * Definition of common settings for all subprojects
+ */
 lazy val commonSettings = Seq(
   version := "0.3.2",
   scalaVersion := "2.11.8",
   description := """Trucking IoT application.""",
-  homepage := Some(url("https://github.com/orendain/trucking-iot")),
   organization := "com.orendainx.hortonworks",
+  homepage := Some(url("https://github.com/orendain/trucking-iot")),
   organizationHomepage := Some(url("https://github.com/orendain/trucking-iot")),
   licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
   promptTheme := ScalapenosTheme,
   autoAPIMappings := true
 )
 
+
+
+/*
+ * Root project definition
+ */
 lazy val truckingIot = (project in file("."))
   .settings(commonSettings)
 
-lazy val common = (project in file("trucking-common"))
-    .aggregate(commonJVM, commonJS)
+
+
+/*
+ * Subproject definition for trucking-common
+ */
+lazy val common = (project in file("trucking-common")).aggregate(commonJVM, commonJS)
 lazy val commonCross = crossProject.in(file("trucking-common"))
   .settings(
     commonSettings,
     name := "trucking-common",
-    isSnapshot := true
+    isSnapshot := true // I forget exactly why this was necessary
   )
 lazy val commonJVM = commonCross.jvm
 lazy val commonJS = commonCross.js
 
+
+/*
+ * Subproject definition for trucking-simulator
+ */
 lazy val simulator = (project in file("trucking-simulator"))
   .dependsOn(commonJVM)
   .settings(
-    isSnapshot := true,
     commonSettings,
     name := "trucking-simulator",
-    libraryDependencies ++= Dependencies.simulatorDeps
-
+    libraryDependencies ++= Dependencies.simulatorDeps,
+    isSnapshot := true,
   )
 
+
+
+/*
+ * Subproject definition for trucking-enrichment
+ */
 lazy val enrichment = (project in file("trucking-enrichment"))
   .dependsOn(commonJVM)
   .settings(
@@ -44,6 +63,11 @@ lazy val enrichment = (project in file("trucking-enrichment"))
     isSnapshot := true
   )
 
+
+
+/*
+ * Subproject definition for trucking-schema-registrar
+ */
 lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
   .dependsOn(commonJVM)
   .settings(
@@ -54,11 +78,16 @@ lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
     libraryDependencies ++= Dependencies.schemaRegistrarDeps
   )
 
-lazy val topology = (project in file("trucking-topology"))
+
+
+/*
+ * Subproject definition for trucking-storm-topology
+ */
+lazy val stormTopology = (project in file("trucking-storm-topology"))
   .dependsOn(commonJVM)
   .settings(
     commonSettings,
-    name := "trucking-topology",
+    name := "trucking-storm-topology",
     resolvers += Resolver.mavenLocal,
     resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
     libraryDependencies ++= Dependencies.topologyDeps,
@@ -87,8 +116,11 @@ lazy val topology = (project in file("trucking-topology"))
 )
 
 
-lazy val execScript = taskKey[Unit]("Execute the shell script")
 
+/*
+ * Subproject definition for trucking-nifi-bundle
+ */
+lazy val execScript = taskKey[Unit]("Execute the shell script")
 lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
   .dependsOn(simulator, enrichment)
   .settings(
@@ -103,12 +135,16 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
   )
 
 
-lazy val webAppBackend = (project in file("trucking-web-app/backend"))
-  .dependsOn(topology)
+
+/*
+ * Subproject definition for trucking-web-application/backend
+ */
+lazy val webApplicationBackend = (project in file("trucking-web-application/backend"))
+  .dependsOn(stormTopology)
   .settings(
     commonSettings,
-    name := "trucking-web-app-backend",
-    scalaJSProjects := Seq(webAppFrontend),
+    name := "trucking-web-application-backend",
+    scalaJSProjects := Seq(webApplicationFrontend),
 
     unmanagedResources in Assets ++= Seq(
       baseDirectory.value / "../frontend/target/scala-2.11/trucking-web-app-frontend-sjsx.js",
@@ -120,19 +156,24 @@ lazy val webAppBackend = (project in file("trucking-web-app/backend"))
     //pipelineStages := Seq(digest, gzip),
     compile in Compile := (compile in Compile).dependsOn(scalaJSPipeline).value,
     resolvers += Resolver.mavenLocal, // For topology > schema-registry-serdes
-    libraryDependencies ++= (Seq(filters, cache, ws) ++ Dependencies.webAppBackendDeps),
+    libraryDependencies ++= (Seq(filters, cache, ws) ++ Dependencies.webApplicationBackendDeps),
     scalacOptions += "-Yresolve-term-conflict:package",
     shellPrompt := (state ⇒ promptTheme.value.render(state)), // Override Play's Sbt prompt
     PlayKeys.devSettings := Seq("play.server.http.port" -> "1234")
   ).enablePlugins(PlayScala)
 
-lazy val webAppFrontend = (project in file("trucking-web-app/frontend"))
+
+
+/*
+ * Subproject definition for trucking-web-application/frontend
+ */
+lazy val webApplicationFrontend = (project in file("trucking-web-application/frontend"))
   .dependsOn(commonJS)
   .settings(
     commonSettings,
-    name := "trucking-web-app-frontend",
+    name := "trucking-web-applicationfrontend",
     resolvers += "jitpack" at "https://jitpack.io", // For scalajs-leaflet
-    libraryDependencies ++= Seq("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M6") ++ Dependencies.webAppFrontendDeps,
+    libraryDependencies ++= Seq("io.github.cquiroz" %%% "scala-java-time" % "2.0.0-M6") ++ Dependencies.webApplicationFrontendDeps,
     jsDependencies ++= Seq("org.webjars.npm" % "leaflet" % "1.0.2" / "leaflet.js" commonJSName "Leaflet"),
     ngBootstrap := Some("com.orendainx.hortonworks.trucking.webapp.AppModule")
   ).enablePlugins(ScalaJSPlugin, ScalaJSWeb, Angulate2Plugin)

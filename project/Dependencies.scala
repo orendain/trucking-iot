@@ -72,6 +72,6 @@ object Dependencies {
   val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
   val topologyDeps = Seq(nifiStormSpout, stormCoreProvided, kafka, stormKafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
 
-  val webAppBackendDeps = angular2Deps ++ Seq(scalaJsScripts, webjars, compass, bootstrap, stormCore)
-  val webAppFrontendDeps = Seq(leaflet)
+  val webApplicationBackendDeps = angular2Deps ++ Seq(scalaJsScripts, webjars, compass, bootstrap, stormCore)
+  val webApplicationFrontendDeps = Seq(leaflet)
 }
