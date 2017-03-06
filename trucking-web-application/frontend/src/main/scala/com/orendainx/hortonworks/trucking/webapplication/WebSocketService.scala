@@ -18,7 +18,7 @@ class WebSocketService {
 
   def initialize(): Unit = {
 
-    ws = new WebSocket("ws://sandbox.hortonworks.com:25001/trucking-events")
+    ws = new WebSocket("ws://sandbox.hortonworks.com:17000/trucking-events")
     ws.onopen = onOpen _
     ws.onclose = onClose _
     ws.onerror = onError _
