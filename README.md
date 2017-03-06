@@ -1,6 +1,10 @@
 # Trucking IoT
 
-TODO: Expand this readme.
+The Trucking IoT project is a modern real-time streaming application serving as a reference framework for developing a big data pipeline, complete with a broad range of use cases and powerful reusable core components.
+
+Modern applications can ingest data and leverage analytics in real-time.  These analytics are based on machine learning models typically built using historical big data.  This reference application provides examples of connecting data-in-motion analytics to your application based on Big Data.
+
+From IoT sensor data collection, to flow management, real-time stream processing and analytics, through to machine learning and prediction, this reference project aims to demonstrate the power of open source solutions.
 
 ## Outline
 
@@ -13,47 +17,35 @@ TODO: Expand this readme.
 -   Any HDF/HDP deployment.  For a ready-to-go environment, the [Hortonworks Sandbox](#) is recommended.
 -   For integration with Schema Registry, download and run the setup script located at: <https://github.com/orendain/schema-registry-setup>
 
-
 ## Quick, How Do I Use It?!
 
 // TODO
 
 ## Setup on existing HDF/HDP
 
-1.  On the cluster, download this project.
+1.  On your sandbox/cluster, download this project.
 ```
 git clone https://github.com/orendain/trucking-iot.git
 ```
 
-2.  Run the included auto deploy script.
-```
-trucking-iot/scripts/auto-deploy.sh
-```
-
-
-## Download project and set up environment
-
-Serverside (e.g. HDF node) download this project:
-
-
-Next, run the included script to set up the environment:
-
-```
-
-```
-
-## Run the
-
-, then run the on-server-start script, and finally run the project
-
+2.  Run the included automated deployment script.
 ```
 cd trucking-iot
-./scripts/setup-environment.sh
-./scripts/on-server-restart.sh
-./scripts/run-project.sh
+scripts/auto-deploy.sh
 ```
 
+3.  On your local machine, also download this project.
+```
+git clone https://github.com/orendain/trucking-iot.git
+```
 
+4.  Run the included web application deployment script.
+```
+cd trucking-iot
+scripts/builds/web-application.sh
+```
+
+5.  On your local machine, open a browser and navigate to the web application (by default, runs on port 1234): <http://localhost:1234>
 
 ## Commands
 

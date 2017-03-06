@@ -4,7 +4,6 @@ import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
 import com.orendainx.hortonworks.trucking.simulator.simulators.ManualTickAndFetchSimulator
-import com.typesafe.config.ConfigFactory
 import org.apache.nifi.annotation.behavior._
 import org.apache.nifi.annotation.documentation.{CapabilityDescription, Tags}
 import org.apache.nifi.annotation.lifecycle.{OnRemoved, OnShutdown}
@@ -28,7 +27,6 @@ import scala.collection.JavaConverters._
 class GetTruckingData extends AbstractProcessor {
 
   private var log: ComponentLog = _
-  private lazy val config = ConfigFactory.load()
   private lazy val simulator = ManualTickAndFetchSimulator()
 
   override def init(context: ProcessorInitializationContext): Unit = {
