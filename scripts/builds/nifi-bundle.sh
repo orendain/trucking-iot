@@ -5,7 +5,7 @@ projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd)"
 cd $projDir
 
 # Variables
-projVer=$(cat version.sbt | grep '".*"' -o)
+projVer=$(cat version.sbt | grep '".*"' -o | sed 's/"//g')
 nifiLibDir=$(find / -type d -path "/usr/*/nifi/lib" -print -quit)
 nifiSh=$(find / -type f -wholename "/usr/*/nifi.sh" -print -quit)
 
