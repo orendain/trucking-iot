@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.webapp
+package com.orendainx.hortonworks.trucking.webapplication
 
 import angulate2.std.Component
 

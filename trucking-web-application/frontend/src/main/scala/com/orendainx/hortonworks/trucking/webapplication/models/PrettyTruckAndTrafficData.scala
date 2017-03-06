@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.webapp.models
+package com.orendainx.hortonworks.trucking.webapplication.models
 
 import angulate2.std.Data
 

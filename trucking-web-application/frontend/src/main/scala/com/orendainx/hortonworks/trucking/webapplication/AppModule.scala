@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.webapp
+package com.orendainx.hortonworks.trucking.webapplication
 
 import angulate2.platformBrowser.BrowserModule
 import angulate2.router.RouterModule

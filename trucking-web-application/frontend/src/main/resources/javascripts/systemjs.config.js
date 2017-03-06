@@ -33,10 +33,10 @@
     packages: {
       app: {
         // Main script to be loaded, relative to value of app ('/')
-        main: 'assets/trucking-web-app-frontend-sjsx.js',
+        main: 'assets/trucking-web-application-frontend-sjsx.js',
         map: {
           // Scala.js module to be loaded
-          scalaModule: 'assets/trucking-web-app-frontend-fastopt.js'
+          scalaModule: 'assets/trucking-web-application-frontend-fastopt.js'
         },
         format: 'cjs',
         defaultExtension: 'js'

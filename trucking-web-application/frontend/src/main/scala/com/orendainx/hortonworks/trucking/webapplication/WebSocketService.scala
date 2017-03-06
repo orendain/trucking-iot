@@ -1,7 +1,7 @@
-package com.orendainx.hortonworks.trucking.webapp
+package com.orendainx.hortonworks.trucking.webapplication
 
 import angulate2.std.Injectable
-import com.orendainx.hortonworks.trucking.webapp.models.{PrettyEnrichedTruckAndTrafficData, PrettyEnrichedTruckAndTrafficDataFactory, PrettyTruckAndTrafficData, PrettyTruckAndTrafficDataFactory}
+import com.orendainx.hortonworks.trucking.webapplication.models.{PrettyEnrichedTruckAndTrafficData, PrettyEnrichedTruckAndTrafficDataFactory, PrettyTruckAndTrafficData, PrettyTruckAndTrafficDataFactory}
 import org.scalajs.dom.raw.{CloseEvent, ErrorEvent, Event, MessageEvent, WebSocket}
 
 import scala.collection.mutable

@@ -1,7 +1,7 @@
-package com.orendainx.hortonworks.trucking.webapp
+package com.orendainx.hortonworks.trucking.webapplication
 
 import angulate2.std.{Component, OnInit}
-import com.orendainx.hortonworks.trucking.webapp.models.{PrettyEnrichedTruckAndTrafficData, PrettyTruckAndTrafficData}
+import com.orendainx.hortonworks.trucking.webapplication.models.{PrettyEnrichedTruckAndTrafficData, PrettyTruckAndTrafficData}
 
 import scala.scalajs.js
 

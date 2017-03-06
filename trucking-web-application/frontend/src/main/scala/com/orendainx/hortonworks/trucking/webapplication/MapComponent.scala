@@ -1,9 +1,9 @@
-package com.orendainx.hortonworks.trucking.webapp
+package com.orendainx.hortonworks.trucking.webapplication
 
 import angulate2.std.{Component, OnInit}
 import com.felstar.scalajs.leaflet._
 import com.orendainx.hortonworks.trucking.common.models.TruckEventTypes
-import com.orendainx.hortonworks.trucking.webapp.models.{PrettyEnrichedTruckAndTrafficData}
+import com.orendainx.hortonworks.trucking.webapplication.models.{PrettyEnrichedTruckAndTrafficData}
 
 import scala.collection.mutable
 
