@@ -1,4 +1,4 @@
-logLevel := Level.Debug
+logLevel := Level.Info
 
 // For finding dependency issues
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
