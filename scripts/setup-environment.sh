@@ -32,7 +32,14 @@ $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-f
 
 echo "Importing NiFi flow.  Existing flow is renamed to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
-cp -f $projDir/trucking-nifi-templates/flows/kafka-to-kafka.xml.gz /var/lib/nifi/conf/flow.xml.gz
+cp -f $projDir/trucking-nifi-templates/flows/nifi-to-nifi.xml.gz /var/lib/nifi/conf/flow.xml.gz
+
+# Valid, built-in, flows to move over are:
+#
+# nifi-to-nifi.xml.gz
+# nifi-to-nifi-with-schema.xml.gz
+# kafka-to-kafka.xml.gz
+# kafka-to-kafka-with-schema.xml.gz
 
 # Start NiFi via Ambari
 curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Start NIFi"}, "ServiceInfo": {"state": "STARTED"}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI
