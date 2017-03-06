@@ -4,26 +4,42 @@ TODO: Expand this readme.
 
 ## Outline
 
--   [Requirement: Schema Registry](#requirement-schema-registry)
-- [Creating the Sandbox](#creating-the-sandbox)
+-   [Prerequisites](#prerequisites)
+-   [Quick, How Do I Use It?!](#quick-how-do-i-use-it)
+-   [Setup on existing HDF/HDP](#setup-on-existing-hdf-hdp)
+
+## Prerequisites
+
+-   Any HDF/HDP deployment.  For a ready-to-go environment, the [Hortonworks Sandbox](#) is recommended.
+-   For integration with Schema Registry, download and run the setup script located at: <https://github.com/orendain/schema-registry-setup>
 
 
-## Requirement: Schema Registry
+## Quick, How Do I Use It?!
 
-As a reference application for a registry-enabled application, one requirement is a Schema Registry.  Download and run the setup script located at: https://github.com/orendain/schema-registry-setup
+// TODO
 
+## Setup on existing HDF/HDP
 
-## Download project and set up environment
-
-Download the project:
+1.  On the cluster, download this project.
 ```
 git clone https://github.com/orendain/trucking-iot.git
 ```
 
+2.  Run the included auto deploy script.
+```
+trucking-iot/scripts/auto-deploy.sh
+```
+
+
+## Download project and set up environment
+
+Serverside (e.g. HDF node) download this project:
+
+
 Next, run the included script to set up the environment:
 
 ```
-trucking-iot/scripts/setup-environment.sh
+
 ```
 
 ## Run the
