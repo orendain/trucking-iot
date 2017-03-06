@@ -8,4 +8,4 @@ cd $projDir
 
 # Run the web application
 echo "Building and running the web application"
-sbt webApplicationFrontend/run
+sbt webApplicationBackend/run

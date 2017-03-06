@@ -98,7 +98,7 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
       Process("mvn clean package", baseDirectory.value) !
     },
     (`compile` in Compile) := (compile in Compile).dependsOn(execScript).value,
-    (`package` in Compile) := (`package` in Compile).dependsOn(execScript).value
+    (Keys.`package` in Compile) := (Keys.`package` in Compile).dependsOn(execScript).value
   )
 
 
@@ -116,7 +116,7 @@ lazy val stormTopology = (project in file("trucking-storm-topology"))
 
     // TODO: Temporary, change once schema registry release updated
     assemblyMergeStrategy in assembly := {
-      case PathList("javax", "ws", "rs", "core", "MultivaluedMap.class")      => MergeStrategy.last // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
+      /*case PathList("javax", "ws", "rs", "core", "MultivaluedMap.class")      => MergeStrategy.last // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
       case PathList("javax", "ws", "rs", "core", xs @ _) if xs.startsWith("Response")      => MergeStrategy.last // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
       case PathList("javax", "ws", "rs", "core", xs @ _*)      => MergeStrategy.first // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
       case PathList("javax", "ws", xs @ _*)      => MergeStrategy.first // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
@@ -129,6 +129,7 @@ lazy val stormTopology = (project in file("trucking-storm-topology"))
       case PathList("org", "jvnet", "hk2", xs @ _*)      => MergeStrategy.last
       case PathList("org", "glassfish", xs @ _*)      => MergeStrategy.last
       case PathList("javassist", xs @ _*)      => MergeStrategy.last
+      */
       case x =>
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
