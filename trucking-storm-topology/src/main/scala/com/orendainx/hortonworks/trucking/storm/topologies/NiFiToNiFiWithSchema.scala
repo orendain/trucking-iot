@@ -25,7 +25,7 @@ object NiFiToNiFiWithSchema {
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
-    StormSubmitter.submitTopology("NiFiToNiFiWithSchema", stormConfig, topology)
+    StormSubmitter.submitTopologyWithProgressBar("NiFiToNiFiWithSchema", stormConfig, topology)
   }
 
   /**
@@ -43,7 +43,7 @@ object NiFiToNiFiWithSchema {
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
     stormConfig.put(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name(), config.getString("schema-registry.url"))
 
-    (stormConfig, new NiFiToNiFi(config).buildTopology())
+    (stormConfig, new NiFiToNiFiWithSchema(config).buildTopology())
   }
 }
 
