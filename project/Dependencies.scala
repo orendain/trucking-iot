@@ -47,10 +47,6 @@ object Dependencies {
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.3.0.0.0-55")
     .exclude("commons-beanutils", "commons-beanutils") // vs itself - commons-beanutils/commons-beanutils-core
     .exclude("commons-collections", "commons-collections") // vs itself - commons-beanutils/commons-beanutils-core
-    //.exclude("org.slf4j", "log4j-over-slf4j")
-    //.exclude("javax.servlet", "servlet-api") // vs stormHBase - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
-    //
-    //.exclude("org.mortbay.jetty", "jsp-api-2.1") // vs stormHBase - org.mortbay.jetty/jsp-api-2.1/jars/jsp-api-2.1-6.1.14.jar
 
 
   // Web application backend dependencies
