@@ -5,14 +5,12 @@ object Dependencies {
   // Scala libraries
   lazy val config = "com.typesafe" % "config" % "1.3.1"
   lazy val betterFiles = "com.github.pathikrit" %% "better-files" % "2.16.0"
-  lazy val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
   lazy val scalaCsv = "com.github.tototoshi" %% "scala-csv" % "1.3.4"
-
-  // Logging backends
-  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.1.8"
-
-  // Akka libraries
   lazy val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.4.14"
+
+  // Logging-related dependencies
+  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.1.8"
+  lazy val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
 
   // Apache libraries
   lazy val nifiStormSpout = "org.apache.nifi" % "nifi-storm-spout" % "1.1.0"
@@ -20,16 +18,10 @@ object Dependencies {
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.2" % "provided"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.2"
 
+  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
   lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")
     .exclude("org.apache.zookeeper", "zookeeper")
     .exclude("org.slf4j", "slf4j-log4j12")
-  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
-
-  lazy val stormHbase = ("org.apache.storm" % "storm-hbase" % "1.0.2")
-    .exclude("tomcat", "jasper-compiler") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
-    .exclude("tomcat", "jasper-runtime") // vs itself - org.mortbay.jetty/jsp-2.1/jars/jsp-2.1-6.1.14.jar
-    .exclude("javax.servlet", "servlet-api") // vs itself - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
-    .exclude("javax.servlet", "jsp-api") // vs itself - org.mortbay.jetty/servlet-api-2.5/jars/servlet-api-2.5-6.1.14.jar
 
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.3.0.0.0-55")
     .exclude("org.slf4j", "log4j-over-slf4j")
