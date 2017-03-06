@@ -4,7 +4,7 @@ TODO: Expand this readme.
 
 ## Outline
 
-- [Requirement: Schema Registry](#requirement-schema-registry)
+-   [Requirement: Schema Registry](#requirement-schema-registry)
 - [Creating the Sandbox](#creating-the-sandbox)
 
 

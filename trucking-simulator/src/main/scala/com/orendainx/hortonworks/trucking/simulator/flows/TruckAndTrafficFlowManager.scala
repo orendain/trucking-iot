@@ -1,7 +1,7 @@
 package com.orendainx.hortonworks.trucking.simulator.flows
 
 import akka.actor.{ActorRef, PoisonPill, Props, Terminated}
-import com.orendainx.hortonworks.trucking.common.models.{TrafficData, TruckData}
+import com.orendainx.hortonworks.trucking.commons.models.{TrafficData, TruckData}
 import com.orendainx.hortonworks.trucking.simulator.flows.FlowManager.ShutdownFlow
 import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
 

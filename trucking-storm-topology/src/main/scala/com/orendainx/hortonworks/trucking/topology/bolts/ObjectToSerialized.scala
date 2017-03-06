@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.topology.bolts
 import java.nio.charset.StandardCharsets
 import java.util
 
-import com.orendainx.hortonworks.trucking.common.models.{EnrichedTruckAndTrafficData, WindowedDriverStats}
+import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckAndTrafficData, WindowedDriverStats}
 import com.typesafe.scalalogging.Logger
 import org.apache.storm.task.{OutputCollector, TopologyContext}
 import org.apache.storm.topology.OutputFieldsDeclarer

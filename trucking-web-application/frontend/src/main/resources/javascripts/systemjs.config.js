@@ -15,7 +15,7 @@
       
       // Angular bundles
       '@angular/core': 'webjars:angular__core/bundles/core.umd.min.js',
-      '@angular/common': 'webjars:angular__common/bundles/common.umd.min.js',
+      '@angular/common': 'webjars:angular__common/bundles/commons.umd.min.js',
       '@angular/compiler': 'webjars:angular__compiler/bundles/compiler.umd.min.js',
       '@angular/platform-browser': 'webjars:angular__platform-browser/bundles/platform-browser.umd.min.js',
       '@angular/platform-browser-dynamic': 'webjars:angular__platform-browser-dynamic/bundles/platform-browser-dynamic.umd.min.js',

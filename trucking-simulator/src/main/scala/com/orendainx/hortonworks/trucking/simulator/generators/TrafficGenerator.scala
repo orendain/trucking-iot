@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.simulator.generators
 import java.time.Instant
 
 import akka.actor.{ActorLogging, ActorRef, Props, Stash}
-import com.orendainx.hortonworks.trucking.common.models._
+import com.orendainx.hortonworks.trucking.commons.models._
 import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator
 import com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot.{RequestRoute, ReturnRoute}
 import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}

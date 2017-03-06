@@ -24,17 +24,17 @@ lazy val truckingIot = (project in file("."))
 
 
 /*
- * Subproject definition for trucking-common
+ * Subproject definition for trucking-commons
  */
-lazy val common = (project in file("trucking-common")).aggregate(commonJVM, commonJS)
-lazy val commonCross = crossProject.in(file("trucking-common"))
+lazy val commons = (project in file("trucking-commons")).aggregate(commonsJVM, commonsJS)
+lazy val commonsJVM = commonsCross.jvm
+lazy val commonsJS = commonsCross.js
+lazy val commonsCross = crossProject.in(file("trucking-commons"))
   .settings(
     commonSettings,
-    name := "trucking-common",
+    name := "trucking-commons",
     isSnapshot := true // TODO: I forget exactly why this was necessary
   )
-lazy val commonJVM = commonCross.jvm
-lazy val commonJS = commonCross.js
 
 
 
@@ -42,7 +42,7 @@ lazy val commonJS = commonCross.js
  * Subproject definition for trucking-simulator
  */
 lazy val simulator = (project in file("trucking-simulator"))
-  .dependsOn(commonJVM)
+  .dependsOn(commonsJVM)
   .settings(
     commonSettings,
     name := "trucking-simulator",
@@ -56,7 +56,7 @@ lazy val simulator = (project in file("trucking-simulator"))
  * Subproject definition for trucking-enrichment
  */
 lazy val enrichment = (project in file("trucking-enrichment"))
-  .dependsOn(commonJVM)
+  .dependsOn(commonsJVM)
   .settings(
     commonSettings,
     name := "trucking-enrichment",
@@ -70,7 +70,7 @@ lazy val enrichment = (project in file("trucking-enrichment"))
  * Subproject definition for trucking-schema-registrar
  */
 lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
-  .dependsOn(commonJVM)
+  .dependsOn(commonsJVM)
   .settings(
     commonSettings,
     name := "trucking-schema-registrar",
@@ -88,11 +88,11 @@ lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
  */
 lazy val execScript = taskKey[Unit]("Execute the shell script")
 lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
-  .dependsOn(commonJVM, simulator, enrichment)
+  .dependsOn(commonsJVM, simulator, enrichment)
   .settings(
     commonSettings,
     execScript := {
-      (publishM2 in Compile in commonJVM).value
+      (publishM2 in Compile in commonsJVM).value
       (publishM2 in Compile in simulator).value
       (publishM2 in Compile in enrichment).value
       Process("mvn clean package", baseDirectory.value) !
@@ -107,7 +107,7 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
  * Subproject definition for trucking-storm-topology
  */
 lazy val stormTopology = (project in file("trucking-storm-topology"))
-  .dependsOn(commonJVM)
+  .dependsOn(commonsJVM)
   .settings(
     commonSettings,
     name := "trucking-storm-topology",
@@ -177,7 +177,7 @@ lazy val webApplicationBackend = (project in file("trucking-web-application/back
  * Build using ScalaJS, leverages the Angular2 framework, using ScalaJS facades provided by the ScalaJS Angulate2 plugin
  */
 lazy val webApplicationFrontend = (project in file("trucking-web-application/frontend"))
-  .dependsOn(commonJS)
+  .dependsOn(commonsJS)
   .settings(
     commonSettings,
     name := "trucking-web-application-frontend",
