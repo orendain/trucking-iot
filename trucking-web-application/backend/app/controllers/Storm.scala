@@ -3,7 +3,7 @@ package controllers
 import java.util
 import javax.inject._
 
-import com.orendainx.hortonworks.trucking.topology.topologies.NiFiToNiFi
+import com.orendainx.hortonworks.trucking.storm.topologies.NiFiToNiFi
 import org.apache.storm.{Config, StormSubmitter}
 import org.apache.storm.shade.org.json.simple.JSONValue
 import org.apache.storm.utils.{NimbusClient, Utils}

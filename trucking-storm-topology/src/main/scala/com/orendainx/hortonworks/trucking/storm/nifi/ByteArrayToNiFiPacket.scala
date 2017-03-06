@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.topology.nifi
+package com.orendainx.hortonworks.trucking.storm.nifi
 
 import java.nio.charset.StandardCharsets
 import java.util.Base64

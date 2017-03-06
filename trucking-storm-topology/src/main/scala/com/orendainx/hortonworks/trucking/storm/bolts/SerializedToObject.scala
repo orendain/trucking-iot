@@ -1,10 +1,9 @@
-package com.orendainx.hortonworks.trucking.topology.bolts
+package com.orendainx.hortonworks.trucking.storm.bolts
 
-import java.nio.charset.StandardCharsets
 import java.util
 
+import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckData, TrafficData}
 import com.typesafe.scalalogging.Logger
-import org.apache.nifi.storm.NiFiDataPacket
 import org.apache.storm.task.{OutputCollector, TopologyContext}
 import org.apache.storm.topology.OutputFieldsDeclarer
 import org.apache.storm.topology.base.BaseRichBolt
@@ -15,7 +14,7 @@ import org.apache.storm.tuple.{Fields, Tuple, Values}
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class NiFiPacketToSerialized extends BaseRichBolt {
+class SerializedToObject extends BaseRichBolt {
 
   private lazy val log = Logger(this.getClass)
   private var outputCollector: OutputCollector = _
@@ -25,9 +24,14 @@ class NiFiPacketToSerialized extends BaseRichBolt {
   }
 
   override def execute(tuple: Tuple): Unit = {
-    val dp = tuple.getValueByField("nifiDataPacket").asInstanceOf[NiFiDataPacket]
 
-    outputCollector.emit(new Values(dp.getAttributes.get("dataType"), new String(dp.getContent, StandardCharsets.UTF_8)))
+    // Convert each string into its proper case class instance (e.g. EnrichedTruckData or TrafficData)
+    val (dataType, data) = tuple.getStringByField("dataType") match {
+      case typ @ "EnrichedTruckData" => (typ, EnrichedTruckData.fromCSV(tuple.getStringByField("data")))
+      case typ @ "TrafficData" => (typ, TrafficData.fromCSV(tuple.getStringByField("data")))
+    }
+
+    outputCollector.emit(new Values(dataType, data))
     outputCollector.ack(tuple)
   }
 

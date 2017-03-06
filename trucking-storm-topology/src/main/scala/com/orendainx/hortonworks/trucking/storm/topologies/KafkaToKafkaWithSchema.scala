@@ -1,9 +1,9 @@
-package com.orendainx.hortonworks.trucking.topology.topologies
+package com.orendainx.hortonworks.trucking.storm.topologies
 
 import java.util.Properties
 
-import com.orendainx.hortonworks.trucking.topology.bolts._
-import com.orendainx.hortonworks.trucking.topology.schemes.BytesToStringScheme
+import com.orendainx.hortonworks.trucking.storm.bolts._
+import com.orendainx.hortonworks.trucking.storm.schemes.BytesToStringScheme
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
 import org.apache.storm.generated.StormTopology
@@ -24,12 +24,12 @@ import scala.concurrent.duration._
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-object KafkaToKafka {
+object KafkaToKafkaWithSchema {
 
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
-    StormSubmitter.submitTopology("KafkaToKafka", stormConfig, topology)
+    StormSubmitter.submitTopology("KafkaToKafkaWithSchema", stormConfig, topology)
   }
 
   /**
@@ -46,7 +46,7 @@ object KafkaToKafka {
     stormConfig.setMessageTimeoutSecs(config.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
 
-    (stormConfig, new KafkaToKafka(config).buildTopology())
+    (stormConfig, new KafkaToKafkaWithSchema(config).buildTopology())
   }
 }
 
@@ -58,12 +58,11 @@ object KafkaToKafka {
   *   - KafkaSpout (for injesting TrafficData)
   * Bolt:
   *   - TruckAndTrafficStreamJoinBolt (for joining streams together)
-  *   - HBaseBolt (persist events to HDFS)
   *   - KafkaBolt (push to messaging hub)
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class KafkaToKafka(config: TypeConfig) {
+class KafkaToKafkaWithSchema(config: TypeConfig) {
 
   private lazy val logger = Logger(this.getClass)
 
@@ -77,7 +76,7 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     // Default number of tasks (instances) of components to spawn
-    val defaultTaskCount = config.getInt(Config.TOPOLOGY_TASKS)
+    val taskCount = config.getInt(Config.TOPOLOGY_TASKS)
     val zkHosts = new ZkHosts(config.getString(Config.STORM_ZOOKEEPER_SERVERS))
     val zkRoot = config.getString(Config.STORM_ZOOKEEPER_ROOT)
     val groupId = config.getString("kafka.group-id")
@@ -93,6 +92,11 @@ class KafkaToKafka(config: TypeConfig) {
 
 
 
+
+
+
+    // TODO: TruckDataScheme to know how to read serialized version of data
+
     // Build Kafka spouts for ingesting trucking data
     // Extract values from config
     val truckTopic = config.getString("kafka.truck-data.topic")
@@ -100,10 +104,10 @@ class KafkaToKafka(config: TypeConfig) {
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val truckSpoutConfig = new SpoutConfig(zkHosts, truckTopic, zkRoot, groupId)
     truckSpoutConfig.scheme = new SchemeAsMultiScheme(new BytesToStringScheme("EnrichedTruckData"))
-    truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
+    truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
-    builder.setSpout("enrichedTruckData", new KafkaSpout(truckSpoutConfig), defaultTaskCount)
+    builder.setSpout("enrichedTruckData", new KafkaSpout(truckSpoutConfig), taskCount)
 
 
 
@@ -117,10 +121,10 @@ class KafkaToKafka(config: TypeConfig) {
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val trafficSpoutConfig = new SpoutConfig(zkHosts, trafficTopic, zkRoot, groupId)
     trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BytesToStringScheme("TrafficData"))
-    trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
+    trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
-    builder.setSpout("trafficData", new KafkaSpout(trafficSpoutConfig), defaultTaskCount)
+    builder.setSpout("trafficData", new KafkaSpout(trafficSpoutConfig), taskCount)
 
 
 
@@ -128,7 +132,7 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     // Ser
-    builder.setBolt("unpackagedData", new SerializedToObject(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
 
 
@@ -140,7 +144,7 @@ class KafkaToKafka(config: TypeConfig) {
     // and "trafficData" streams. globalGrouping suggests that data from both streams be sent to *each* instance of this bolt
     // (in case there are more than one in the cluster)
     val joinBolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(windowDuration, MILLISECONDS))
-    builder.setBolt("joinedData", joinBolt, defaultTaskCount).globalGrouping("unpackagedData")
+    builder.setBolt("joinedData", joinBolt, taskCount).globalGrouping("unpackagedData")
 
 
 
@@ -155,7 +159,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Build bold and then place in the topology blueprint connected to the "joinedData" stream.  ShuffleGrouping suggests
     // that tuples from that stream are distributed across this bolt's tasks (instances), so as to keep load levels even.
     val statsBolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount))
-    builder.setBolt("windowedDriverStats", statsBolt, defaultTaskCount).shuffleGrouping("joinedData")
+    builder.setBolt("windowedDriverStats", statsBolt, taskCount).shuffleGrouping("joinedData")
 
 
 
@@ -163,8 +167,8 @@ class KafkaToKafka(config: TypeConfig) {
     /*
      * Serialize data before pushing out to anywhere.
      */
-    builder.setBolt("serializedJoinedData", new ObjectToSerialized()).shuffleGrouping("joinedData")
-    builder.setBolt("serializedDriverStats", new ObjectToSerialized()).shuffleGrouping("windowedDriverStats")
+    builder.setBolt("serializedJoinedData", new ObjectToSerializedWithSchema()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedDriverStats", new ObjectToSerializedWithSchema()).shuffleGrouping("windowedDriverStats")
 
 
 
@@ -181,11 +185,11 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Build a KafkaBolt
     val truckingKafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.joined-data.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
+      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.trucking-data.topic")))
+      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper())
       .withProducerProperties(kafkaBoltProps)
 
-    builder.setBolt("joinedDataToKafka", truckingKafkaBolt, defaultTaskCount).shuffleGrouping("serializedJoinedData")
+    builder.setBolt("joinedDataToKafka", truckingKafkaBolt, taskCount).shuffleGrouping("serializedJoinedData")
 
 
 
@@ -195,11 +199,11 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Build a KafkaBolt
     val statsKafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driver-stats.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
+      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driverstats-data.topic")))
+      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "stringSerializedData"))
       .withProducerProperties(kafkaBoltProps)
 
-    builder.setBolt("driverStatsToKafka", statsKafkaBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats")
+    builder.setBolt("driverStatsToKafka", statsKafkaBolt, taskCount).shuffleGrouping("serializedDriverStats")
 
 
 
@@ -219,5 +223,4 @@ class KafkaToKafka(config: TypeConfig) {
     // Finally, create the topology
     builder.createTopology()
   }
-
 }

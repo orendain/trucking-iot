@@ -1,8 +1,8 @@
-package com.orendainx.hortonworks.trucking.topology.topologies
+package com.orendainx.hortonworks.trucking.storm.topologies
 
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.orendainx.hortonworks.trucking.topology.bolts._
-import com.orendainx.hortonworks.trucking.topology.nifi.ByteArrayToNiFiPacket
+import com.orendainx.hortonworks.trucking.storm.bolts._
+import com.orendainx.hortonworks.trucking.storm.nifi.ByteArrayToNiFiPacket
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
 import org.apache.nifi.remote.client.SiteToSiteClient
@@ -20,12 +20,12 @@ import scala.concurrent.duration._
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-object NiFiToNiFi {
+object NiFiToNiFiWithSchema {
 
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
-    StormSubmitter.submitTopology("NiFiToNiFi", stormConfig, topology)
+    StormSubmitter.submitTopology("NiFiToNiFiWithSchema", stormConfig, topology)
   }
 
   /**
@@ -41,6 +41,7 @@ object NiFiToNiFi {
     stormConfig.setDebug(config.getBoolean(Config.TOPOLOGY_DEBUG))
     stormConfig.setMessageTimeoutSecs(config.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
+    stormConfig.put(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name(), config.getString("schema-registry.url"))
 
     (stormConfig, new NiFiToNiFi(config).buildTopology())
   }
@@ -53,17 +54,17 @@ object NiFiToNiFi {
   *   - NiFiSpout (for injesting EnrichedTruckData from NiFi)
   *   - NiFiSpout (for injesting TrafficData from NiFi)
   * Bolt:
-  *   - NiFiPacketToObject (for converting from NiFi packet to JVM object)
+  *   - NiFiPacketWithSchemaToObject (for converting from NiFi packet with schema to JVM object)
   *   - TruckAndTrafficJoinBolt (for joining EnrichedTruckData and TrafficData streams into EnrichedTruckAndTrafficData)
   *   - DataWindowingBolt (for generating driver stats from trucking data)
-  *   - ObjectToSerialized (for serializing JVM object into array of bytes)
+  *   - ObjectToSerializedWithSchema (for serializing JVM object into array of bytes with schema)
   *   - NiFiBolt (for sending data back out to NiFi)
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class NiFiToNiFi(config: TypeConfig) {
+class NiFiToNiFiWithSchema(config: TypeConfig) {
 
-  private lazy val logger = Logger(this.getClass)
+  private lazy val logger = Logger(classOf[NiFiToNiFi])
   private lazy val NiFiUrl: String = config.getString("nifi.url")
 
   /**
@@ -102,11 +103,10 @@ class NiFiToNiFi(config: TypeConfig) {
 
 
 
-    //
     builder.setBolt("serializedData", new NiFiPacketToSerialized(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
+    builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), defaultTaskCount).shuffleGrouping("serializedData")
 
-    builder.setBolt("unpackagedData", new SerializedToObject(), defaultTaskCount).shuffleGrouping("serializedData")
 
 
     /*
@@ -138,11 +138,12 @@ class NiFiToNiFi(config: TypeConfig) {
 
 
 
+
     /*
      * Serialize data before pushing out to anywhere.
      */
-    builder.setBolt("serializedJoinedData", new ObjectToSerialized()).shuffleGrouping("joinedData")
-    builder.setBolt("serializedDriverStats", new ObjectToSerialized()).shuffleGrouping("windowedDriverStats")
+    builder.setBolt("serializedJoinedData", new ObjectToSerializedWithSchema()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedDriverStats", new ObjectToSerializedWithSchema()).shuffleGrouping("windowedDriverStats")
 
 
 
@@ -162,6 +163,8 @@ class NiFiToNiFi(config: TypeConfig) {
     builder.setBolt("joinedDataToNiFi", joinedNifiBolt, defaultTaskCount).shuffleGrouping("serializedJoinedData")
 
 
+
+
     val statsNifiPort = config.getString("nifi.driver-stats.port-name")
     val statsNifiFrequency = config.getInt("nifi.driver-stats.tick-frequency")
     val statsNifiBatchSize = config.getInt("nifi.driver-stats.batch-size")
@@ -171,6 +174,10 @@ class NiFiToNiFi(config: TypeConfig) {
     val statsNifiBolt = new NiFiBolt(statsBoltConfig, new ByteArrayToNiFiPacket(), statsNifiFrequency).withBatchSize(statsNifiBatchSize)
 
     builder.setBolt("driverStatsToNifi", statsNifiBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats")
+
+
+
+
 
 
 

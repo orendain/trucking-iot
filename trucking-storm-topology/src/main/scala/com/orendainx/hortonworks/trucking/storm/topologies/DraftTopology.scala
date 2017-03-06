@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.topology.topologies
+package com.orendainx.hortonworks.trucking.storm.topologies
 
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
