@@ -38,10 +38,10 @@ object Dependencies {
 
 
   // See: http://stackoverflow.com/questions/33054294/kafkaspout-throws-noclassdeffounderror-for-log4j
+  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
   lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")
     .exclude("org.apache.zookeeper", "zookeeper")
     .exclude("org.slf4j", "slf4j-log4j12")
-  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
 
 
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.3.0.0.0-55")
