@@ -17,3 +17,5 @@ $scriptDir/builds/schema-registrar.sh
 # Build and deploy the Storm topology
 $scriptDir/builds/storm-topology.sh
 
+# Build and run the web application
+$scriptDir/builds/web-application.sh
