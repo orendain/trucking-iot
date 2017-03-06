@@ -112,7 +112,7 @@ lazy val stormTopology = (project in file("trucking-storm-topology"))
     commonSettings,
     name := "trucking-storm-topology",
     resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
-    libraryDependencies ++= Dependencies.topologyDeps,
+    libraryDependencies ++= Dependencies.stormTopologyDeps,
 
     // TODO: Temporary, change once schema registry release updated
     assemblyMergeStrategy in assembly := {
