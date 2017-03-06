@@ -32,7 +32,7 @@ object Dependencies {
 
 
   // Storm-related dependencies
-  lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.1.0" % "provided"
+  lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.3" % "provided"
   lazy val stormNifi = "org.apache.nifi" % "nifi-storm-spout" % "1.1.0"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.3"
 

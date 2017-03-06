@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# Variables
-projVer="0.3.2"
-projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd)"
-
 # Jump to the project directory for executing SBT commands
+projDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd)"
 cd $projDir
+
+projVer=$(cat version.sbt | grep '".*"' -o)
 
 echo "Building and deploying the Storm topology"
 sbt stormTopology/assembly
