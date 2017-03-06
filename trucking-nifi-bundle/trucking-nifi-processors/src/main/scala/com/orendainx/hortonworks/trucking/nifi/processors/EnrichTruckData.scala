@@ -32,6 +32,7 @@ import scala.language.implicitConversions
 class EnrichTruckData extends AbstractProcessor {
 
   private var log: ComponentLog = _
+  private val RelSuccess = new Relationship.Builder().name("success").description("All generated data is routed to this relationship.").build
 
   override def init(context: ProcessorInitializationContext): Unit = {
     log = context.getLogger
@@ -82,7 +83,5 @@ class EnrichTruckData extends AbstractProcessor {
   // Define properties and relationships
   override def getSupportedPropertyDescriptors: java.util.List[PropertyDescriptor] = List.empty[PropertyDescriptor].asJava
 
-  override def getRelationships: java.util.Set[Relationship] = Set(
-    new Relationship.Builder().name("success").description("All generated data is routed to this relationship.").build
-  ).asJava
+  override def getRelationships: java.util.Set[Relationship] = Set(RelSuccess).asJava
 }
