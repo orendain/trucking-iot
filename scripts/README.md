@@ -4,7 +4,7 @@ A collection of scripts to help automate the setup, deployment and project build
 
 > Note: With the exception of build/web-application.sh, all scripts below should be run server-side (i.e. your cluster or sandbox and not on your local machine.)
 
--   `auto-setup.sh` - Run-once deployment script for auto deploying this reference application.  This uses the other scripts listed below as necessary.
+-   `auto-deploy.sh` - Run-once deployment script for auto deploying this reference application.  This uses the other scripts listed below as necessary.
 -   `registry-restart.sh` - Finds the Schema Registry service and (re)starts it.
 -   `setup-environment.sh` - Initial environment setup, only needs to be run once when the project is downloaded.
 -   `build/nifi-bundle.sh` - Build and install the trucking-nifi-bundle subproject, generating a NiFi nar for use.
