@@ -26,7 +26,7 @@ class NiFiPacketToBytes extends BaseRichBolt {
   override def execute(tuple: Tuple): Unit = {
     val dp = tuple.getValueByField("nifiDataPacket").asInstanceOf[NiFiDataPacket]
 
-    log.info(s"Contents: ${new String(dp.getContent)}")
+    //log.info(s"Contents: ${new String(dp.getContent)}")
 
     outputCollector.emit(new Values(dp.getAttributes.get("dataType"), dp.getContent))
     outputCollector.ack(tuple)

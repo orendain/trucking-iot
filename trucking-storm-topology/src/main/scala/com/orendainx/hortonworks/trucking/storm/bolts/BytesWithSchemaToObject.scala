@@ -53,7 +53,7 @@ class BytesWithSchemaToObject extends BaseRichBolt {
     // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
     val bytes = new ByteArrayInputStream(tuple.getBinaryByField("data"))
     log.info(s"str2: ${new String(tuple.getBinaryByField("data"))}")
-    log.info(s"bytes: ${bytes.toString}")
+    //log.info(s"bytes: ${bytes.toString}")
     val (dataType, data) = tuple.getStringByField("dataType") match {
       case typ @ "EnrichedTruckData" =>
         log.info(s"des: ${deserializer.deserialize(bytes, truckDataSchemaMetadata, null)}")
