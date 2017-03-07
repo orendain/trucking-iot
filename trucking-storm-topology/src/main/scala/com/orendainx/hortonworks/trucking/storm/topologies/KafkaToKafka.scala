@@ -29,7 +29,7 @@ object KafkaToKafka {
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
-    StormSubmitter.submitTopology("KafkaToKafka", stormConfig, topology)
+    StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", stormConfig, topology)
   }
 
   /**

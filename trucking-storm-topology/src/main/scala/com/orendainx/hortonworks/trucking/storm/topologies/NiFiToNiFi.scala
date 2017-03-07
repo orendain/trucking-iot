@@ -25,7 +25,7 @@ object NiFiToNiFi {
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
-    StormSubmitter.submitTopology("NiFiToNiFi", stormConfig, topology)
+    StormSubmitter.submitTopologyWithProgressBar("NiFiToNiFi", stormConfig, topology)
   }
 
   /**
