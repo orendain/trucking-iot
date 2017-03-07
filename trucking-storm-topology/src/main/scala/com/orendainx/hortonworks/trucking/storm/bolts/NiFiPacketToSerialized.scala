@@ -27,7 +27,13 @@ class NiFiPacketToSerialized extends BaseRichBolt {
   override def execute(tuple: Tuple): Unit = {
     val dp = tuple.getValueByField("nifiDataPacket").asInstanceOf[NiFiDataPacket]
 
-    outputCollector.emit(new Values(dp.getAttributes.get("dataType"), new String(dp.getContent, StandardCharsets.UTF_8)))
+    val content = dp.getContent
+    val str = new String(content, StandardCharsets.UTF_8)
+
+    import java.util.Base64
+    val dec = Base64.getDecoder.decode(content)
+
+    outputCollector.emit(new Values(dp.getAttributes.get("dataType"), str))
     outputCollector.ack(tuple)
   }
 
