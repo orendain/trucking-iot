@@ -14,6 +14,8 @@ import org.apache.storm.tuple.{Fields, Tuple, Values}
 /**
   * Convert Tuples in the form of NiFiDataPackets into Tuples of their respective JVM objects.
   *
+  * // TODO: Unused class
+  *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 class NiFiPacketToObject extends BaseRichBolt {

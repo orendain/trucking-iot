@@ -51,11 +51,16 @@ class SerializedWithSchemaToObject extends BaseRichBolt {
   override def execute(tuple: Tuple): Unit = {
 
     // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
-    val bytes = new ByteArrayInputStream(tuple.getStringByField("data").getBytes(StandardCharsets.UTF_8))
+    val str = tuple.getStringByField("data").getBytes(StandardCharsets.UTF_8)
+    log.info(s"str2: $str")
+    val bytes = new ByteArrayInputStream(str)
+    log.info(s"bytes: $bytes")
     val (dataType, data) = tuple.getStringByField("dataType") match {
       case typ @ "EnrichedTruckData" =>
+        log.info(s"des: ${deserializer.deserialize(bytes, truckDataSchemaMetadata, null)}")
         (typ, recordToEnrichedTruckData(deserializer.deserialize(bytes, truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
       case typ @ "TrafficData" =>
+        log.info(s"des: ${deserializer.deserialize(bytes, trafficDataSchemaMetadata, null)}")
         (typ, recordToTrafficData(deserializer.deserialize(bytes, trafficDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
     }
 

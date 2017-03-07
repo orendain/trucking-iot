@@ -33,8 +33,8 @@ class NiFiPacketToSerialized extends BaseRichBolt {
     log.info(s"Content: $content")
     log.info(s"str: $str")
 
-    import java.util.Base64
-    val dec = Base64.getDecoder.decode(content)
+    //import java.util.Base64
+    //val dec = Base64.getDecoder.decode(content)
 
     outputCollector.emit(new Values(dp.getAttributes.get("dataType"), str))
     outputCollector.ack(tuple)
