@@ -30,6 +30,9 @@ class NiFiPacketToSerialized extends BaseRichBolt {
     val content = dp.getContent
     val str = new String(content, StandardCharsets.UTF_8)
 
+    log.info(s"Content: $content")
+    log.info(s"str: $str")
+
     import java.util.Base64
     val dec = Base64.getDecoder.decode(content)
 
