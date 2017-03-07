@@ -23,7 +23,7 @@ import scala.collection.JavaConversions._
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class SerializedWithSchemaToObject extends BaseRichBolt {
+class BytesWithSchemaToObject extends BaseRichBolt {
 
   private lazy val log = Logger(this.getClass)
   private var outputCollector: OutputCollector = _
@@ -51,9 +51,8 @@ class SerializedWithSchemaToObject extends BaseRichBolt {
   override def execute(tuple: Tuple): Unit = {
 
     // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
-    val str = tuple.getStringByField("data").getBytes(StandardCharsets.UTF_8)
     log.info(s"str2: ${tuple.getStringByField("data")}")
-    val bytes = new ByteArrayInputStream(str)
+    val bytes = new ByteArrayInputStream(tuple.getBinaryByField("data"))
     log.info(s"bytes: $bytes")
     val (dataType, data) = tuple.getStringByField("dataType") match {
       case typ @ "EnrichedTruckData" =>

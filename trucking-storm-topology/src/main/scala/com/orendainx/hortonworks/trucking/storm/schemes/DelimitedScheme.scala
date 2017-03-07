@@ -14,22 +14,32 @@ import org.apache.storm.utils.{Utils => StormUtils}
 abstract class DelimitedScheme(delimiter: String) extends Scheme {
 
   /**
-    * Deserialize and split a string in a [[ByteBuffer]] into an array of strings.
+    * Deserialize and split a byteBuffer in a [[ByteBuffer]] into an [[Array]] of [[Byte]]s.
     *
-    * @param string The [[ByteBuffer]] to be parsed as a raw string.
+    * @param byteBuffer The [[ByteBuffer]] to be parsed as a raw byteBuffer.
     * @return The array of strings resulting from splitting the [[ByteBuffer]] on the object's specified delimiter.
     */
-  def deserializeString(string: ByteBuffer): String = {
-    if (string.hasArray) new String(string.array(), string.arrayOffset() + string.position(), string.remaining())
-    else new String(StormUtils.toByteArray(string), UTF_8)
+  protected def deserializeAsBytes(byteBuffer: ByteBuffer): Array[Byte] = {
+    if (byteBuffer.hasArray) {
+      val buf = new Array[Byte](byteBuffer.remaining())
+      byteBuffer.get(buf, byteBuffer.arrayOffset() + byteBuffer.position(), byteBuffer.remaining())
+      buf
+    } else StormUtils.toByteArray(byteBuffer)
   }
 
-  def deserializeStringAndSplit(string: ByteBuffer): Array[String] = {
-    val rawString = if (string.hasArray)
-      new String(string.array(), string.arrayOffset() + string.position(), string.remaining())
-    else
-      new String(StormUtils.toByteArray(string), UTF_8)
+  /**
+    * Deserialize a byteBuffer in a [[ByteBuffer]] into a [[String]].
+    *
+    * @param byteBuffer The [[ByteBuffer]] to be parsed as a raw byteBuffer.
+    * @return The array of strings resulting from splitting the [[ByteBuffer]] on the object's specified delimiter.
+    */
+  protected def deserializeAsString(byteBuffer: ByteBuffer): String = new String(deserializeAsBytes(byteBuffer), UTF_8)
 
-    rawString.split(delimiter)
-  }
+  /**
+    * Deserialize and split a byteBuffer in a [[ByteBuffer]] into an array of strings.
+    *
+    * @param byteBuffer The [[ByteBuffer]] to be parsed as a raw byteBuffer.
+    * @return The array of strings resulting from splitting the [[ByteBuffer]] on the object's specified delimiter.
+    */
+  protected def deserializeStringAndSplit(byteBuffer: ByteBuffer): Array[String] = deserializeAsString(byteBuffer).split(delimiter)
 }

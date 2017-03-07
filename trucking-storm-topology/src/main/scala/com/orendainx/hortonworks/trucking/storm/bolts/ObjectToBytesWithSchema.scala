@@ -20,7 +20,7 @@ import scala.collection.JavaConverters._
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class ObjectToSerializedWithSchema extends BaseRichBolt {
+class ObjectToBytesWithSchema extends BaseRichBolt {
 
   private lazy val log = Logger(this.getClass)
   private var outputCollector: OutputCollector = _

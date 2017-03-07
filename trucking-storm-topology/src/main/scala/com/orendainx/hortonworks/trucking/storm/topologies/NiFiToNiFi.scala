@@ -89,7 +89,7 @@ class NiFiToNiFi(config: TypeConfig) {
     val truckNifiPort = config.getString("nifi.truck-data.port-name")
     val trafficNifiPort = config.getString("nifi.traffic-data.port-name")
 
-    // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
+    // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded byteBuffer.
     // Attempt to sync up with the join bolt, keeping back pressure in NiFi
     val truckSpoutConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(truckNifiPort)
       .requestBatchDuration(batchDuration, MILLISECONDS).buildConfig()

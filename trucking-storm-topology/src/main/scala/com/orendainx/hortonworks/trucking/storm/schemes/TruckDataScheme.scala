@@ -27,7 +27,7 @@ object TruckDataScheme extends DelimitedScheme("\\|") {
     val speed = strings(8)
     val eventType = strings(9)
 
-    // TODO: Q: Feed strings directly into Values()?  Benefit to unpackaging string into each field's appropriate type?
+    // TODO: Q: Feed strings directly into Values()?  Benefit to unpackaging byteBuffer into each field's appropriate type?
     new Values(eventTime, truckId, driverId, driverName, routeId, routeName, latitude, longitude, speed, eventType)
   }
 

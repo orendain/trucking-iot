@@ -57,7 +57,7 @@ object NiFiToNiFiWithSchema {
   *   - NiFiPacketWithSchemaToObject (for converting from NiFi packet with schema to JVM object)
   *   - TruckAndTrafficJoinBolt (for joining EnrichedTruckData and TrafficData streams into EnrichedTruckAndTrafficData)
   *   - DataWindowingBolt (for generating driver stats from trucking data)
-  *   - ObjectToSerializedWithSchema (for serializing JVM object into array of bytes with schema)
+  *   - ObjectToBytesWithSchema (for serializing JVM object into array of bytes with schema)
   *   - NiFiBolt (for sending data back out to NiFi)
   *
   * @author Edgar Orendain <edgar@orendainx.com>
@@ -90,7 +90,7 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     val truckNifiPort = config.getString("nifi.truck-data.port-name")
     val trafficNifiPort = config.getString("nifi.traffic-data.port-name")
 
-    // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded string.
+    // This assumes that the data is text data, as it will map the byte array received from NiFi to a UTF-8 Encoded byteBuffer.
     // Attempt to sync up with the join bolt, keeping back pressure in NiFi
     val truckSpoutConfig = new SiteToSiteClient.Builder().url(NiFiUrl).portName(truckNifiPort)
       .requestBatchDuration(batchDuration, MILLISECONDS).buildConfig()
@@ -103,9 +103,11 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
 
 
 
-    builder.setBolt("serializedData", new NiFiPacketToSerialized(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    //builder.setBolt("serializedData", new NiFiPacketToSerialized(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("byteData", new NiFiPacketToBytes(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
-    builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), defaultTaskCount).shuffleGrouping("serializedData")
+    //builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), defaultTaskCount).shuffleGrouping("serializedData")
+    builder.setBolt("unpackagedData", new BytesWithSchemaToObject(), defaultTaskCount).shuffleGrouping("byteData")
 
 
 
@@ -142,8 +144,8 @@ class NiFiToNiFiWithSchema(config: TypeConfig) {
     /*
      * Serialize data before pushing out to anywhere.
      */
-    builder.setBolt("serializedJoinedData", new ObjectToSerializedWithSchema()).shuffleGrouping("joinedData")
-    builder.setBolt("serializedDriverStats", new ObjectToSerializedWithSchema()).shuffleGrouping("windowedDriverStats")
+    builder.setBolt("serializedJoinedData", new ObjectToBytesWithSchema()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedDriverStats", new ObjectToBytesWithSchema()).shuffleGrouping("windowedDriverStats")
 
 
 
