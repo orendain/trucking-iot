@@ -6,12 +6,12 @@
       { "name" : "eventTime" , "type" : "long" },
       { "name" : "truckId" , "type" : "int" },
       { "name" : "driverId" , "type" : "int" },
-      { "name" : "driverName" , "type" : "byteBuffer" },
+      { "name" : "driverName" , "type" : "string" },
       { "name" : "routeId" , "type" : "int" },
-      { "name" : "routeName" , "type" : "byteBuffer" },
+      { "name" : "routeName" , "type" : "string" },
       { "name" : "latitude" , "type" : "double" },
       { "name" : "longitude" , "type" : "double" },
       { "name" : "speed" , "type" : "int" },
-      { "name" : "eventType" , "type" : "byteBuffer" }
+      { "name" : "eventType" , "type" : "string" }
    ]
 }

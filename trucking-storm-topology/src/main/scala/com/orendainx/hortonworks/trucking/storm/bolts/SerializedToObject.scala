@@ -25,7 +25,7 @@ class SerializedToObject extends BaseRichBolt {
 
   override def execute(tuple: Tuple): Unit = {
 
-    // Convert each byteBuffer into its proper case class instance (e.g. EnrichedTruckData or TrafficData)
+    // Convert each string into its proper case class instance (e.g. EnrichedTruckData or TrafficData)
     val (dataType, data) = tuple.getStringByField("dataType") match {
       case typ @ "EnrichedTruckData" => (typ, EnrichedTruckData.fromCSV(tuple.getStringByField("data")))
       case typ @ "TrafficData" => (typ, TrafficData.fromCSV(tuple.getStringByField("data")))
