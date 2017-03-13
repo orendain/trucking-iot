@@ -50,6 +50,7 @@ class BytesWithSchemaToObject extends BaseRichBolt {
 
   override def execute(tuple: Tuple): Unit = {
 
+
     // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
     val bytes = new ByteArrayInputStream(tuple.getBinaryByField("data"))
     log.info(s"str2: ${new String(tuple.getBinaryByField("data"))}")
