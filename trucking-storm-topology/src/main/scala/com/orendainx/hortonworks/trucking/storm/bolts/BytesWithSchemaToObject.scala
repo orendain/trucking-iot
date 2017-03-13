@@ -58,6 +58,7 @@ class BytesWithSchemaToObject extends BaseRichBolt {
     val (dataType, data) = tuple.getStringByField("dataType") match {
       case typ @ "EnrichedTruckData" =>
         log.info(s"des: ${deserializer.deserialize(bytes, truckDataSchemaMetadata, null)}")
+        log.info(s"des2: ${deserializer.deserialize(bytes, truckDataSchemaMetadata, null).getClass}")
         (typ, recordToEnrichedTruckData(deserializer.deserialize(bytes, truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
       case typ @ "TrafficData" =>
         log.info(s"des: ${deserializer.deserialize(bytes, trafficDataSchemaMetadata, null)}")
@@ -69,6 +70,12 @@ class BytesWithSchemaToObject extends BaseRichBolt {
   }
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer): Unit = declarer.declare(new Fields("data", "dataType"))
+
+  /*
+  {"eventTime": 1489444179556, "truckId": 9, "driverId": 3, "driverName": "DriverNameHere", "routeId": 107,
+  "routeName": "Springfield to Kansas City Via Columbia", "latitude": 38.65119833229951, "longitude": -90.208740234375,
+   "speed": 55, "eventType": "Normal", "foggy": 0, "rainy": 0, "windy": 0}
+   */
 
   // Helper function to convert GenericRecord (result of deserializing via Schema Registry) into JVM object
   private def recordToEnrichedTruckData(r: GenericRecord): EnrichedTruckData =
