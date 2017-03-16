@@ -71,20 +71,20 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
 
   private def enrichedTruckAndTrafficToGenericRecord(data: EnrichedTruckAndTrafficData) = {
     val record = new GenericData.Record(new Schema.Parser().parse(joinedSchemaInfo.getSchemaText))
-    record.put("eventTime", data.eventTime.toString)
-    record.put("truckId", data.truckId.toString)
-    record.put("driverId", data.driverId.toString)
+    record.put("eventTime", data.eventTime)
+    record.put("truckId", data.truckId)
+    record.put("driverId", data.driverId)
     record.put("driverName", data.driverName)
-    record.put("routeId", data.routeId.toString)
+    record.put("routeId", data.routeId)
     record.put("routeName", data.routeName)
-    record.put("latitude", data.latitude.toString)
-    record.put("longitude", data.longitude.toString)
-    record.put("speed", data.speed.toString)
+    record.put("latitude", data.latitude)
+    record.put("longitude", data.longitude)
+    record.put("speed", data.speed)
     record.put("eventType", data.eventType)
     record.put("foggy", data.foggy)
     record.put("rainy", data.rainy)
     record.put("windy", data.windy)
-    record.put("congestionLevel", data.congestionLevel.toString)
+    record.put("congestionLevel", data.congestionLevel)
     record
   }
 
