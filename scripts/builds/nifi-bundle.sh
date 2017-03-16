@@ -6,8 +6,8 @@ cd $projDir
 
 # Variables
 projVer=$(cat version.sbt | grep '".*"' -o | sed 's/"//g')
-nifiLibDir=$(find / -type d -path "/usr/*/nifi/lib" -print -quit)
-nifiSh=$(find / -type f -wholename "/usr/*/nifi.sh" -print -quit)
+nifiLibDir=$(find / -type d -path "/usr/*/nifi/lib" -print -quit 2> /dev/null)
+nifiSh=$(find / -type f -wholename "/usr/*/nifi.sh" -print -quit 2> /dev/null)
 
 echo "Building the trucking-nifi-bundle project and installing the compiled NiFi nar to NiFi.  NiFi will be restarted"
 sbt nifiBundle/compile
