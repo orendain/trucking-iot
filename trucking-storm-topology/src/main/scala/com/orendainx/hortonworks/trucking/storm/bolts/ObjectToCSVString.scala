@@ -13,7 +13,7 @@ import org.apache.storm.tuple.{Fields, Tuple, Values}
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class ObjectToSerialized extends BaseRichBolt {
+class ObjectToCSVString extends BaseRichBolt {
 
   private lazy val log = Logger(this.getClass)
   private var outputCollector: OutputCollector = _

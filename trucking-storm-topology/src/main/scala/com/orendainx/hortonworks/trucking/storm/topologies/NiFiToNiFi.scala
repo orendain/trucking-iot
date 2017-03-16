@@ -56,7 +56,7 @@ object NiFiToNiFi {
   *   - NiFiPacketToObject (for converting from NiFi packet to JVM object)
   *   - TruckAndTrafficJoinBolt (for joining EnrichedTruckData and TrafficData streams into EnrichedTruckAndTrafficData)
   *   - DataWindowingBolt (for generating driver stats from trucking data)
-  *   - ObjectToSerialized (for serializing JVM object into array of bytes)
+  *   - ObjectToCSVString (for serializing JVM object into array of bytes)
   *   - NiFiBolt (for sending data back out to NiFi)
   *
   * @author Edgar Orendain <edgar@orendainx.com>
@@ -106,7 +106,7 @@ class NiFiToNiFi(config: TypeConfig) {
     builder.setBolt("serializedData", new NiFiPacketToSerialized(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
 
-    builder.setBolt("unpackagedData", new SerializedToObject(), defaultTaskCount).shuffleGrouping("serializedData")
+    builder.setBolt("unpackagedData", new CSVStringToObject(), defaultTaskCount).shuffleGrouping("serializedData")
 
 
     /*
@@ -141,8 +141,8 @@ class NiFiToNiFi(config: TypeConfig) {
     /*
      * Serialize data before pushing out to anywhere.
      */
-    builder.setBolt("serializedJoinedData", new ObjectToSerialized()).shuffleGrouping("joinedData")
-    builder.setBolt("serializedDriverStats", new ObjectToSerialized()).shuffleGrouping("windowedDriverStats")
+    builder.setBolt("serializedJoinedData", new ObjectToCSVString()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedDriverStats", new ObjectToCSVString()).shuffleGrouping("windowedDriverStats")
 
 
 

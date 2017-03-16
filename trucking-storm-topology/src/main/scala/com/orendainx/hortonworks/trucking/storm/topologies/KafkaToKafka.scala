@@ -6,6 +6,7 @@ import com.orendainx.hortonworks.trucking.storm.bolts._
 import com.orendainx.hortonworks.trucking.storm.schemes.BytesToStringScheme
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
+import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.storm.generated.StormTopology
 import org.apache.storm.kafka.bolt.KafkaBolt
 import org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper
@@ -84,9 +85,9 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Define properties to pass along to the KafkaBolt
     val kafkaBoltProps = new Properties()
-    kafkaBoltProps.setProperty("bootstrap.servers", config.getString("kafka.bootstrap-servers"))
-    kafkaBoltProps.setProperty("key.serializer", config.getString("kafka.key-serializer"))
-    kafkaBoltProps.setProperty("value.serializer", config.getString("kafka.value-serializer"))
+    kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getString("kafka.bootstrap-servers"))
+    kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getString("kafka.key-serializer"))
+    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-serializer"))
 
 
 
@@ -128,7 +129,7 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     // Ser
-    builder.setBolt("unpackagedData", new SerializedToObject(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("unpackagedData", new CSVStringToObject(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
 
 
@@ -163,8 +164,8 @@ class KafkaToKafka(config: TypeConfig) {
     /*
      * Serialize data before pushing out to anywhere.
      */
-    builder.setBolt("serializedJoinedData", new ObjectToSerialized()).shuffleGrouping("joinedData")
-    builder.setBolt("serializedDriverStats", new ObjectToSerialized()).shuffleGrouping("windowedDriverStats")
+    builder.setBolt("serializedJoinedData", new ObjectToCSVString()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedDriverStats", new ObjectToCSVString()).shuffleGrouping("windowedDriverStats")
 
 
 
