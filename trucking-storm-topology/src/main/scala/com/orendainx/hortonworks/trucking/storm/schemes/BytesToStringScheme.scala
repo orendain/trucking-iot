@@ -11,7 +11,7 @@ import org.apache.storm.tuple.{Fields, Values}
   */
 class BytesToStringScheme(dataType: String) extends DelimitedScheme("\\|") {
 
-  override def deserialize(buffer: ByteBuffer): Values = new Values(dataType, deserializeAsBytes(buffer))
+  override def deserialize(buffer: ByteBuffer): Values = new Values(dataType, deserializeAsString(buffer))
 
   override def getOutputFields: Fields = new Fields("dataType", "data")
 }
