@@ -21,9 +21,10 @@ abstract class DelimitedScheme(delimiter: String) extends Scheme {
     */
   protected def deserializeAsBytes(byteBuffer: ByteBuffer): Array[Byte] = {
     if (byteBuffer.hasArray) {
-      val buf = new Array[Byte](byteBuffer.remaining())
-      byteBuffer.get(buf, byteBuffer.arrayOffset() + byteBuffer.position(), byteBuffer.remaining())
-      buf
+//      val buf = new Array[Byte](byteBuffer.remaining())
+//      byteBuffer.get(buf, byteBuffer.arrayOffset() + byteBuffer.position(), byteBuffer.remaining())
+//      buf
+      (new String(byteBuffer.array(), byteBuffer.arrayOffset() + byteBuffer.position(), byteBuffer.remaining())).getBytes
     } else StormUtils.toByteArray(byteBuffer)
   }
 
