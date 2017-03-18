@@ -2,6 +2,7 @@ package com.orendainx.hortonworks.trucking.storm.topologies
 
 import java.util.Properties
 
+import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
 import com.orendainx.hortonworks.trucking.storm.bolts._
 import com.orendainx.hortonworks.trucking.storm.schemes.{BufferToBytesScheme, BufferToStringScheme}
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
@@ -46,6 +47,7 @@ object KafkaToKafkaWithSchema {
     stormConfig.setDebug(config.getBoolean(Config.TOPOLOGY_DEBUG))
     stormConfig.setMessageTimeoutSecs(config.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
+    stormConfig.put(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name(), config.getString("schema-registry.url"))
 
     (stormConfig, new KafkaToKafkaWithSchema(config).buildTopology())
   }
