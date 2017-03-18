@@ -9,7 +9,7 @@ import org.apache.storm.tuple.{Fields, Values}
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class BytesToStringScheme(dataType: String) extends DelimitedScheme("\\|") {
+class BufferToStringScheme(dataType: String) extends DelimitedScheme("\\|") {
 
   override def deserialize(buffer: ByteBuffer): Values = new Values(dataType, deserializeAsString(buffer))
 

@@ -3,7 +3,7 @@ package com.orendainx.hortonworks.trucking.storm.topologies
 import java.util.Properties
 
 import com.orendainx.hortonworks.trucking.storm.bolts._
-import com.orendainx.hortonworks.trucking.storm.schemes.BytesToStringScheme
+import com.orendainx.hortonworks.trucking.storm.schemes.{BufferToBytesScheme, BufferToStringScheme}
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -86,7 +86,8 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
     val kafkaBoltProps = new Properties()
     kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getString("kafka.bootstrap-servers"))
     kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getString("kafka.key-serializer"))
-    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-serializer"))
+    //kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-serializer"))
+    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-avro-serializer"))
 
 
 
@@ -104,7 +105,7 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
 
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val truckSpoutConfig = new SpoutConfig(zkHosts, truckTopic, zkRoot, groupId)
-    truckSpoutConfig.scheme = new SchemeAsMultiScheme(new BytesToStringScheme("EnrichedTruckData"))
+    truckSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferToBytesScheme("EnrichedTruckData"))
     truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
@@ -121,7 +122,7 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
 
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val trafficSpoutConfig = new SpoutConfig(zkHosts, trafficTopic, zkRoot, groupId)
-    trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BytesToStringScheme("TrafficData"))
+    trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferToBytesScheme("TrafficData"))
     trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
@@ -133,7 +134,7 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
 
 
     // Ser
-    builder.setBolt("unpackagedData", new SerializedWithSchemaToObject(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
+    builder.setBolt("unpackagedData", new BytesWithSchemaToObject(), taskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData")
 
 
 
