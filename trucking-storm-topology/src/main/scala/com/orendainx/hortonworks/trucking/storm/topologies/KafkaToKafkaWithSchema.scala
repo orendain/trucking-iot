@@ -201,7 +201,7 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
 
     // Build a KafkaBolt
     val statsKafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driverstats-data.topic")))
+      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driver-stats.topic")))
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "stringSerializedData"))
       .withProducerProperties(kafkaBoltProps)
 
