@@ -4,7 +4,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
 
 import org.apache.storm.spout.Scheme
-import org.apache.storm.utils.{Utils => StormUtils}
+import org.apache.storm.utils.{Utils, Utils => StormUtils}
 
 /**
   * Supertype for schemes that parse based on some delimiter.
@@ -20,12 +20,13 @@ abstract class DelimitedScheme(delimiter: String) extends Scheme {
     * @return The array of strings resulting from splitting the [[ByteBuffer]] on the object's specified delimiter.
     */
   protected def deserializeAsBytes(byteBuffer: ByteBuffer): Array[Byte] = {
-    if (byteBuffer.hasArray) {
+    Utils.toByteArray(byteBuffer)
+    //if (byteBuffer.hasArray) {
 //      val buf = new Array[Byte](byteBuffer.remaining())
 //      byteBuffer.get(buf, byteBuffer.arrayOffset() + byteBuffer.position(), byteBuffer.remaining())
 //      buf
-      (new String(byteBuffer.array(), byteBuffer.arrayOffset() + byteBuffer.position(), byteBuffer.remaining())).getBytes
-    } else StormUtils.toByteArray(byteBuffer)
+    //  (new String(byteBuffer.array(), byteBuffer.arrayOffset() + byteBuffer.position(), byteBuffer.remaining())).getBytes
+    //} else Utils.toByteArray(byteBuffer)
   }
 
   /**
