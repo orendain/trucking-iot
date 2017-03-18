@@ -42,14 +42,13 @@ class BytesWithSchemaToObject extends BaseRichBolt {
     val clientConfig = Map(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name() -> schemaRegistryUrl)
 
     schemaRegistryClient = new SchemaRegistryClient(clientConfig)
-    truckDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckData").getSchemaMetadata
-    trafficDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TrafficData").getSchemaMetadata
+    truckDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckData:v").getSchemaMetadata
+    trafficDataSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("TrafficData:v").getSchemaMetadata
     deserializer = schemaRegistryClient.getDefaultDeserializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotDeserializer]
     deserializer.init(clientConfig)
   }
 
   override def execute(tuple: Tuple): Unit = {
-
 
     // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
     val bytes = new ByteArrayInputStream(tuple.getBinaryByField("data"))
