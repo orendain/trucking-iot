@@ -171,6 +171,11 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
     /*
      * Serialize data before pushing out to anywhere.
      */
+    //builder.setBolt("serializedJoinedData", new ObjectToBytesWithSchema()).shuffleGrouping("joinedData")
+    //builder.setBolt("serializedDriverStats", new ObjectToBytesWithSchema()).shuffleGrouping("windowedDriverStats")
+
+
+
     builder.setBolt("serializedJoinedData", new ObjectToBytesWithSchema()).shuffleGrouping("joinedData")
     builder.setBolt("serializedDriverStats", new ObjectToBytesWithSchema()).shuffleGrouping("windowedDriverStats")
 

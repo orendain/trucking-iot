@@ -44,16 +44,16 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
 
     schemaRegistryClient = new SchemaRegistryClient(clientConfig)
 
-    joinedSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckAndTrafficData").getSchemaMetadata
-    joinedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("EnrichedTruckAndTrafficData")
+    joinedSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("EnrichedTruckAndTrafficData:v").getSchemaMetadata
+    joinedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("EnrichedTruckAndTrafficData:v")
 
-    driverStatsSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("WindowedDriverStats").getSchemaMetadata
-    driverStatsJoinedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("WindowedDriverStats")
+    driverStatsSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("WindowedDriverStats:v").getSchemaMetadata
+    driverStatsJoinedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("WindowedDriverStats:v")
 
     //serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotSerializer]
-    serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[KafkaAvroSerializer]
+    //serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[KafkaAvroSerializer]
     //serializer.init(clientConfig)
-    serializer.configure(clientConfig, false)// https://github.com/hortonworks/registry/blob/4c7f7a127ba62208b77396713d27c73988facc69/schema-registry/serdes/src/main/java/com/hortonworks/registries/schemaregistry/serdes/avro/kafka/KafkaAvroSerializer.java
+    //serializer.configure(clientConfig, false)// https://github.com/hortonworks/registry/blob/4c7f7a127ba62208b77396713d27c73988facc69/schema-registry/serdes/src/main/java/com/hortonworks/registries/schemaregistry/serdes/avro/kafka/KafkaAvroSerializer.java
   }
 
   override def execute(tuple: Tuple): Unit = {
@@ -62,11 +62,13 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
       case "EnrichedTruckAndTrafficData" =>
         val record = enrichedTruckAndTrafficToGenericRecord(tuple.getValueByField("data").asInstanceOf[EnrichedTruckAndTrafficData])
         //serializer.serialize(record, joinedSchemaMetadata)
-        serializer.serialize("trucking_data_joined", record)
+        //serializer.serialize("trucking_data_joined", record)
+        record
       case "WindowedDriverStats" =>
         val record = enrichedTruckAndTrafficToGenericRecord(tuple.getValueByField("data").asInstanceOf[WindowedDriverStats])
         //serializer.serialize(record, driverStatsSchemaMetadata)
-        serializer.serialize("trucking_data_driverstats", record)
+        //serializer.serialize("trucking_data_driverstats", record)
+        record
     }
 
     outputCollector.emit(new Values(serializedBytes))
