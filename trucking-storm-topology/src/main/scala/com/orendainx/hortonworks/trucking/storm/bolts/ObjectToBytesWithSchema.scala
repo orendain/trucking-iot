@@ -5,6 +5,7 @@ import java.util
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
 import com.hortonworks.registries.schemaregistry.serdes.avro.AvroSnapshotSerializer
+import com.hortonworks.registries.schemaregistry.serdes.avro.kafka.KafkaAvroSerializer
 import com.hortonworks.registries.schemaregistry.{SchemaMetadata, SchemaVersionInfo}
 import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckAndTrafficData, WindowedDriverStats}
 import com.typesafe.scalalogging.Logger
@@ -27,7 +28,8 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
 
   // Declare schema-related fields to be initialized when this component's prepare() method is called
   private var schemaRegistryClient: SchemaRegistryClient = _
-  private var serializer: AvroSnapshotSerializer = _
+  //private var serializer: AvroSnapshotSerializer = _
+  private var serializer: KafkaAvroSerializer = _
 
   private var joinedSchemaMetadata: SchemaMetadata = _
   private var joinedSchemaInfo: SchemaVersionInfo = _
@@ -48,8 +50,10 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
     driverStatsSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("WindowedDriverStats").getSchemaMetadata
     driverStatsJoinedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("WindowedDriverStats")
 
-    serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotSerializer]
-    serializer.init(clientConfig)
+    //serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotSerializer]
+    serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[KafkaAvroSerializer]
+    //serializer.init(clientConfig)
+    serializer.configure(clientConfig, false)// https://github.com/hortonworks/registry/blob/4c7f7a127ba62208b77396713d27c73988facc69/schema-registry/serdes/src/main/java/com/hortonworks/registries/schemaregistry/serdes/avro/kafka/KafkaAvroSerializer.java
   }
 
   override def execute(tuple: Tuple): Unit = {
@@ -57,10 +61,12 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
     val serializedBytes = tuple.getStringByField("dataType") match {
       case "EnrichedTruckAndTrafficData" =>
         val record = enrichedTruckAndTrafficToGenericRecord(tuple.getValueByField("data").asInstanceOf[EnrichedTruckAndTrafficData])
-        serializer.serialize(record, joinedSchemaMetadata)
+        //serializer.serialize(record, joinedSchemaMetadata)
+        serializer.serialize("trucking_data_joined", record)
       case "WindowedDriverStats" =>
         val record = enrichedTruckAndTrafficToGenericRecord(tuple.getValueByField("data").asInstanceOf[WindowedDriverStats])
-        serializer.serialize(record, driverStatsSchemaMetadata)
+        //serializer.serialize(record, driverStatsSchemaMetadata)
+        serializer.serialize("trucking_data_driverstats", record)
     }
 
     outputCollector.emit(new Values(serializedBytes))
