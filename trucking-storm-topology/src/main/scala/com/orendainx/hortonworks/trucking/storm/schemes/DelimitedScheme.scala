@@ -4,7 +4,8 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
 
 import org.apache.storm.spout.Scheme
-import org.apache.storm.utils.{Utils, Utils => StormUtils}
+import org.apache.storm.utils.Utils
+//import org.apache.storm.utils.{Utils, Utils => StormUtils}
 
 /**
   * Supertype for schemes that parse based on some delimiter.
