@@ -190,7 +190,7 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
     // Build a KafkaBolt
     val truckingKafkaBolt = new KafkaBolt()
       .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.joined-data.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper())
+      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
     builder.setBolt("joinedDataToKafka", truckingKafkaBolt, taskCount).shuffleGrouping("serializedJoinedData")
@@ -204,7 +204,7 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
     // Build a KafkaBolt
     val statsKafkaBolt = new KafkaBolt()
       .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driver-stats.topic")))
-      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "stringSerializedData"))
+      .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
     builder.setBolt("driverStatsToKafka", statsKafkaBolt, taskCount).shuffleGrouping("serializedDriverStats")
