@@ -50,7 +50,9 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
     driverStatsSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("WindowedDriverStats:v").getSchemaMetadata
     driverStatsJoinedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("WindowedDriverStats:v")
 
-    serializer = schemaRegistryClient.getSerializers(joinedSchemaMetadata.getName).iterator().next().asInstanceOf[KafkaAvroSerializer]
+    val serdesInfo = schemaRegistryClient.getSerializers(joinedSchemaMetadata.getName).iterator().next()
+    serializer = schemaRegistryClient.createSerializerInstance(serdesInfo)
+
 
     //serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotSerializer]
     //serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[KafkaAvroSerializer]
