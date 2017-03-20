@@ -50,10 +50,12 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
     driverStatsSchemaMetadata = schemaRegistryClient.getSchemaMetadataInfo("WindowedDriverStats:v").getSchemaMetadata
     driverStatsJoinedSchemaInfo = schemaRegistryClient.getLatestSchemaVersionInfo("WindowedDriverStats:v")
 
+    serializer = schemaRegistryClient.getSerializers(joinedSchemaMetadata.getName).iterator().next().asInstanceOf[KafkaAvroSerializer]
+
     //serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotSerializer]
     //serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[KafkaAvroSerializer]
     //serializer.init(clientConfig)
-    //serializer.configure(clientConfig, false)// https://github.com/hortonworks/registry/blob/4c7f7a127ba62208b77396713d27c73988facc69/schema-registry/serdes/src/main/java/com/hortonworks/registries/schemaregistry/serdes/avro/kafka/KafkaAvroSerializer.java
+    serializer.configure(clientConfig, false)// https://github.com/hortonworks/registry/blob/4c7f7a127ba62208b77396713d27c73988facc69/schema-registry/serdes/src/main/java/com/hortonworks/registries/schemaregistry/serdes/avro/kafka/KafkaAvroSerializer.java
   }
 
   override def execute(tuple: Tuple): Unit = {
