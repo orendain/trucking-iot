@@ -20,7 +20,7 @@ import scala.collection.JavaConverters._
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-class ObjectToBytesWithSchema extends BaseRichBolt {
+class ObjectToBytesWithKafkaSchema extends BaseRichBolt {
 
   private lazy val log = Logger(this.getClass)
   private var outputCollector: OutputCollector = _
@@ -28,6 +28,7 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
   // Declare schema-related fields to be initialized when this component's prepare() method is called
   private var schemaRegistryClient: SchemaRegistryClient = _
   private var serializer: AvroSnapshotSerializer = _
+  //private var serializer: KafkaAvroSerializer = _
 
   private var joinedSchemaMetadata: SchemaMetadata = _
   private var joinedSchemaInfo: SchemaVersionInfo = _
@@ -50,6 +51,11 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
 
     serializer = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE).asInstanceOf[AvroSnapshotSerializer]
     serializer.init(clientConfig)
+
+    //val serdesInfo = schemaRegistryClient.getSerializers(joinedSchemaMetadata.getName).iterator().next()
+    //serializer = schemaRegistryClient.createSerializerInstance(serdesInfo)
+
+    //serializer.configure(clientConfig, false)// https://github.com/hortonworks/registry/blob/4c7f7a127ba62208b77396713d27c73988facc69/schema-registry/serdes/src/main/java/com/hortonworks/registries/schemaregistry/serdes/avro/kafka/KafkaAvroSerializer.java
   }
 
   override def execute(tuple: Tuple): Unit = {
@@ -57,10 +63,14 @@ class ObjectToBytesWithSchema extends BaseRichBolt {
     val serializedBytes = tuple.getStringByField("dataType") match {
       case "EnrichedTruckAndTrafficData" =>
         val record = enrichedTruckAndTrafficToGenericRecord(tuple.getValueByField("data").asInstanceOf[EnrichedTruckAndTrafficData])
-        serializer.serialize(record, joinedSchemaMetadata)
+        //serializer.serialize(record, joinedSchemaMetadata)
+        //serializer.serialize("trucking_data_joined", record)
+        record
       case "WindowedDriverStats" =>
         val record = enrichedTruckAndTrafficToGenericRecord(tuple.getValueByField("data").asInstanceOf[WindowedDriverStats])
-        serializer.serialize(record, driverStatsSchemaMetadata)
+        //serializer.serialize(record, driverStatsSchemaMetadata)
+        //serializer.serialize("trucking_data_driverstats", record)
+        record
     }
 
     outputCollector.emit(new Values(serializedBytes))

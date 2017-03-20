@@ -88,8 +88,7 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
     val kafkaBoltProps = new Properties()
     kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getString("kafka.bootstrap-servers"))
     kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getString("kafka.key-serializer"))
-    //kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-serializer"))
-    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-avro-serializer"))
+    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.avro-value-serializer"))
 
 
 
@@ -171,13 +170,8 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
     /*
      * Serialize data before pushing out to anywhere.
      */
-    //builder.setBolt("serializedJoinedData", new ObjectToBytesWithSchema()).shuffleGrouping("joinedData")
-    //builder.setBolt("serializedDriverStats", new ObjectToBytesWithSchema()).shuffleGrouping("windowedDriverStats")
-
-
-
-    builder.setBolt("serializedJoinedData", new ObjectToBytesWithSchema()).shuffleGrouping("joinedData")
-    builder.setBolt("serializedDriverStats", new ObjectToBytesWithSchema()).shuffleGrouping("windowedDriverStats")
+    builder.setBolt("serializedJoinedData", new ObjectToBytesWithKafkaSchema()).shuffleGrouping("joinedData")
+    builder.setBolt("serializedDriverStats", new ObjectToBytesWithKafkaSchema()).shuffleGrouping("windowedDriverStats")
 
 
 
