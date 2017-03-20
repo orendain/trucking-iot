@@ -101,7 +101,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val truckSpoutConfig = new SpoutConfig(zkHosts, truckTopic, zkRoot, groupId)
     truckSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferToStringScheme("EnrichedTruckData"))
-    //truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
+    truckSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("enrichedTruckData", new KafkaSpout(truckSpoutConfig), defaultTaskCount)
@@ -118,7 +118,7 @@ class KafkaToKafka(config: TypeConfig) {
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val trafficSpoutConfig = new SpoutConfig(zkHosts, trafficTopic, zkRoot, groupId)
     trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferToStringScheme("TrafficData"))
-    //trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
+    trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("trafficData", new KafkaSpout(trafficSpoutConfig), defaultTaskCount)

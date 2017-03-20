@@ -32,7 +32,7 @@ $kafkaTopicsSh --create --zookeeper sandbox.hortonworks.com:2181 --replication-f
 
 echo "Importing NiFi flow.  Existing flow is renamed to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
-cp -f $projDir/trucking-nifi-templates/flows/nifi-to-nifi.xml.gz /var/lib/nifi/conf/flow.xml.gz
+cp -f $projDir/trucking-nifi-templates/flows/nifi-to-nifi-with-schema.xml.gz /var/lib/nifi/conf/flow.xml.gz
 
 # Valid, built-in, flows to move over are:
 #
