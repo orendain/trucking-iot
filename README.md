@@ -58,12 +58,9 @@ cd trucking-iot
 scripts/auto-deploy.sh
 ```
 
-3.  Navigate to NiFi and start the flow.
-```
-http://sandbox.hortonworks.com:19090/nifi
-```
+3.  On your local machine, open a browser and navigate to the web application: <http://sandbox.hortonworks.com:25001>
 
-4.  On your local machine, open a browser and navigate to the web application: <http://sandbox.hortonworks.com:25001>
+4.  Optionally check out the NiFi Flow and Storm UI. 
 
 ## How it Works
 
