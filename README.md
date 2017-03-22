@@ -21,15 +21,57 @@ From IoT sensor data collection, to flow management, real-time stream processing
 
 ## Quick, How Do I Use It?!
 
-For an instance of the HDF Sandbox preloaded with this reference application, run one of the following Docker commands below.
+For an instance of the HDF Sandbox preloaded with this reference application, run the following Docker command below.
+
+> Note: Please make sure Docker has at least 8GB of memory before running the container below.
 
 For a Nifi -> Storm -> Nifi -> Kafka -> Web Application pipeline, with integration with Hortonworks Schema Registry:
 ```
+docker run --name hdf-trucking-iot --hostname "sandbox.hortonworks.com" --privileged -d \
+-p 12181:2181 \
+-p 13000:3000 \
+-p 14200:4200 \
+-p 16080:6080 \
+-p 18000:8000 \
+-p 18080:8080 \
+-p 18744:8744 \
+-p 18886:8886 \
+-p 18888:8888 \
+-p 18993:8993 \
+-p 19000:9000 \
+-p 19090:9090 \
+-p 19091:9091 \
+-p 43111:42111 \
+-p 62888:61888 \
+-p 25000:15000 \
+-p 25001:15001 \
+-p 25002:15002 \
+-p 25003:15003 \
+-p 25004:15004 \
+-p 25005:15005 \
+-p 12222:22 \
+-p 17000:17000 \
+-p 17001:17001 \
+-p 17002:17002 \
+-p 17003:17003 \
+-p 17004:17004 \
+-p 17005:17005 \
+orendain/hdf-trucking-iot /usr/sbin/sshd -D
 ```
 
-For a Nifi -> Kafka -> Storm -> Kafka -> Web Application pipeline:
+Once the container is created, SSH into the HDF sandbox:
 ```
+ssh root@sandbox.hortonworks.com -p 12222 # password: greenhadoop
 ```
+
+Execute the pre-included script:
+```
+/root/nifi-to-nifi-with-schema.sh
+```
+
+Open the web applicaton: http://sandbox.hortonworks.com:25001
+
+Optionally check out the NiFi Flow and Storm UI.
 
 ## Setup on existing HDF/HDP
 
