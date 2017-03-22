@@ -5,7 +5,7 @@ import java.util
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
 import com.hortonworks.registries.schemaregistry.serdes.avro.AvroSnapshotSerializer
-import com.hortonworks.registries.schemaregistry.{SchemaMetadata, SchemaVersionInfo}
+import com.hortonworks.registries.schemaregistry.{SchemaCompatibility, SchemaMetadata, SchemaVersionInfo}
 import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckAndTrafficData, WindowedDriverStats}
 import com.typesafe.scalalogging.Logger
 import org.apache.avro.Schema
@@ -56,6 +56,20 @@ class ObjectToBytesWithKafkaSchema extends BaseRichBolt {
     //serializer = schemaRegistryClient.createSerializerInstance(serdesInfo)
 
     //serializer.configure(clientConfig, false)// https://github.com/hortonworks/registry/blob/4c7f7a127ba62208b77396713d27c73988facc69/schema-registry/serdes/src/main/java/com/hortonworks/registries/schemaregistry/serdes/avro/kafka/KafkaAvroSerializer.java
+
+
+    // To test if registry accessible from Storm supervisor node
+    val schemaName = "TestSchema1"
+    val schemaGroupName = "TestGroup"
+    val schemaDescription = "TestDescription"
+    val schemaTypeCompatibility = SchemaCompatibility.BACKWARD
+    val schemaType = AvroSchemaProvider.TYPE
+
+    val schemaMetadata = new SchemaMetadata.Builder(schemaName).`type`(schemaType).schemaGroup(schemaGroupName)
+      .description(schemaDescription).compatibility(schemaTypeCompatibility).build()
+
+    val metadataRegistrationResult = schemaRegistryClient.registerSchemaMetadata(schemaMetadata)
+    log.info(s"Schema registration result: $metadataRegistrationResult")
   }
 
   override def execute(tuple: Tuple): Unit = {
