@@ -5,6 +5,12 @@ scriptDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 # Setup the environment before building project components
 $scriptDir/setup-environment.sh
 
+# Create Kafka topics
+$scriptDir/create_kafka_topics.sh
+
+# Import NiFi flow
+$scriptDir/import_nifi_flow.sh
+
 # Find the registry webservice and start it
 $scriptDir/registry-restart.sh
 
