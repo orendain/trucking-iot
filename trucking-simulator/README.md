@@ -3,6 +3,7 @@
 This is a robust, extensible simulator engine that generates trucking-related data for the larger Trucking IoT project.
 
 ## Outline
+
 -   [Features](#features)
 -   [Generating Data](#generating-data)
 -   [Data Format](#data-format)
@@ -18,7 +19,7 @@ This is a robust, extensible simulator engine that generates trucking-related da
 
 ## Generating Data
 
-If using NiFi: A custom NiFi processor has been developed that wraps this simulator and generates data entirely using NiFi's drag-and-drop interface.  **No code or terminal required**.  Check out the [trucking-nifi-bundle](../trucking-nifi-bundle) project.
+If using NiFi: A custom NiFi processor has been developed that wraps this simulator and generates data entirely using NiFi's drag-and-drop interface.  **No code or terminal required**.  Check out the `trucking-nifi-bundle` project.
 
 ```
 TODO: Describe how to run the simulator without NiFi (super easy, just need to get around to writing the docs.)
