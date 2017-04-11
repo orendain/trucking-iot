@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.storm.bolts;
+package com.orendainx.hortonworks.trucking.storm.java.bolts;
 
 import com.orendainx.hortonworks.trucking.commons.models.EnrichedTruckData;
 import com.orendainx.hortonworks.trucking.commons.models.TruckingData;

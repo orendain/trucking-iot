@@ -1,10 +1,10 @@
-package com.orendainx.hortonworks.trucking.storm.topologies;
+package com.orendainx.hortonworks.trucking.storm.java.topologies;
 
-import com.orendainx.hortonworks.trucking.storm.bolts.CSVStringToObject;
-import com.orendainx.hortonworks.trucking.storm.bolts.DataWindowingBolt;
-import com.orendainx.hortonworks.trucking.storm.bolts.ObjectToCSVString;
-import com.orendainx.hortonworks.trucking.storm.bolts.TruckAndTrafficJoinBolt;
-import com.orendainx.hortonworks.trucking.storm.schemes.BufferToStringScheme;
+import com.orendainx.hortonworks.trucking.storm.java.bolts.CSVStringToObject;
+import com.orendainx.hortonworks.trucking.storm.java.bolts.DataWindowingBolt;
+import com.orendainx.hortonworks.trucking.storm.java.bolts.ObjectToCSVString;
+import com.orendainx.hortonworks.trucking.storm.java.bolts.TruckAndTrafficJoinBolt;
+import com.orendainx.hortonworks.trucking.storm.java.schemes.BufferToStringScheme;
 
 import com.typesafe.config.ConfigFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -42,7 +42,7 @@ public class KafkaToKafka {
     StormTopology topology = new KafkaToKafka().buildTopology();
 
     try {
-      StormSubmitter.submitTopologyWithProgressBar("KafkaToKafkaWithSchema", stormConfig, topology);
+      StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", stormConfig, topology);
     } catch (AlreadyAliveException|InvalidTopologyException|AuthorizationException e) {
       e.printStackTrace();
     }
