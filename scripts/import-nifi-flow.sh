@@ -10,7 +10,7 @@ sleep 10
 
 echo "Importing NiFi flow.  Existing flow is backed up to flow.xml.gz.bak"
 mv /var/lib/nifi/conf/flow.xml.gz /var/lib/nifi/conf/flow.xml.gz.bak
-cp -f $projDir/trucking-nifi-templates/flows/kafka-to-kafka-with-schema.xml.gz /var/lib/nifi/conf/flow.xml.gz
+cp -f $projDir/trucking-nifi-templates/flows/kafka-to-kafka.xml.gz /var/lib/nifi/conf/flow.xml.gz
 
 # Built-in flows that can be used are:
 #
