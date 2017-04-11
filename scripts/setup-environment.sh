@@ -18,7 +18,7 @@ curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"
 
 echo "Checking for SBT, installing if missing"
 curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-yum -y install sbt
+yum -y install sbt-0.13.13.1-1
 
 echo "Checking for Maven, installing if missing"
 wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
