@@ -14,7 +14,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
   */
 abstract class DelimitedScheme implements Scheme {
 
-  private String delimiter = "";
+  private String delimiter;
 
   public DelimitedScheme(String delimiter) {
     this.delimiter = delimiter;

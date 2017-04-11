@@ -12,10 +12,11 @@ import org.apache.storm.tuple.Values;
   */
 public class BufferToStringScheme extends DelimitedScheme {
 
-  private String dataType = "";
+  private String dataType;
 
   public BufferToStringScheme(String dataType) {
     super("\\|");
+    this.dataType = dataType;
   }
 
   public Values deserialize(ByteBuffer buffer) {
@@ -23,6 +24,6 @@ public class BufferToStringScheme extends DelimitedScheme {
   }
 
   public Fields getOutputFields() {
-    return new Fields("dataType","data");
+    return new Fields("dataType", "data");
   }
 }
