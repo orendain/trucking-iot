@@ -9,6 +9,7 @@ object Dependencies {
   lazy val enrichmentDeps = Seq(scalaCsv, config, betterFiles)
   lazy val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
   lazy val stormTopologyDeps = Seq(stormCoreProvided, stormNifi, stormKafka, kafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
+  lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormNifi, stormKafka, kafka, schemaRegistrySerdes, config)
   lazy val webApplicationBackendDeps = Seq(scalaJsScripts, compass, bootstrap) ++ angular2Deps
   lazy val webApplicationFrontendDeps = Seq(leaflet)
 

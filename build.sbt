@@ -136,7 +136,22 @@ lazy val stormTopology = (project in file("trucking-storm-topology"))
     },
 
     scalacOptions ++= Seq("-feature", "-Yresolve-term-conflict:package")
-)
+  )
+
+
+
+/*
+ * Subproject definition for trucking-storm-topology-java
+ */
+lazy val stormTopologyJava = (project in file("trucking-storm-topology-java"))
+  .dependsOn(commonsJVM)
+  .settings(
+    commonSettings,
+    name := "trucking-storm-topology-java",
+    resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
+    libraryDependencies ++= Dependencies.stormTopologyJavaDeps,
+    autoScalaLibrary := false
+  )
 
 
 
