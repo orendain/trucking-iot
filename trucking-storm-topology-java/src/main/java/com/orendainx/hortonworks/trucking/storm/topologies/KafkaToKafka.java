@@ -1,10 +1,10 @@
-package com.orendainx.hortonworks.trucking.storm.topologies.topologies;
+package com.orendainx.hortonworks.trucking.storm.topologies;
 
-import com.orendainx.hortonworks.trucking.storm.topologies.bolts.CSVStringToObject;
-import com.orendainx.hortonworks.trucking.storm.topologies.bolts.DataWindowingBolt;
-import com.orendainx.hortonworks.trucking.storm.topologies.bolts.ObjectToCSVString;
-import com.orendainx.hortonworks.trucking.storm.topologies.bolts.TruckAndTrafficJoinBolt;
-import com.orendainx.hortonworks.trucking.storm.topologies.schemes.BufferToStringScheme;
+import com.orendainx.hortonworks.trucking.storm.bolts.CSVStringToObject;
+import com.orendainx.hortonworks.trucking.storm.bolts.DataWindowingBolt;
+import com.orendainx.hortonworks.trucking.storm.bolts.ObjectToCSVString;
+import com.orendainx.hortonworks.trucking.storm.bolts.TruckAndTrafficJoinBolt;
+import com.orendainx.hortonworks.trucking.storm.schemes.BufferToStringScheme;
 
 import com.typesafe.config.ConfigFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -25,7 +25,6 @@ import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseWindowedBolt;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

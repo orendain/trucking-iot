@@ -2,7 +2,6 @@ package com.orendainx.hortonworks.trucking.storm.schemes
 
 import java.nio.ByteBuffer
 
-import com.orendainx.hortonworks.trucking.storm.schemes.TrafficDataScheme.deserializeStringAndSplit
 import org.apache.storm.tuple.{Fields, Values}
 
 /**

@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.storm.topologies.schemes;
+package com.orendainx.hortonworks.trucking.storm.schemes;
 
 import java.nio.ByteBuffer;
 

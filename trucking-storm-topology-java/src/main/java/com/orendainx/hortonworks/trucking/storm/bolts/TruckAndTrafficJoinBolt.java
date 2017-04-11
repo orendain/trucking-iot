@@ -1,4 +1,4 @@
-package com.orendainx.hortonworks.trucking.storm.topologies.bolts;
+package com.orendainx.hortonworks.trucking.storm.bolts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
