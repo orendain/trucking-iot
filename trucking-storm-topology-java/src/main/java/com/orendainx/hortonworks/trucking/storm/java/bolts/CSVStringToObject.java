@@ -1,6 +1,7 @@
 package com.orendainx.hortonworks.trucking.storm.java.bolts;
 
 import com.orendainx.hortonworks.trucking.commons.models.EnrichedTruckData;
+import com.orendainx.hortonworks.trucking.commons.models.TrafficData;
 import com.orendainx.hortonworks.trucking.commons.models.TruckingData;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -36,7 +37,7 @@ public class CSVStringToObject extends BaseRichBolt {
         data = EnrichedTruckData.fromCSV(tuple.getStringByField("data"));
         break;
       case "TrafficData":
-        data = EnrichedTruckData.fromCSV(tuple.getStringByField("data"));
+        data = TrafficData.fromCSV(tuple.getStringByField("data"));
         break;
       default:
         throw new IllegalArgumentException("Tuple housing unexpected data.");
