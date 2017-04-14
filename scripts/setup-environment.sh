@@ -11,6 +11,9 @@ echo "Setting nifi.remote.input.socket.port to correct value via Ambari"
 echo "Setting delete.topic.enable to true via Ambari"
 /var/lib/ambari-server/resources/scripts/configs.py admin admin 8080 http set sandbox.hortonworks.com Sandbox kafka-broker delete.topic.enable true
 
+# Below works in HDP 2.6, in place of above
+#/var/lib/ambari-server/resources/scripts/configs.py -u admin -p admin --action=set --host=sandbox.hortonworks.com --cluster=Sandbox --config-type=kafka-broker -k delete.topic.enable -v true
+
 echo "Restarting Kafka via Ambari"
 curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Stop Kafka"}, "ServiceInfo": {"state": "INSTALLED"}}' http://sandbox.hortonworks.com:8080/api/v1/clusters/Sandbox/services/KAFKA
 sleep 10
