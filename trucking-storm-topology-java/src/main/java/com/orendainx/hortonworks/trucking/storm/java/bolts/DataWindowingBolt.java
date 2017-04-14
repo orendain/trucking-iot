@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.orendainx.hortonworks.trucking.commons.models.EnrichedTruckAndTrafficData;
+import com.orendainx.hortonworks.trucking.commons.models.TrafficData;
 import com.orendainx.hortonworks.trucking.commons.models.TruckEventTypes;
 import com.orendainx.hortonworks.trucking.commons.models.WindowedDriverStats;
 import org.apache.storm.task.OutputCollector;
@@ -12,6 +13,7 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseWindowedBolt;
 import org.apache.storm.tuple.Fields;
+import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.apache.storm.windowing.TupleWindow;
 
@@ -25,6 +27,8 @@ public class DataWindowingBolt extends BaseWindowedBolt {
 
   //private lazy val log = Logger(this.getClass)
   private OutputCollector outputCollector;
+
+  private TrafficData latestTrafficData;
 
   public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
     outputCollector = collector;
@@ -79,8 +83,37 @@ public class DataWindowingBolt extends BaseWindowedBolt {
      */
     //driverStats.foreach({case (id, s) => outputCollector.emit(new Values("WindowedDriverStats", WindowedDriverStats(id, s._1, s._2, s._3, s._4, s._5)))})
 
+    // This should be a single tuple
+    List<Tuple> newTuples = inputWindow.getNew();
+
+    if (newTuples.size() > 1) {
+      throw new IllegalStateException("Expected only a single new tuple in the TupleWindow.");
+    }
+
+    EnrichedTruckAndTrafficData newData = (EnrichedTruckAndTrafficData)newTuples.get(0).getValueByField("data");
+
+    int driverId = newData.driverId();
+
+    List<EnrichedTruckAndTrafficData> driverEvents = inputWindow.get().parallelStream()
+        .map(t -> (EnrichedTruckAndTrafficData)t.getValueByField("data"))
+        .filter(d -> d.driverId() == driverId)
+        .collect(Collectors.toList());
+
+    int count = 0, speed = 0, totalFog = 0, totalRain = 0, totalWind = 0, totalViolations = 0;
+    for(EnrichedTruckAndTrafficData d : driverEvents) {
+      count++;
+      speed += d.speed();
+      totalFog += d.foggy();
+      totalRain += d.rainy();
+      totalWind += d.windy();
+      totalViolations += (d.eventType().equals(TruckEventTypes.Normal()) ? 0 : 1);
+    }
+
+    //WindowedDriverStats stats = new WindowedDriverStats(driverId, speed/count, totalFog, totalRain, totalWind, totalViolations);
+
     // For testing:
-    outputCollector.emit(new Values("WindowedDriverStats", new WindowedDriverStats(0,0,0,0,0,0)));
+    outputCollector.emit(new Values("WindowedDriverStats", new WindowedDriverStats(driverId, speed/count, totalFog, totalRain, totalWind, totalViolations)));
+    //outputCollector.emit(new Values("WindowedDriverStats", new WindowedDriverStats(0,0,0,0,0,0)));
 
     // Acknowledge all tuples processed.  It is best practice to perform this after all processing has been completed.
     inputWindow.get().forEach(outputCollector::ack);

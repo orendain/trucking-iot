@@ -128,7 +128,7 @@ public class KafkaToKafka {
      */
     int intervalCount = config.getInt(Config.TOPOLOGY_BOLTS_SLIDING_INTERVAL_COUNT);
 
-    // Build bold and then place in the topology blueprint connected to the "joinedData" stream.  ShuffleGrouping suggests
+    // Build bolt and then place in the topology blueprint connected to the "joinedData" stream.  ShuffleGrouping suggests
     // that tuples from that stream are distributed across this bolt's tasks (instances), so as to keep load levels even.
     BaseWindowedBolt statsBolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount));
     builder.setBolt("windowedDriverStats", statsBolt, defaultTaskCount).shuffleGrouping("joinedData");
