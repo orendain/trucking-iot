@@ -22,6 +22,7 @@ import scala.concurrent.duration._
   */
 object EnrichToKafkaSimulator {
   def apply() = new EnrichToKafkaSimulator()
+  def main(args: Array[String]): Unit = apply()
 }
 
 class EnrichToKafkaSimulator extends Simulator {

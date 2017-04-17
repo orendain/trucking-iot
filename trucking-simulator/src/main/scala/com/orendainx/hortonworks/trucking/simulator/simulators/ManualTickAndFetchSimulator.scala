@@ -24,6 +24,7 @@ import scala.concurrent.duration._
   */
 object ManualTickAndFetchSimulator {
   def apply() = new ManualTickAndFetchSimulator()
+  def main(args: Array[String]): Unit = apply()
 }
 
 class ManualTickAndFetchSimulator extends Simulator {

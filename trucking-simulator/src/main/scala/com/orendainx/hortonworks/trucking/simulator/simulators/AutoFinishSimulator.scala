@@ -19,6 +19,7 @@ import scala.concurrent.duration._
   */
 object AutoFinishSimulator {
   def apply() = new AutoFinishSimulator()
+  def main(args: Array[String]): Unit = apply()
 }
 
 class AutoFinishSimulator extends Simulator {
