@@ -10,5 +10,5 @@ import angulate2.std.Component
   templateUrl = "/assets/templates/trucking-monitor.component.html"
 )
 class TruckingMonitorComponent {
-  val title = "Real-Time Truck Monitor - Powered by HDF"
+  val title = "Real-Time Trucking IoT Monitor"
 }
