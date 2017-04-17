@@ -5,15 +5,16 @@ import javax.inject.{Inject, Singleton}
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.kafka.scaladsl.Consumer
-import akka.stream.Materializer
+import akka.stream.{Materializer, ThrottleMode}
 import akka.stream.scaladsl.Sink
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.{ByteArrayDeserializer, StringDeserializer}
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.{Action, Controller, WebSocket}
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
@@ -38,6 +39,7 @@ class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Mate
     Consumer.committableSource(consumerSettings, Subscriptions.topics("trucking_data_joined"))
       .mapAsync(1) { msg => Future(outRef ! msg.record.value).map(_ => msg) }
       //.mapAsync(1) { msg => msg.committableOffset.commitScaladsl() } // TODO: Disabling commits for debug
+      .throttle(1, 1.second, 2, ThrottleMode.Shaping)
       .runWith(Sink.ignore)
 
     def receive = {
