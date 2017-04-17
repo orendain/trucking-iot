@@ -1,9 +1,5 @@
 package com.orendainx.hortonworks.trucking.storm.java.bolts;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.orendainx.hortonworks.trucking.commons.models.EnrichedTruckAndTrafficData;
 import com.orendainx.hortonworks.trucking.commons.models.EnrichedTruckData;
 import com.orendainx.hortonworks.trucking.commons.models.TrafficData;
@@ -16,6 +12,9 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.apache.storm.windowing.TupleWindow;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
   * Bolt responsible for routing data to multiple streams.
@@ -24,7 +23,6 @@ import org.apache.storm.windowing.TupleWindow;
   */
 public class TruckAndTrafficJoinBolt extends BaseWindowedBolt {
 
-  //private lazy val log = Logger(this.getClass)
   private OutputCollector outputCollector;
 
   public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
@@ -92,13 +90,13 @@ public class TruckAndTrafficJoinBolt extends BaseWindowedBolt {
               truckData.routeId(), truckData.routeName(), truckData.latitude(), truckData.longitude(), truckData.speed(),
               truckData.eventType(), truckData.foggy(), truckData.rainy(), truckData.windy(), trafficData.congestionLevel());
 
-          outputCollector.emit(new Values("EnrichedTruckAndTrafficData", joinedData));
+          outputCollector.emit(new Values("EnrichedTruckAndTrafficData", joinedData, joinedData.driverId()));
         }
       }
     }
   }
 
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
-    declarer.declare(new Fields("dataType", "data"));
+    declarer.declare(new Fields("dataType", "data", "driverId"));
   }
 }

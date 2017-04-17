@@ -1,11 +1,10 @@
 package com.orendainx.hortonworks.trucking.storm.java.topologies;
 
-import com.orendainx.hortonworks.trucking.storm.java.bolts.CSVStringToObject;
+import com.orendainx.hortonworks.trucking.storm.java.bolts.CSVStringToObjectBolt;
 import com.orendainx.hortonworks.trucking.storm.java.bolts.DataWindowingBolt;
-import com.orendainx.hortonworks.trucking.storm.java.bolts.ObjectToCSVString;
+import com.orendainx.hortonworks.trucking.storm.java.bolts.ObjectToCSVStringBolt;
 import com.orendainx.hortonworks.trucking.storm.java.bolts.TruckAndTrafficJoinBolt;
-import com.orendainx.hortonworks.trucking.storm.java.schemes.BufferToStringScheme;
-
+import com.orendainx.hortonworks.trucking.storm.java.schemes.TruckingStringScheme;
 import com.typesafe.config.ConfigFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.storm.Config;
@@ -23,156 +22,207 @@ import org.apache.storm.kafka.bolt.selector.DefaultTopicSelector;
 import org.apache.storm.spout.SchemeAsMultiScheme;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseWindowedBolt;
+import org.apache.storm.tuple.Fields;
 
 import java.util.Properties;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+/**
+ * Create a topology with the following components.
+ *
+ * Spouts:
+ *   - KafkaSpout (for injesting EnrichedTruckData)
+ *   - KafkaSpout (for injesting TrafficData)
+ * Bolt:
+ *   - CSVStringToObjectBolt (for creating Java objects from strings)
+ *   - TruckAndTrafficJoinBolt (for joining two datatypes into one)
+ *   - DataWindowingBolt (for reducing lists of tuples into models for machine learning)
+ *   - ObjectToCSVStringBolt (for serializing Java objects into strings)
+ *   - KafkaBolt (for pushing strings into Kafka topics)
+ *
+ * @author Edgar Orendain <edgar@orendainx.com>
+ */
 public class KafkaToKafka {
 
   private static com.typesafe.config.Config config = ConfigFactory.load();
 
   public static void main(String[] args) {
+    // Create a Storm config object and set some configurations
     Config stormConfig = new Config();
-
     stormConfig.setDebug(config.getBoolean(Config.TOPOLOGY_DEBUG));
     stormConfig.setMessageTimeoutSecs(config.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS));
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS));
 
-    StormTopology topology = new KafkaToKafka().buildTopology();
+    // Build a KafkaToKafka topology
+    StormTopology topology = KafkaToKafka.buildTopology();
 
     try {
+      // Submit the topology to the cluster with the specified name and storm configuration
       StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", stormConfig, topology);
     } catch (AlreadyAliveException|InvalidTopologyException|AuthorizationException e) {
       e.printStackTrace();
     }
   }
 
-  public StormTopology buildTopology() {
+  public static StormTopology buildTopology() {
 
+    // A builder to perform the construction of the topology.
     TopologyBuilder builder = new TopologyBuilder();
+
+
 
     // Default number of tasks (instances) of components to spawn
     int defaultTaskCount = config.getInt(Config.TOPOLOGY_TASKS);
+
+    // The hosts to ZooKeeper servers that manage the cluster
     ZkHosts zkHosts = new ZkHosts(config.getString(Config.STORM_ZOOKEEPER_SERVERS));
+
+    // The root location at which Storm stores data in ZooKeeper
     String zkRoot = config.getString(Config.STORM_ZOOKEEPER_ROOT);
+
+    // An identifier for the consumer group the configured KafkaSpouts belong to.
     String groupId = config.getString("kafka.group-id");
 
-    // Define properties to pass along to the KafkaBolt
-    Properties kafkaBoltProps = new Properties();
-    kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getString("kafka.bootstrap-servers"));
-    kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getString("kafka.key-serializer"));
-    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-serializer"));
 
 
+    /*
+     * Build a Kafka spout for ingesting enriched truck data
+     */
 
-
-
-
-    // Build Kafka spouts for ingesting trucking data
-    // Extract values from config
+    // Name of the Kafka topic to connect to
     String truckTopic = config.getString("kafka.truck-data.topic");
 
-    // Create a Spout configuration object and apply the scheme for the data that will come through this spout
+    // Create a Spout configuration object
     SpoutConfig truckSpoutConfig = new SpoutConfig(zkHosts, truckTopic, zkRoot, groupId);
-    truckSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferToStringScheme("EnrichedTruckData"));
-    truckSpoutConfig.ignoreZkOffsets = true; // Force the spout to ignore where it left off during previous runs // TODO: for testing
+
+    // Create a scheme for dictating how the ByteBuffer consumed from Kafka gets transformed into a Storm tuple.
+    // Our custom defined TruckingStringScheme converts the ByteBuffer straight into a string and outputs the
+    // fields "dataType" (the type of data retrieved from Kafka) and "data" (the data itself).
+    truckSpoutConfig.scheme = new SchemeAsMultiScheme(new TruckingStringScheme("EnrichedTruckData"));
+
+    // Force the spout to ignore consumer state in ZooKeeper (i.e. ignore where it left off in previous runs and start reading anew)
+    truckSpoutConfig.ignoreZkOffsets = true;
 
     // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("enrichedTruckData", new KafkaSpout(truckSpoutConfig), defaultTaskCount);
 
 
 
+    /*
+     * Build a second Kafka spout for ingesting traffic data
+     */
 
-
-
-
-    // Extract values from config
+    // Name of the Kafka topic to connect to
     String trafficTopic = config.getString("kafka.traffic-data.topic");
 
-    // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     SpoutConfig trafficSpoutConfig = new SpoutConfig(zkHosts, trafficTopic, zkRoot, groupId);
-    trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferToStringScheme("TrafficData"));
-    trafficSpoutConfig.ignoreZkOffsets = true; // Force the spout to ignore where it left off during previous runs // TODO: for testing
+    trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new TruckingStringScheme("TrafficData"));
+    trafficSpoutConfig.ignoreZkOffsets = true;
 
-    // Create a spout with the specified configuration, and place it in the topology blueprint
     builder.setSpout("trafficData", new KafkaSpout(trafficSpoutConfig), defaultTaskCount);
 
 
 
+    /*
+     * Build a bolt for creating Java objects from the ingested strings
+     */
+
+    // Our custom bolt, CSVStringToObjectBolt, is given the bolt id of "unpackagedData".  Storm is told to assign only
+    // a single task for this bolt (i.e. create only 1 instance of this bolt in the cluster).
+    // ShuffleGrouping shuffles data flowing in from the specified spouts evenly across all instances of the newly
+    // created bolt (which is only 1 in this example)
+    builder.setBolt("unpackagedData", new CSVStringToObjectBolt(), defaultTaskCount)
+        .shuffleGrouping("enrichedTruckData")
+        .shuffleGrouping("trafficData");
 
 
 
-    // Ser
-    builder.setBolt("unpackagedData", new CSVStringToObject(), defaultTaskCount).shuffleGrouping("enrichedTruckData").shuffleGrouping("trafficData");
+    /*
+     * Build a windowed bolt for joining two types of Tuples into one
+     */
 
-
-
-
-
+    // The length of the window, in milliseconds.
     int windowDuration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS);
 
-    // Create a bolt with a tumbling window and place the bolt in the topology blueprint, connected to the "enrichedTruckData"
-    // and "trafficData" streams. globalGrouping suggests that data from both streams be sent to *each* instance of this bolt
-    // (in case there are more than one in the cluster)
+    // Create a tumbling windowed bolt using our custom TruckAndTrafficJoinBolt, which houses the logic for how to
+    // merge the different Tuples.
+    //
+    // A tumbling window with a duration means the stream of incoming Tuples are partitioned based on the time
+    // they were processed (think of a traffic light, allowing all vehicles to pass but only the ones that get there
+    // by the time the light turns red).  All tuples that made it within the window are then processed all at once
+    // in the TruckAndTrafficJoinBolt.
     BaseWindowedBolt joinBolt = new TruckAndTrafficJoinBolt().withTumblingWindow(new BaseWindowedBolt.Duration(windowDuration, MILLISECONDS));
+
+    // GlobalGrouping suggests that all data from the specified component (unpackagedData) goes to a single one of the
+    // bolt's tasks.
     builder.setBolt("joinedData", joinBolt, defaultTaskCount).globalGrouping("unpackagedData");
 
 
 
-
-
     /*
-     * Build bolt to generate driver stats from data collected in a window.
-     * Creates a tuple count based window bolt that slides with every incoming tuple.
+     * Build a bolt to generate driver stats from the Tuples in the stream.
      */
+
+    // The size of the window, in number of Tuples.
     int intervalCount = config.getInt(Config.TOPOLOGY_BOLTS_SLIDING_INTERVAL_COUNT);
 
-    // Build bolt and then place in the topology blueprint connected to the "joinedData" stream.  ShuffleGrouping suggests
-    // that tuples from that stream are distributed across this bolt's tasks (instances), so as to keep load levels even.
+    // Build a bolt and then place in the topology blueprint connected to the "joinedData" stream.
+    //
+    // Creates a sliding windowed bolt using our custom DataWindowindBolt, which is responsible for reducing a list
+    // of recent Tuples(data) for a particular driver into a single datatype.  This data is used for machine learning.
+    //
+    // This sliding windowed bolt with a tuple count as a length means we always process the last 'N' tuples in the
+    // specified bolt.  The window slides over by one, dropping the oldest, each time a new tuple is processed.
     BaseWindowedBolt statsBolt = new DataWindowingBolt().withWindow(new BaseWindowedBolt.Count(intervalCount));
-    builder.setBolt("windowedDriverStats", statsBolt, defaultTaskCount).shuffleGrouping("joinedData");
 
-
-
-
-    /*
-     * Serialize data before pushing out to anywhere.
-     */
-    builder.setBolt("serializedJoinedData", new ObjectToCSVString()).shuffleGrouping("joinedData");
-    builder.setBolt("serializedDriverStats", new ObjectToCSVString()).shuffleGrouping("windowedDriverStats");
-
-
-
-
-
-
-
+    // Create 5x the default number of tasks for this bolt, to ease the load for any single instance of this bolt.
+    // FieldsGrouping partitions the stream of tuples by the fields specified.  Tuples with the same driverId will
+    // always go to the same task.  Tuples with different driverIds may go to different tasks.
+    builder.setBolt("windowedDriverStats", statsBolt, defaultTaskCount)
+        .fieldsGrouping("joinedData", new Fields("driverId"));
 
 
 
     /*
-     * Push driver stats to Kafka
+     * Build bolts to serialize data into a CSV string.
      */
 
-    // Build a KafkaBolt
+    // This bolt ingests tuples from the "joinedData" bolt, which streams instances of EnrichedTruckAndTrafficData
+    builder.setBolt("serializedJoinedData", new ObjectToCSVStringBolt()).shuffleGrouping("joinedData");
+
+    // This bolt ingests tuples from the "joinedData" bolt, which streams instances of WindowedDriverStats
+    builder.setBolt("serializedDriverStats", new ObjectToCSVStringBolt()).shuffleGrouping("windowedDriverStats");
+
+
+
+    /*
+     * Build KafkaBolts to stream Tuples into a Kafka topic
+     */
+
+    // Define properties to pass along to the two KafkaBolts
+    Properties kafkaBoltProps = new Properties();
+    kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getString("kafka.bootstrap-servers"));
+    kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getString("kafka.key-serializer"));
+    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-serializer"));
+
+    // withTopicSelector() specifies the Kafka topic to drop entries into
+    //
+    // withTupleToKafkaMapper() is passed an instance of FieldNameBasedTupleToKafkaMapper, which tells the bolt
+    // which fields of a Tuple the data to pass in is stored as.
+    //
+    // withProducerProperties() takes in properties to set itself up with
     KafkaBolt truckingKafkaBolt = new KafkaBolt<String, String>()
         .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.joined-data.topic")))
-        .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper<String, String>("key", "data"))
+        .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper<>("key", "data"))
         .withProducerProperties(kafkaBoltProps);
 
     builder.setBolt("joinedDataToKafka", truckingKafkaBolt, defaultTaskCount).shuffleGrouping("serializedJoinedData");
 
-
-
-
-
-
-
     // Build a KafkaBolt
     KafkaBolt statsKafkaBolt = new KafkaBolt<String, String>()
         .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driver-stats.topic")))
-        .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper<String, String>("key", "data"))
+        .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper<>("key", "data"))
         .withProducerProperties(kafkaBoltProps);
 
     builder.setBolt("driverStatsToKafka", statsKafkaBolt, defaultTaskCount).shuffleGrouping("serializedDriverStats");
@@ -180,19 +230,7 @@ public class KafkaToKafka {
 
 
 
-
-
-
-
-
-
-
-
-
-
-    //logger.info("Storm topology finished building.");
-
-    // Finally, create the topology
+    // Now that the entire topology blueprint has been built, we create an actual topology from it
     return builder.createTopology();
   }
 }

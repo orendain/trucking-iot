@@ -1,7 +1,5 @@
 package com.orendainx.hortonworks.trucking.storm.java.bolts;
 
-import java.util.Map;
-
 import com.orendainx.hortonworks.trucking.commons.models.EnrichedTruckAndTrafficData;
 import com.orendainx.hortonworks.trucking.commons.models.WindowedDriverStats;
 import org.apache.storm.task.OutputCollector;
@@ -12,10 +10,14 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import java.util.Map;
+
 /**
+  * Convert Java objects in the stream to CSV delimited strings.
+  *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-public class ObjectToCSVString extends BaseRichBolt {
+public class ObjectToCSVStringBolt extends BaseRichBolt {
 
   private OutputCollector outputCollector;
 

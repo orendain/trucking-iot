@@ -5,11 +5,11 @@ object Dependencies {
   /*
    * Dependency declarations for the different subprojects
    */
-  lazy val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback, kafkaProducer)
+  lazy val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback, kafkaClients)
   lazy val enrichmentDeps = Seq(scalaCsv, config, betterFiles)
   lazy val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
   lazy val stormTopologyDeps = Seq(stormCoreProvided, stormNifi, stormKafka, kafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
-  lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormNifi, stormKafka, kafka, schemaRegistrySerdes, config)
+  lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormKafka, kafkaClients, config)
   lazy val webApplicationBackendDeps = Seq(scalaJsScripts, compass, bootstrap) ++ angular2Deps
   lazy val webApplicationFrontendDeps = Seq(leaflet)
 
@@ -33,13 +33,13 @@ object Dependencies {
 
 
   // Storm-related dependencies
-  lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.0.3" % "provided"
-  lazy val stormNifi = "org.apache.nifi" % "nifi-storm-spout" % "1.1.0"
-  lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.0.3"
+  lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.1.0" % "provided"
+  lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.1.0"
+  lazy val stormNifi = "org.apache.nifi" % "nifi-storm-spout" % "1.1.2"
 
 
   // See: http://stackoverflow.com/questions/33054294/kafkaspout-throws-noclassdeffounderror-for-log4j
-  lazy val kafkaProducer = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
+  lazy val kafkaClients = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
   lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")
     .exclude("org.apache.zookeeper", "zookeeper")
     .exclude("org.slf4j", "slf4j-log4j12")

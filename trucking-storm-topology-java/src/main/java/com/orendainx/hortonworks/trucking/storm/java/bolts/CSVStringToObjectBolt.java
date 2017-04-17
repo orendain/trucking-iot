@@ -14,19 +14,27 @@ import org.apache.storm.tuple.Values;
 import java.util.Map;
 
 /**
-  * Convert Tuples in the form of NiFiDataPackets into Tuples of their respective JVM objects.
+  * Convert Tuples housing CSV delimited strings into Java objects
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-public class CSVStringToObject extends BaseRichBolt {
+public class CSVStringToObjectBolt extends BaseRichBolt {
 
-  //private Logger = Logger(this.getClass)
   private OutputCollector outputCollector;
 
+  /*
+   * The prepare method provides the bolt with an OutputCollector that is used for emitting tuples from this bolt.
+   * Tuples can be emitted at anytime from the bolt -- in the prepare, execute, or cleanup methods, or even
+   * asynchronously in another thread. This prepare implementation simply saves the OutputCollector as an instance
+   * variable to be used later on in the execute method.
+   */
   public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
     outputCollector = collector;
   }
 
+  /*
+   * The execute method receives a tuple from one of the bolt's inputs.
+   */
   public void execute(Tuple tuple) {
 
     // Convert each string into its proper case class instance (e.g. EnrichedTruckData or TrafficData)
@@ -47,6 +55,9 @@ public class CSVStringToObject extends BaseRichBolt {
     outputCollector.ack(tuple);
   }
 
+  /*
+   * The declareOutputFields method declares that this bolt emits 2-tuples with fields called "dataType" and "data".
+   */
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
     declarer.declare(new Fields("dataType", "data"));
   }
