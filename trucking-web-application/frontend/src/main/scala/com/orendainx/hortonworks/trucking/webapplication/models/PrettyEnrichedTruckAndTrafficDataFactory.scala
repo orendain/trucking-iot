@@ -17,7 +17,7 @@ object PrettyEnrichedTruckAndTrafficDataFactory {
     val prettyLongitude = (math.floor(longitude.toDouble * 100)/100).toString
 
     PrettyEnrichedTruckAndTrafficData(eventTime.toLong, truckId.toInt, driverId.toInt, driverName, routeId.toInt, routeName,
-      latitude.toDouble, longitude.toDouble, speed.toInt, eventType, congestionLevel.toInt,
-      foggy.toInt, rainy.toInt, windy.toInt, prettyEventTime, prettyLatitude, prettyLongitude)
+      latitude.toDouble, longitude.toDouble, speed.toInt, eventType, foggy.toInt, rainy.toInt, windy.toInt,
+      congestionLevel.toInt, prettyEventTime, prettyLatitude, prettyLongitude)
   }
 }
