@@ -11,6 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.{ByteArrayDeserializer, StringDeserializer}
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.{Action, Controller, WebSocket}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -18,7 +19,7 @@ import scala.concurrent.Future
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 @Singleton
-class WebSocket @Inject() (implicit system: ActorSystem, materializer: Materializer) extends Controller {
+class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Materializer) extends Controller {
 
   def kafkaWS = WebSocket.accept[String, String] { request =>
     ActorFlow.actorRef(out => KafkaWSActor.props(out))
@@ -41,7 +42,7 @@ class WebSocket @Inject() (implicit system: ActorSystem, materializer: Materiali
       .runWith(Sink.ignore)
 
     def receive = {
-      case msg: String => "Hi"
+      case msg: String => outRef ! s"Saw your $msg"
     }
   }
 

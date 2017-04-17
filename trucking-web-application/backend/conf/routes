@@ -4,7 +4,7 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-GET     /ws                         controllers.WebSocket.kafkaWS
+GET     /ws                         controllers.KafkaWebSocket.kafkaWS
 
 # Application index
 #GET     /                           controllers.Guide.index
