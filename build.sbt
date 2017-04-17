@@ -42,7 +42,7 @@ lazy val commonsCross = crossProject.in(file("trucking-commons"))
  * Subproject definition for trucking-simulator
  */
 lazy val simulator = (project in file("trucking-simulator"))
-  .dependsOn(commonsJVM)
+  .dependsOn(commonsJVM, enrichment)
   .settings(
     commonSettings,
     name := "trucking-simulator",
