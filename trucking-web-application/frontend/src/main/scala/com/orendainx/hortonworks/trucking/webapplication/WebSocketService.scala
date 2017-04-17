@@ -18,7 +18,8 @@ class WebSocketService {
 
   def initialize(): Unit = {
 
-    ws = new WebSocket("ws://sandbox.hortonworks.com:17000/trucking-events")
+    //ws = new WebSocket("ws://sandbox.hortonworks.com:17000/trucking-events") // NiFi WS
+    ws = new WebSocket("ws://sandbox.hortonworks.com:10502/ws") // Play WS
     ws.onopen = onOpen _
     ws.onclose = onClose _
     ws.onerror = onError _

@@ -25,7 +25,6 @@ class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Mate
     ActorFlow.actorRef(out => KafkaWSActor.props(out))
   }
 
-
   object KafkaWSActor {
     def props(outRef: ActorRef) = Props(new KafkaWSActor(outRef))
   }
@@ -42,7 +41,7 @@ class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Mate
       .runWith(Sink.ignore)
 
     def receive = {
-      case msg: String => outRef ! s"Saw your $msg"
+      case msg: String => outRef ! s"Ack: $msg"
     }
   }
 
