@@ -3,14 +3,14 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.kafka.scaladsl.Consumer
-import akka.stream.{Materializer, ThrottleMode}
+import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.stream.scaladsl.Sink
+import akka.stream.{Materializer, ThrottleMode}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.{ByteArrayDeserializer, StringDeserializer}
 import play.api.libs.streams.ActorFlow
-import play.api.mvc.{Action, Controller, WebSocket}
+import play.api.mvc.{Controller, WebSocket}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
