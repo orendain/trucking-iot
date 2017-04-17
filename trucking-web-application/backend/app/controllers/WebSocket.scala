@@ -18,7 +18,7 @@ import scala.concurrent.Future
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 @Singleton
-class WebSocket @Inject() (implicit system: ActorSystem, materializer: Materializer) {
+class WebSocket @Inject() (implicit system: ActorSystem, materializer: Materializer) extends Controller {
 
   def kafkaWS = WebSocket.accept[String, String] { request =>
     ActorFlow.actorRef(out => KafkaWSActor.props(out))
