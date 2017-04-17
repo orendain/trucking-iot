@@ -39,7 +39,7 @@ class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Mate
     Consumer.committableSource(consumerSettings, Subscriptions.topics("trucking_data_joined"))
       .mapAsync(1) { msg => Future(outRef ! msg.record.value).map(_ => msg) }
       //.mapAsync(1) { msg => msg.committableOffset.commitScaladsl() } // TODO: Disabling commits for debug
-      .throttle(1, 333.milliseconds, 2, ThrottleMode.Shaping)
+      .throttle(1, 250.milliseconds, 1, ThrottleMode.Shaping)
       .runWith(Sink.ignore)
 
     def receive = {
