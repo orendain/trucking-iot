@@ -10,7 +10,7 @@ object Dependencies {
   lazy val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
   lazy val stormTopologyDeps = Seq(stormCoreProvided, stormNifi, stormKafka, kafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
   lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormKafka, kafkaClients, config)
-  lazy val webApplicationBackendDeps = Seq(scalaJsScripts, compass, bootstrap) ++ angular2Deps
+  lazy val webApplicationBackendDeps = Seq(scalaJsScripts, compass, bootstrap, akkaStreamKafka) ++ angular2Deps
   lazy val webApplicationFrontendDeps = Seq(leaflet)
 
 
@@ -70,6 +70,8 @@ object Dependencies {
     "org.webjars.npm" % "zone.js" % "0.6.26",
     "org.webjars.npm" % "core-js" % "2.4.1",
     "org.webjars.npm" % "symbol-observable" % "1.0.4")
+
+  lazy val akkaStreamKafka = "com.typesafe.akka" %% "akka-stream-kafka" % "0.14"
 
 
   // Web application frontend dependencies
