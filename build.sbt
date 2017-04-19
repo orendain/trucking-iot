@@ -179,7 +179,7 @@ lazy val webApplicationBackend = (project in file("trucking-web-application/back
     ),
 
     libraryDependencies ++= Dependencies.webApplicationBackendDeps ++ Seq(filters, cache, ws),
-    PlayKeys.devSettings := Seq("play.server.http.port" -> "15001"), // Custom port when deployed using Sbt's run command
+    PlayKeys.devSettings := Seq("play.server.http.port" -> "15500"), // Custom port when deployed using Sbt's run command
     shellPrompt := (state ⇒ promptTheme.value.render(state)), // Override Play's default Sbt prompt
     scalacOptions += "-Yresolve-term-conflict:package"
   ).enablePlugins(PlayScala)
