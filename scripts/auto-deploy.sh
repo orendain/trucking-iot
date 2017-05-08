@@ -21,7 +21,7 @@ $scriptDir/builds/nifi-bundle.sh
 $scriptDir/builds/schema-registrar.sh
 
 echo "Running the NiFi flow"
-curl 'http://$1:9090/nifi-api/flow/process-groups/90e748c3-015a-1000-f68d-292036f42e8f' -X PUT -H 'Content-Type: application/json' -H 'X-Requested-With: XMLHttpRequest' --data-binary '{"id":"90e748c3-015a-1000-f68d-292036f42e8f","state":"RUNNING"}' --compressed
+curl 'http://sandbox.hortonworks.com:9090/nifi-api/flow/process-groups/90e748c3-015a-1000-f68d-292036f42e8f' -X PUT -H 'Content-Type: application/json' -H 'X-Requested-With: XMLHttpRequest' --data-binary '{"id":"90e748c3-015a-1000-f68d-292036f42e8f","state":"RUNNING"}' --compressed
 
 # Build and deploy the Storm topology
 $scriptDir/builds/storm-topology.sh
