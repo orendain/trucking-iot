@@ -18,11 +18,11 @@ class Go @Inject() extends Controller {
    * a path of `/`.
    */
   def ambari = Action {
-    Redirect("sandbox.hortonworks.com:8080") //TODO: extract both host and port
+    Redirect("sandbox-hdf.hortonworks.com:8080") //TODO: extract both host and port
   }
 
   def nifi = Action {
-    Redirect("sandbox.hortonworks.com:8080") //TODO: extract both host and port
+    Redirect("sandbox-hdf.hortonworks.com:8080") //TODO: extract both host and port
   }
 
 }

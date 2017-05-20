@@ -31,13 +31,13 @@ class Storm @Inject() extends Controller {
 
     val (stormConfig, stormTopology) = TruckingTopology.buildStormConfigAndTopology()
 
-    //stormConfig.put("storm.zookeeper.servers", "sandbox.hortonworks.com")
+    //stormConfig.put("storm.zookeeper.servers", "sandbox-hdf.hortonworks.com")
     import scala.collection.JavaConversions._
     import scala.collection.JavaConverters._
-    //stormConfig.put("nimbus.seeds", List("sandbox.hortonworks.com").asJava)
-    stormConfig.put(Config.NIMBUS_SEEDS, "sandbox.hortonworks.com")
+    //stormConfig.put("nimbus.seeds", List("sandbox-hdf.hortonworks.com").asJava)
+    stormConfig.put(Config.NIMBUS_SEEDS, "sandbox-hdf.hortonworks.com")
     stormConfig.put(Config.NIMBUS_THRIFT_PORT, 6627)
-    stormConfig.put(Config.STORM_ZOOKEEPER_SERVERS, "sandbox.hortonworks.com")
+    stormConfig.put(Config.STORM_ZOOKEEPER_SERVERS, "sandbox-hdf.hortonworks.com")
     stormConfig.put(Config.STORM_ZOOKEEPER_PORT, 2181)
 
     val systemProperties = new SystemProperties
@@ -45,16 +45,16 @@ class Storm @Inject() extends Controller {
 
 
     //val stormConf2: Map[String, AnyRef] = Utils.readStormConfig()
-    //stormConf2.put("nimbus.host", "sandbox.hortonworks.com")
+    //stormConf2.put("nimbus.host", "sandbox-hdf.hortonworks.com")
 
     System.out.println(s"config: ${stormConfig.toString}")
 
     //val nimbusConfig: com.typesafe.config.Config = ???
     //val nimbusClient: NimbusClient = new NimbusClient(stormConfig, nimbusConfig.getString("nimbus.host"), nimbusConfig.getInt("nimbus.port"))
-    //val nimbusClient = new NimbusClient(stormConfig, "sandbox.hortonworks.com", 6627)
+    //val nimbusClient = new NimbusClient(stormConfig, "sandbox-hdf.hortonworks.com", 6627)
     //val nimbusClient = NimbusClient.getConfiguredClient(stormConf2)
     val nimbusClient = new NimbusClient(
-      new util.HashMap[String,String](), "sandbox.hortonworks.com", 6627
+      new util.HashMap[String,String](), "sandbox-hdf.hortonworks.com", 6627
     )
 
 

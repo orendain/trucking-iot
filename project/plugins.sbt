@@ -10,7 +10,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
 
 // ScalaJS plugins
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.14")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.16")
 addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.3")
 
 // Angulate2
@@ -22,3 +22,7 @@ addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.8")
 
 // Sbt and Git prompt
 addSbtPlugin("com.scalapenos" % "sbt-prompt" % "1.0.0")
+
+// GPG and publishing
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "1.1")

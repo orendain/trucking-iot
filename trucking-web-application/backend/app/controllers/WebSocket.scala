@@ -32,7 +32,7 @@ class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Mate
 
   class KafkaWSActor(outRef: ActorRef) extends Actor {
     val consumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new StringDeserializer)
-      .withBootstrapServers("sandbox.hortonworks.com:6667")
+      .withBootstrapServers("sandbox-hdf.hortonworks.com:6667")
       .withGroupId("group1")
       .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 

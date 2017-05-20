@@ -202,7 +202,7 @@
         </entry>
         <entry>
           <key>Server Hostname</key>
-          <value>sandbox.hortonworks.com</value>
+          <value>sandbox-hdf.hortonworks.com</value>
         </entry>
         <entry>
           <key>Communications Timeout</key>
@@ -1419,7 +1419,7 @@
               </entry>
               <entry>
                 <key>bootstrap.servers</key>
-                <value>sandbox.hortonworks.com:6667</value>
+                <value>sandbox-hdf.hortonworks.com:6667</value>
               </entry>
               <entry>
                 <key>topic</key>
@@ -1601,7 +1601,7 @@
           </entry>
           <entry>
             <key>bootstrap.servers</key>
-            <value>sandbox.hortonworks.com:6667</value>
+            <value>sandbox-hdf.hortonworks.com:6667</value>
           </entry>
           <entry>
             <key>sasl.kerberos.service.name</key>
@@ -1802,7 +1802,7 @@
           </entry>
           <entry>
             <key>bootstrap.servers</key>
-            <value>sandbox.hortonworks.com:6667</value>
+            <value>sandbox-hdf.hortonworks.com:6667</value>
           </entry>
           <entry>
             <key>sasl.kerberos.service.name</key>

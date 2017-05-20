@@ -8,6 +8,6 @@ if [ $# -eq 0 ]
 else
   for dir in "scripts" "trucking-schema-registrar" "trucking-simulator" "trucking-nifi-templates" "trucking-storm-topology" "trucking-storm-topology-java" "trucking-web-application"
   do
-    find $projDir/$dir -type f -exec sed -i '' -e "s/sandbox.hortonworks.com/$1/g" {} \;
+    find $projDir/$dir -type f -exec sed -i '' -e "s/sandbox-hdf.hortonworks.com/$1/g" {} \;
   done
 fi

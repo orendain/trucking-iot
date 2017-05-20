@@ -2,15 +2,34 @@
  * Definition of common settings for all subprojects
  */
 lazy val commonSettings = Seq(
-  version := "0.3.2",
+  version := "0.4.0-SNAPSHOT",
+  isSnapshot := true,
   scalaVersion := "2.11.8",
   description := """Trucking IoT application.""",
-  organization := "com.orendainx.hortonworks",
+  organization := "com.orendainx.trucking",
   homepage := Some(url("https://github.com/orendain/trucking-iot")),
   organizationHomepage := Some(url("https://github.com/orendain/trucking-iot")),
   licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
   promptTheme := ScalapenosTheme,
-  autoAPIMappings := true // TODO: I forget exactly why this was necessary
+  autoAPIMappings := true, // TODO: I forget exactly why this was necessary
+
+  pomIncludeRepository := { _ => false },
+  scmInfo := Some(
+    ScmInfo(url("https://github.com/orendain/trucking-iot"), "scm:git@github.com/orendain/trucking-iot.git")
+  ),
+  developers := List(
+    Developer(
+      id    = "orendain",
+      name  = "Edgar Orendain",
+      email = "edgar@orendainx.com",
+      url   = url("http://www.orendainx.com")
+    )
+  ),
+  publishTo := {
+    val nexus = "https://oss.sonatype.org/"
+    if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
+    else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  }
 )
 
 
@@ -32,8 +51,7 @@ lazy val commonsJS = commonsCross.js
 lazy val commonsCross = crossProject.in(file("trucking-commons"))
   .settings(
     commonSettings,
-    name := "trucking-commons",
-    isSnapshot := true // TODO: I forget exactly why this was necessary
+    name := "trucking-commons"
   )
 
 
@@ -47,7 +65,18 @@ lazy val simulator = (project in file("trucking-simulator"))
     commonSettings,
     name := "trucking-simulator",
     libraryDependencies ++= Dependencies.simulatorDeps,
-    isSnapshot := true
+    mainClass in Compile := Some("com.orendainx.hortonworks.trucking.simulator.SimulatorMain"),
+    //publishArtifact in (Compile, packageBin) := false,
+    assemblyMergeStrategy in assembly := {
+      case PathList("application.conf") => MergeStrategy.concat
+      case x =>
+        val oldStrategy = (assemblyMergeStrategy in assembly).value
+        oldStrategy(x)
+    },
+    artifact in (Compile, assembly) ~= { art =>
+      art.copy(`classifier` = Some("assembly"))
+    },
+    addArtifact(artifact in (Compile, assembly), assembly)
   )
 
 
@@ -60,8 +89,7 @@ lazy val enrichment = (project in file("trucking-enrichment"))
   .settings(
     commonSettings,
     name := "trucking-enrichment",
-    libraryDependencies ++= Dependencies.enrichmentDeps,
-    isSnapshot := true
+    libraryDependencies ++= Dependencies.enrichmentDeps
   )
 
 
@@ -113,28 +141,6 @@ lazy val stormTopology = (project in file("trucking-storm-topology"))
     name := "trucking-storm-topology",
     resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
     libraryDependencies ++= Dependencies.stormTopologyDeps,
-
-    // TODO: Temporary, change once schema registry release updated
-    assemblyMergeStrategy in assembly := {
-      /*case PathList("javax", "ws", "rs", "core", "MultivaluedMap.class")      => MergeStrategy.last // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
-      case PathList("javax", "ws", "rs", "core", xs @ _) if xs.startsWith("Response")      => MergeStrategy.last // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
-      case PathList("javax", "ws", "rs", "core", xs @ _*)      => MergeStrategy.first // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
-      case PathList("javax", "ws", xs @ _*)      => MergeStrategy.first // com.sun.jersey/jersey-core vs javax.ws.rs/javax.ws.rs-api
-      case PathList("javax", "el", xs @ _*)      => MergeStrategy.first // javax.servlet.jsp vs org.mortbay.jetty
-      case PathList("javax", "servlet", xs @ _*)      => MergeStrategy.first // javax.servlet.jsp vs org.mortbay.jetty
-      case PathList("org", "apache", "commons", "collections", xs @ _*)      => MergeStrategy.first
-      //case PathList("org", "slf4j", xs @ _*)      => MergeStrategy.first
-      case PathList("org", "apache", "http", xs @ _*)      => MergeStrategy.first
-      case PathList("org", "apache", "commons", xs @ _*)      => MergeStrategy.first
-      case PathList("org", "jvnet", "hk2", xs @ _*)      => MergeStrategy.last
-      case PathList("org", "glassfish", xs @ _*)      => MergeStrategy.last
-      case PathList("javassist", xs @ _*)      => MergeStrategy.last
-      */
-      case x =>
-        val oldStrategy = (assemblyMergeStrategy in assembly).value
-        oldStrategy(x)
-    },
-
     scalacOptions ++= Seq("-feature", "-Yresolve-term-conflict:package")
   )
 
@@ -179,9 +185,13 @@ lazy val webApplicationBackend = (project in file("trucking-web-application/back
     ),
 
     libraryDependencies ++= Dependencies.webApplicationBackendDeps ++ Seq(filters, cache, ws),
-    PlayKeys.devSettings := Seq("play.server.http.port" -> "15500"), // Custom port when deployed using Sbt's run command
+    PlayKeys.devSettings := Seq("play.server.http.port" -> "15100"), // Custom port when deployed using Sbt's run command
     shellPrompt := (state ⇒ promptTheme.value.render(state)), // Override Play's default Sbt prompt
     scalacOptions += "-Yresolve-term-conflict:package"
+
+    // For use with sbt-assembly
+    //mainClass in assembly := Some("play.core.server.ProdServerStart"),
+    //fullClasspath in assembly += Attributed.blank(PlayKeys.playPackageAssets.value)
   ).enablePlugins(PlayScala)
 
 
