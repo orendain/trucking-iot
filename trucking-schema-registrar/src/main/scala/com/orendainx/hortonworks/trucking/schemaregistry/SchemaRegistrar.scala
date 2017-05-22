@@ -108,11 +108,17 @@ object SchemaRegistrar {
      */
     val avroSchemaName = config.getString("avro.name")
     val avroSchemaDescription = config.getString("avro.description")
-    val avroSerializerClassName = config.getString("avro.serializer-class-name")
-    val avroDeserializerClassName = config.getString("avro.deserializer-class-name")
+//    val avroSerializerClassName = config.getString("avro.serializer-class-name")
+//    val avroDeserializerClassName = config.getString("avro.deserializer-class-name")
+val avroSerializerClassName = "com.hortonworks.schemaregistry.samples.serdes.SimpleSerializer"
+val avroDeserializerClassName = "com.hortonworks.schemaregistry.samples.serdes.SimpleDeserializer"
 
-    val avroJar = getClass.getResourceAsStream(config.getString("avro.jarpath"))
+    //val avroJar = getClass.getResourceAsStream(config.getString("avro.jarpath"))
+    val avroJar = getClass.getResourceAsStream("/schema/serdes-examples.jar")
     val avroSerDesFileId = schemaRegistryClient.uploadFile(avroJar)
+    avroJar.close()
+
+    log.info(s"Upload fileId: $avroSerDesFileId")
 
     val avroSerializerInfo = new SerDesInfo.Builder().name(avroSchemaName).description(avroSchemaDescription)
       .fileId(avroSerDesFileId).className(avroSerializerClassName).buildSerializerInfo()

@@ -79,8 +79,10 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Default number of tasks (instances) of components to spawn
     val defaultTaskCount = config.getInt(Config.TOPOLOGY_TASKS)
+    //val zkHosts = new ZkHosts(config.getString(Config.STORM_ZOOKEEPER_SERVERS))
+    //val zkRoot = config.getString(Config.STORM_ZOOKEEPER_ROOT)
     val zkHosts = new ZkHosts(config.getString(Config.STORM_ZOOKEEPER_SERVERS))
-    val zkRoot = config.getString(Config.STORM_ZOOKEEPER_ROOT)
+    val zkRoot = "/services/slider/users/root/kafka-app-2"
     val groupId = config.getString("kafka.group-id")
 
     // Define properties to pass along to the KafkaBolt
