@@ -7,11 +7,12 @@ import com.orendainx.hortonworks.trucking.storm.java.bolts.TruckAndTrafficJoinBo
 import com.orendainx.hortonworks.trucking.storm.java.schemes.TruckingStringScheme;
 import com.typesafe.config.ConfigFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.errors.AuthorizationException;
 import org.apache.storm.Config;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.generated.AlreadyAliveException;
-import org.apache.storm.generated.AuthorizationException;
 import org.apache.storm.generated.InvalidTopologyException;
+import org.apache.storm.generated.Nimbus;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.kafka.KafkaSpout;
 import org.apache.storm.kafka.SpoutConfig;
@@ -19,11 +20,17 @@ import org.apache.storm.kafka.ZkHosts;
 import org.apache.storm.kafka.bolt.KafkaBolt;
 import org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper;
 import org.apache.storm.kafka.bolt.selector.DefaultTopicSelector;
+import org.apache.storm.shade.org.json.simple.JSONValue;
 import org.apache.storm.spout.SchemeAsMultiScheme;
+import org.apache.storm.thrift.TException;
+import org.apache.storm.thrift.transport.TTransportException;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.topology.base.BaseWindowedBolt;
 import org.apache.storm.tuple.Fields;
+import org.apache.storm.utils.NimbusClient;
+import org.apache.storm.utils.Utils;
 
+import java.util.Map;
 import java.util.Properties;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -58,9 +65,40 @@ public class KafkaToKafka {
     StormTopology topology = KafkaToKafka.buildTopology();
 
     try {
+
+
+
+      Map storm_conf = Utils.readStormConfig();
+      storm_conf.put("nimbus.seeds", "nimbus.storm-app-1.root.hwx.site");
+      Nimbus.Client client = NimbusClient.getConfiguredClient(storm_conf)
+          .getClient();
+      String inputJar = "/Users/eorendain/Documents/trucking/trucking-iot/trucking-storm-topology-java/target/scala-2.11/trucking-storm-topology-java-assembly-0.4.0-SNAPSHOT.jar";
+      NimbusClient nimbus = new NimbusClient(storm_conf, "nimbus.storm-app-1.root.hwx.site");
+      // upload topology jar to Cluster using StormSubmitter
+      String uploadedJarLocation = StormSubmitter.submitJar(storm_conf, inputJar);
+
+      String jsonConf = JSONValue.toJSONString(storm_conf);
+      nimbus.getClient().submitTopology("K2kJ", uploadedJarLocation, jsonConf, topology);
+
+      //
+//      // Temp
+//      val stormConf2 = Utils.readStormConfig()
+//      stormConf2.put("nimbus.seeds", "nimbus.storm-app-1.root.hwx.site")
+//      val stormClient2 = NimbusClient.getConfiguredClient(stormConf2).getClient
+//      //val inputJar = "/trucking-iot/trucking-storm-topology/target/scala-2.11/trucking-storm-topology-assembly-0.4.0-SNAPSHOT.jar"
+//      val inputJar = "/Users/eorendain/Documents/trucking/trucking-iot/trucking-storm-topology/target/scala-2.11/trucking-storm-topology-assembly-0.4.0-SNAPSHOT.jar"
+//      val nimbus = new NimbusClient(stormConf2, "nimbus.storm-app-1.root.hwx.site")
+//      val uploadedJarLocation = StormSubmitter.submitJar(stormConf2, inputJar)
+//      val jsonConf = JSONValue.toJSONString(stormConf2)
+//      nimbus.getClient.submitTopology("K2K", uploadedJarLocation, jsonConf, topology)
+
+
+
       // Submit the topology to the cluster with the specified name and storm configuration
       StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", stormConfig, topology);
-    } catch (AlreadyAliveException|InvalidTopologyException|AuthorizationException e) {
+    } catch (AlreadyAliveException |InvalidTopologyException |AuthorizationException e) {
+      e.printStackTrace();
+    } catch (TException e) {
       e.printStackTrace();
     }
   }

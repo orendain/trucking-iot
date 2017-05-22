@@ -156,7 +156,14 @@ lazy val stormTopologyJava = (project in file("trucking-storm-topology-java"))
     name := "trucking-storm-topology-java",
     resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
     libraryDependencies ++= Dependencies.stormTopologyJavaDeps,
-    autoScalaLibrary := false
+    autoScalaLibrary := false,
+    mainClass in (Compile,run) := Some("com.orendainx.hortonworks.trucking.storm.java.topologies.KafkaToKafka"),
+    assemblyMergeStrategy in assembly := {
+      case PathList(x) if x.endsWith("clj") => MergeStrategy.first
+      case x =>
+        val oldStrategy = (assemblyMergeStrategy in assembly).value
+        oldStrategy(x)
+    }
   )
 
 

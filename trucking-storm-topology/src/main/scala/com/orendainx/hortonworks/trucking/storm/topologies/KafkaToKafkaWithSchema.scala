@@ -12,7 +12,7 @@ import org.apache.storm.generated.StormTopology
 import org.apache.storm.kafka.bolt.KafkaBolt
 import org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper
 import org.apache.storm.kafka.bolt.selector.DefaultTopicSelector
-import org.apache.storm.kafka.{KafkaSpout, SpoutConfig, ZkHosts}
+//import org.apache.storm.kafka.{KafkaSpout, SpoutConfig, ZkHosts}
 import org.apache.storm.spout.SchemeAsMultiScheme
 import org.apache.storm.topology.TopologyBuilder
 import org.apache.storm.topology.base.BaseWindowedBolt
@@ -31,7 +31,7 @@ object KafkaToKafkaWithSchema {
   def main(args: Array[String]): Unit = {
     // Build and submit the Storm config and topology
     val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
-    StormSubmitter.submitTopologyWithProgressBar("KafkaToKafkaWithSchema", stormConfig, topology)
+    //StormSubmitter.submitTopologyWithProgressBar("KafkaToKafkaWithSchema", stormConfig, topology)
   }
 
   /**
@@ -39,7 +39,8 @@ object KafkaToKafkaWithSchema {
     *
     * @return A 2-tuple ([[Config]], [[StormTopology]])
     */
-  def buildDefaultStormConfigAndTopology(): (Config, StormTopology) = {
+  //def buildDefaultStormConfigAndTopology(): (Config, StormTopology) = {
+  def buildDefaultStormConfigAndTopology() = {
     val config = ConfigFactory.load()
 
     // Set up configuration for the Storm Topology
@@ -49,7 +50,7 @@ object KafkaToKafkaWithSchema {
     stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
     stormConfig.put(SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name(), config.getString("schema-registry.url"))
 
-    (stormConfig, new KafkaToKafkaWithSchema(config).buildTopology())
+    //(stormConfig, new KafkaToKafkaWithSchema(config).buildTopology())
   }
 }
 
@@ -68,6 +69,8 @@ object KafkaToKafkaWithSchema {
 class KafkaToKafkaWithSchema(config: TypeConfig) {
 
   private lazy val logger = Logger(this.getClass)
+
+  /*
 
   /**
     *
@@ -227,5 +230,8 @@ class KafkaToKafkaWithSchema(config: TypeConfig) {
 
     // Finally, create the topology
     builder.createTopology()
-  }
+
+
+
+  }*/
 }

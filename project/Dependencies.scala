@@ -8,8 +8,8 @@ object Dependencies {
   lazy val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback, kafkaClients)
   lazy val enrichmentDeps = Seq(scalaCsv, config, betterFiles)
   lazy val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
-  lazy val stormTopologyDeps = Seq(stormCoreProvided, stormNifi, stormKafka, kafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
-  lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormKafka, kafkaClients, config)
+  lazy val stormTopologyDeps = Seq(stormCoreProvided, stormNifi, stormKafkaClient, kafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
+  lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormKafka, stormKafkaClient, kafkaClients, config)
   lazy val webApplicationBackendDeps = Seq(scalaJsScripts, compass, bootstrap, akkaStreamKafka) ++ angular2Deps
   lazy val webApplicationFrontendDeps = Seq(leaflet)
 
@@ -34,6 +34,8 @@ object Dependencies {
 
   // Storm-related dependencies
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.1.0" % "provided"
+  lazy val stormKafkaClient = "org.apache.storm" % "storm-kafka-client" % "1.1.0"
+  //lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.1.0"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.1.0"
   lazy val stormNifi = "org.apache.nifi" % "nifi-storm-spout" % "1.1.2"
 
