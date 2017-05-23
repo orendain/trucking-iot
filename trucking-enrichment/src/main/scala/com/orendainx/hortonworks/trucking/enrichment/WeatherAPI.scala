@@ -1,7 +1,7 @@
 package com.orendainx.hortonworks.trucking.enrichment
 
 import com.orendainx.hortonworks.trucking.commons.models.TruckEventTypes
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.util.Random
 
@@ -9,8 +9,16 @@ import scala.util.Random
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object WeatherAPI {
+  lazy val apply = new WeatherAPI()
+}
 
-  private val conf = ConfigFactory.load()
+class WeatherAPI(config: Config) {
+
+  def this() = this(ConfigFactory.load())
+
+  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+    .withFallback(config)
+    .withFallback(ConfigFactory.defaultReference())
 
   /** Queries the weatherAPI for fog status.
     *
@@ -18,8 +26,8 @@ object WeatherAPI {
     * @return true if the weather is foggy, false otherwise
     */
   def isFoggy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < conf.getInt("weatherapi.foggy.normal-chance")
-    else Random.nextInt(100) < conf.getInt("weatherapi.foggy.anomalous-chance")
+    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("trucking-enrichment.weatherapi.foggy.normal-chance")
+    else Random.nextInt(100) < combinedConfig.getInt("weatherapi.foggy.anomalous-chance")
 
   /** Queries the weatherAPI for rain status.
     *
@@ -27,8 +35,8 @@ object WeatherAPI {
     * @return true if the weather is rainy, false otherwise
     */
   def isRainy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < conf.getInt("weatherapi.rainy.normal-chance")
-    else Random.nextInt(100) < conf.getInt("weatherapi.rainy.anomalous-chance")
+    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("weatherapi.rainy.normal-chance")
+    else Random.nextInt(100) < combinedConfig.getInt("weatherapi.rainy.anomalous-chance")
 
   /** Queries the weatherAPI for wind status.
     *
@@ -36,6 +44,6 @@ object WeatherAPI {
     * @return true if the weather is windy, false otherwise
     */
   def isWindy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < conf.getInt("weatherapi.windy.normal-chance")
-    else Random.nextInt(100) < conf.getInt("weatherapi.windy.anomalous-chance")
+    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("weatherapi.windy.normal-chance")
+    else Random.nextInt(100) < combinedConfig.getInt("weatherapi.windy.anomalous-chance")
 }
