@@ -1,7 +1,7 @@
 package com.orendainx.hortonworks.trucking.simulator.services
 
 import com.orendainx.hortonworks.trucking.simulator.models.{Driver, DrivingPattern}
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.Config
 
 import scala.collection.JavaConversions._
 import scala.util.Random

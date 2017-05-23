@@ -1,6 +1,7 @@
 package com.orendainx.hortonworks.trucking.simulator.simulators
 
 import akka.actor.{Actor, ActorSystem, Inbox, Props}
+import better.files.File
 import com.orendainx.hortonworks.trucking.commons.models._
 import com.orendainx.hortonworks.trucking.enrichment.WeatherAPI
 import com.orendainx.hortonworks.trucking.simulator.coordinators.AutomaticCoordinator
@@ -9,7 +10,7 @@ import com.orendainx.hortonworks.trucking.simulator.flows.SharedFlowManager
 import com.orendainx.hortonworks.trucking.simulator.generators.TruckAndTrafficGenerator
 import com.orendainx.hortonworks.trucking.simulator.services.DriverFactory
 import com.orendainx.hortonworks.trucking.simulator.transmitters.{ActorTransmitter, DataTransmitter, KafkaTransmitter}
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -21,13 +22,21 @@ import scala.concurrent.duration._
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object EnrichToKafkaSimulator {
-  def apply() = new EnrichToKafkaSimulator()
-  def main(args: Array[String]): Unit = apply()
+  def main(args: Array[String]): Unit = {
+    if (args.length > 0) new EnrichToKafkaSimulator(ConfigFactory.parseFile(File(args(0)).toJava))
+    else new EnrichToKafkaSimulator()
+  }
 }
 
-class EnrichToKafkaSimulator extends Simulator {
+class EnrichToKafkaSimulator(val config: Config) extends Simulator {
 
-  private implicit val config = ConfigFactory.load()
+  def this() = this(ConfigFactory.load())
+
+  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+    .withFallback(config)
+    .withFallback(ConfigFactory.defaultReference())
+
+  //private implicit val config = ConfigFactory.load()
   private val system = ActorSystem("EnrichToKafkaSimulator")
 
   // Generate the drivers to be used in the simulation and create an Inbox for accepting messages
@@ -42,7 +51,7 @@ class EnrichToKafkaSimulator extends Simulator {
   private val actorTransmitter = system.actorOf(ActorTransmitter.props(enrichmentActor))
   private val flowManager = system.actorOf(SharedFlowManager.props(actorTransmitter))
   private val dataGenerators = drivers.map { driver => system.actorOf(TruckAndTrafficGenerator.props(driver, depot, flowManager)) }
-  private val coordinator = system.actorOf(AutomaticCoordinator.props(config.getInt("simulator.auto-finish.event-count"), dataGenerators, flowManager))
+  private val coordinator = system.actorOf(AutomaticCoordinator.props(combinedConfig.getInt("simulator.auto-finish.event-count"), dataGenerators, flowManager))
 
   // Watch for when the AutoCoordinator terminates (signals it's done)
   inbox.watch(coordinator)

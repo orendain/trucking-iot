@@ -65,7 +65,7 @@ lazy val simulator = (project in file("trucking-simulator"))
     commonSettings,
     name := "trucking-simulator",
     libraryDependencies ++= Dependencies.simulatorDeps,
-    mainClass in Compile := Some("com.orendainx.hortonworks.trucking.simulator.SimulatorMain"),
+    mainClass in Compile := Some("com.orendainx.hortonworks.trucking.simulator.simulators.EnrichToKafkaSimulator"),
     //publishArtifact in (Compile, packageBin) := false,
     assemblyMergeStrategy in assembly := {
       case PathList("application.conf") => MergeStrategy.concat

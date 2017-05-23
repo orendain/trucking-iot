@@ -1,6 +1,7 @@
 package com.orendainx.hortonworks.trucking.simulator.simulators
 
 import akka.actor.{ActorSystem, Inbox}
+import better.files.File
 import com.orendainx.hortonworks.trucking.commons.models.TruckingData
 import com.orendainx.hortonworks.trucking.simulator.coordinators.ManualCoordinator
 import com.orendainx.hortonworks.trucking.simulator.depots.NoSharingDepot
@@ -8,7 +9,7 @@ import com.orendainx.hortonworks.trucking.simulator.flows.SharedFlowManager
 import com.orendainx.hortonworks.trucking.simulator.generators.TruckAndTrafficGenerator
 import com.orendainx.hortonworks.trucking.simulator.services.DriverFactory
 import com.orendainx.hortonworks.trucking.simulator.transmitters.BufferTransmitter
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -23,13 +24,20 @@ import scala.concurrent.duration._
   * @see https://github.com/orendain/trucking-nifi-bundle for an example of now a custom NiFi processor uses this simulator.
   */
 object ManualTickAndFetchSimulator {
-  def apply() = new ManualTickAndFetchSimulator()
-  def main(args: Array[String]): Unit = apply()
+  def main(args: Array[String]): Unit = {
+    if (args.length > 0) new ManualTickAndFetchSimulator(ConfigFactory.parseFile(File(args(0)).toJava))
+    else new ManualTickAndFetchSimulator()
+  }
 }
 
-class ManualTickAndFetchSimulator extends Simulator {
+class ManualTickAndFetchSimulator(val config: Config) extends Simulator {
 
-  private implicit val config = ConfigFactory.load()
+  def this() = this(ConfigFactory.load())
+
+  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+    .withFallback(config)
+    .withFallback(ConfigFactory.defaultReference())
+
   private val system = ActorSystem("ManualTickAndFetchSimulator")
 
   // Generate the drivers to be used in the simulation and create an Inbox for accepting messages
