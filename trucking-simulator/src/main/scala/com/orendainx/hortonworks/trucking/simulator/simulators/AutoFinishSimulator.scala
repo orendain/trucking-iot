@@ -32,6 +32,7 @@ class AutoFinishSimulator(val config: Config) extends Simulator {
   private implicit val combinedConfig = ConfigFactory.defaultOverrides()
     .withFallback(config)
     .withFallback(ConfigFactory.defaultReference())
+    .getConfig("trucking-simulator")
 
   private val system = ActorSystem("AutoFinishSimulator")
 
