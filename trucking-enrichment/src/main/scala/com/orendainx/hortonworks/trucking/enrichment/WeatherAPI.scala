@@ -19,6 +19,7 @@ class WeatherAPI(config: Config) {
   private implicit val combinedConfig = ConfigFactory.defaultOverrides()
     .withFallback(config)
     .withFallback(ConfigFactory.defaultReference())
+    .getConfig("trucking-enrichment.weatherapi")
 
   /** Queries the weatherAPI for fog status.
     *
@@ -26,8 +27,8 @@ class WeatherAPI(config: Config) {
     * @return true if the weather is foggy, false otherwise
     */
   def isFoggy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("trucking-enrichment.weatherapi.foggy.normal-chance")
-    else Random.nextInt(100) < combinedConfig.getInt("weatherapi.foggy.anomalous-chance")
+    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("foggy.normal-chance")
+    else Random.nextInt(100) < combinedConfig.getInt("foggy.anomalous-chance")
 
   /** Queries the weatherAPI for rain status.
     *
@@ -35,8 +36,8 @@ class WeatherAPI(config: Config) {
     * @return true if the weather is rainy, false otherwise
     */
   def isRainy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("weatherapi.rainy.normal-chance")
-    else Random.nextInt(100) < combinedConfig.getInt("weatherapi.rainy.anomalous-chance")
+    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("rainy.normal-chance")
+    else Random.nextInt(100) < combinedConfig.getInt("rainy.anomalous-chance")
 
   /** Queries the weatherAPI for wind status.
     *
@@ -44,6 +45,6 @@ class WeatherAPI(config: Config) {
     * @return true if the weather is windy, false otherwise
     */
   def isWindy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("weatherapi.windy.normal-chance")
-    else Random.nextInt(100) < combinedConfig.getInt("weatherapi.windy.anomalous-chance")
+    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("windy.normal-chance")
+    else Random.nextInt(100) < combinedConfig.getInt("windy.anomalous-chance")
 }
