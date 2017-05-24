@@ -190,7 +190,7 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Create a Spout configuration object and apply the scheme for the data that will come through this spout
     val trafficSpoutConfig = new SpoutConfig(zkHosts, trafficTopic, zkRoot, groupId)
-    trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferToStringScheme("TrafficData"))
+    trafficSpoutConfig.scheme = new SchemeAsMultiScheme(new BufferTopStringScheme("TrafficData"))
     trafficSpoutConfig.ignoreZkOffsets = true // Force the spout to ignore where it left off during previous runs // TODO: for testing
 */
     // Create a spout with the specified configuration, and place it in the topology blueprint
