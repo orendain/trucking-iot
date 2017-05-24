@@ -9,7 +9,7 @@ import scala.util.Random
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object WeatherAPI {
-  lazy val apply = new WeatherAPI()
+  lazy val default = new WeatherAPI()
 }
 
 class WeatherAPI(config: Config) {

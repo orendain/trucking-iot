@@ -79,9 +79,9 @@ class EnrichToKafkaSimulator(val config: Config) extends Simulator {
       case td: TruckData =>
         kafkaTruckTransmitter ! DataTransmitter.Transmit(
           EnrichedTruckData(td,
-            WeatherAPI.isFoggy(td.eventType),
-            WeatherAPI.isRainy(td.eventType),
-            WeatherAPI.isWindy(td.eventType))
+            WeatherAPI.default.isFoggy(td.eventType),
+            WeatherAPI.default.isRainy(td.eventType),
+            WeatherAPI.default.isWindy(td.eventType))
         )
       case td: TrafficData =>
         kafkaTrafficTransmitter ! DataTransmitter.Transmit(td)

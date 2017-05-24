@@ -25,7 +25,7 @@ import scala.concurrent.duration._
 
 /**
   * Companion object to [[KafkaToKafka]] class.
-  * Provides an entry point for building the default topology.
+  * Provides an entry point for building the topology.
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
