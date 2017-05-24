@@ -2,6 +2,7 @@ package com.orendainx.hortonworks.trucking.storm.topologies
 
 import java.util.Properties
 
+import better.files.File
 import com.orendainx.hortonworks.trucking.storm.bolts._
 import com.orendainx.hortonworks.trucking.storm.schemes.BufferToStringScheme
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
@@ -31,9 +32,14 @@ import scala.concurrent.duration._
 object KafkaToKafka {
 
   def main(args: Array[String]): Unit = {
-    // Build and submit the Storm config and topology
-    val (stormConfig, topology) = buildDefaultStormConfigAndTopology()
 
+    def main(args: Array[String]): Unit = {
+      val topology =
+        if (args.length > 0) new KafkaToKafka(ConfigFactory.parseFile(File(args(0)).toJava))
+        else new KafkaToKafka()
+
+      StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", topology.stormConfig, topology.buildTopology())
+    }
 
     /*
     // Temp
@@ -50,24 +56,7 @@ object KafkaToKafka {
     val jsonConf = JSONValue.toJSONString(stormConf2)
     nimbus.getClient.submitTopology("K2K", uploadedJarLocation, jsonConf, topology)
 */
-    StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", stormConfig, topology)
-  }
 
-  /**
-    * Build a Storm Config and Topology with the default configuration.
-    *
-    * @return A 2-tuple ([[Config]], [[StormTopology]])
-    */
-  def buildDefaultStormConfigAndTopology(): (Config, StormTopology) = {
-    val config = ConfigFactory.load()
-
-    // Set up configuration for the Storm Topology
-    val stormConfig = new Config()
-    stormConfig.setDebug(config.getBoolean(Config.TOPOLOGY_DEBUG))
-    stormConfig.setMessageTimeoutSecs(config.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
-    stormConfig.setNumWorkers(config.getInt(Config.TOPOLOGY_WORKERS))
-
-    (stormConfig, new KafkaToKafka(config).buildTopology())
   }
 }
 
@@ -86,6 +75,13 @@ object KafkaToKafka {
   */
 class KafkaToKafka(config: TypeConfig) {
 
+  def this() = this(ConfigFactory.load())
+
+  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+    .withFallback(config)
+    .withFallback(ConfigFactory.defaultReference())
+    .getConfig("trucking-storm-topology")
+
   private lazy val logger = Logger(this.getClass)
 
   /**
@@ -98,18 +94,18 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     // Default number of tasks (instances) of components to spawn
-    val defaultTaskCount = config.getInt(Config.TOPOLOGY_TASKS)
-    //val zkHosts = new ZkHosts(config.getString(Config.STORM_ZOOKEEPER_SERVERS))
-    //val zkRoot = config.getString(Config.STORM_ZOOKEEPER_ROOT)
-    //val zkHosts = new ZkHosts(config.getString(Config.STORM_ZOOKEEPER_SERVERS))
+    val defaultTaskCount = combinedConfig.getInt(Config.TOPOLOGY_TASKS)
+    //val zkHosts = new ZkHosts(combinedConfig.getString(Config.STORM_ZOOKEEPER_SERVERS))
+    //val zkRoot = combinedConfig.getString(Config.STORM_ZOOKEEPER_ROOT)
+    //val zkHosts = new ZkHosts(combinedConfig.getString(Config.STORM_ZOOKEEPER_SERVERS))
     val zkRoot = "/services/slider/users/root/kafka-app-2"
-    val groupId = config.getString("kafka.group-id")
+    val groupId = combinedConfig.getString("kafka.group-id")
 
     // Define properties to pass along to the KafkaBolt
     val kafkaBoltProps = new Properties()
-    kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, config.getString("kafka.bootstrap-servers"))
-    kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, config.getString("kafka.key-serializer"))
-    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, config.getString("kafka.value-serializer"))
+    kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, combinedConfig.getString("kafka.bootstrap-servers"))
+    kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, combinedConfig.getString("kafka.key-serializer"))
+    kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, combinedConfig.getString("kafka.value-serializer"))
 
 
 
@@ -119,7 +115,7 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Build Kafka spouts for ingesting trucking data
     // Extract values from config
-    val truckTopic = config.getString("kafka.truck-data.topic")
+    val truckTopic = combinedConfig.getString("kafka.truck-data.topic")
 
 
     class HFunc extends Func[ConsumerRecord[String, String], java.util.List[AnyRef]] {
@@ -153,7 +149,7 @@ class KafkaToKafka(config: TypeConfig) {
 //    )
 
 
-    val truckSpoutConfig: KafkaSpoutConfig[String, String] = KafkaSpoutConfig.builder(config.getString("kafka.bootstrap-servers"), truckTopic)
+    val truckSpoutConfig: KafkaSpoutConfig[String, String] = KafkaSpoutConfig.builder(combinedConfig.getString("kafka.bootstrap-servers"), truckTopic)
       .setRecordTranslator(f, new Fields("dataType", "data"))
       //.setRecordTranslator(f, new Fields("dataType", "data"))
       .setFirstPollOffsetStrategy(KafkaSpoutConfig.FirstPollOffsetStrategy.EARLIEST)
@@ -180,10 +176,10 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     // Extract values from config
-    val trafficTopic = config.getString("kafka.traffic-data.topic")
+    val trafficTopic = combinedConfig.getString("kafka.traffic-data.topic")
 
 
-    val trafficSpoutConfig = KafkaSpoutConfig.builder(config.getString("kafka.bootstrap-servers"), trafficTopic)
+    val trafficSpoutConfig = KafkaSpoutConfig.builder(combinedConfig.getString("kafka.bootstrap-servers"), trafficTopic)
       .setRecordTranslator(f2, new Fields("dataType", "data"))
       //.setRecordTranslator(f, new Fields("dataType", "data"))
       .setFirstPollOffsetStrategy(KafkaSpoutConfig.FirstPollOffsetStrategy.EARLIEST)
@@ -212,7 +208,7 @@ class KafkaToKafka(config: TypeConfig) {
 
 
 
-    val windowDuration = config.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
+    val windowDuration = combinedConfig.getInt(Config.TOPOLOGY_BOLTS_WINDOW_LENGTH_DURATION_MS)
 
     // Create a bolt with a tumbling window and place the bolt in the topology blueprint, connected to the "enrichedTruckData"
     // and "trafficData" streams. globalGrouping suggests that data from both streams be sent to *each* instance of this bolt
@@ -228,7 +224,7 @@ class KafkaToKafka(config: TypeConfig) {
      * Build bolt to generate driver stats from data collected in a window.
      * Creates a tuple count based window bolt that slides with every incoming tuple.
      */
-    val intervalCount = config.getInt(Config.TOPOLOGY_BOLTS_SLIDING_INTERVAL_COUNT)
+    val intervalCount = combinedConfig.getInt(Config.TOPOLOGY_BOLTS_SLIDING_INTERVAL_COUNT)
 
     // Build bold and then place in the topology blueprint connected to the "joinedData" stream.  ShuffleGrouping suggests
     // that tuples from that stream are distributed across this bolt's tasks (instances), so as to keep load levels even.
@@ -259,7 +255,7 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Build a KafkaBolt
     val truckingKafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.joined-data.topic")))
+      .withTopicSelector(new DefaultTopicSelector(combinedConfig.getString("kafka.joined-data.topic")))
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
@@ -273,7 +269,7 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Build a KafkaBolt
     val statsKafkaBolt = new KafkaBolt()
-      .withTopicSelector(new DefaultTopicSelector(config.getString("kafka.driver-stats.topic")))
+      .withTopicSelector(new DefaultTopicSelector(combinedConfig.getString("kafka.driver-stats.topic")))
       .withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper("key", "data"))
       .withProducerProperties(kafkaBoltProps)
 
@@ -296,6 +292,18 @@ class KafkaToKafka(config: TypeConfig) {
 
     // Finally, create the topology
     builder.createTopology()
+  }
+
+
+  /**
+    * Build a Storm Config
+    */
+  lazy val stormConfig: Config = {
+    val stConfig = new Config()
+    stConfig.setDebug(combinedConfig.getBoolean(Config.TOPOLOGY_DEBUG))
+    stConfig.setMessageTimeoutSecs(combinedConfig.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
+    stConfig.setNumWorkers(combinedConfig.getInt(Config.TOPOLOGY_WORKERS))
+    stConfig
   }
 
 }
