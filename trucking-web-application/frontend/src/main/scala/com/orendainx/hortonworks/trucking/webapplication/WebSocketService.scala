@@ -19,8 +19,8 @@ class WebSocketService {
 
   def initialize(): Unit = {
 
-    val config = ConfigFactory.load()
-    val combinedConfig = config.getConfig("trucking-web-application.frontend")
+//    val config = ConfigFactory.load()
+//    val combinedConfig = config.getConfig("trucking-web-application.frontend")
 
 //    Console.println("0")
 //    Console.println(s"1: ${config}")
