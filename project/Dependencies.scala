@@ -11,7 +11,7 @@ object Dependencies {
   lazy val stormTopologyDeps = Seq(stormCoreProvided, stormNifi, stormKafkaClient, kafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
   lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormKafka, stormKafkaClient, kafkaClients, config)
   lazy val webApplicationBackendDeps = Seq(scalaJsScripts, compass, bootstrap, akkaStreamKafka) ++ angular2Deps
-  lazy val webApplicationFrontendDeps = Seq(leaflet)
+  lazy val webApplicationFrontendDeps = Seq(leaflet, shocon)
 
 
 
@@ -34,10 +34,15 @@ object Dependencies {
 
   // Storm-related dependencies
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.1.0" % "provided"
+  //lazy val stormCoreProvided = ("org.apache.storm" % "storm-core" % "1.1.0")
+    //.exclude("org.apache.hadoop", "hadoop-auth") // vs storm-core/scheme-registry, but only when storm-core is not marked as provided
+    //.exclude("ring-cors", "ring-cors") // vs storm-core/nifi-storm-spout, but only when storm-core is not marked as provided
+
   lazy val stormKafkaClient = "org.apache.storm" % "storm-kafka-client" % "1.1.0"
   //lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.1.0"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.1.0"
-  lazy val stormNifi = "org.apache.nifi" % "nifi-storm-spout" % "1.1.2"
+  lazy val stormNifi = ("org.apache.nifi" % "nifi-storm-spout" % "1.1.2")
+    //.exclude("ring-cors", "ring-cors") // vs storm-core/nifi-storm-spout, but only when storm-core is not marked as provided
 
 
   // See: http://stackoverflow.com/questions/33054294/kafkaspout-throws-noclassdeffounderror-for-log4j
@@ -50,7 +55,7 @@ object Dependencies {
   lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.3.0.0.0-55")
     .exclude("commons-beanutils", "commons-beanutils") // vs itself - commons-beanutils/commons-beanutils-core
     .exclude("commons-collections", "commons-collections") // vs itself - commons-beanutils/commons-beanutils-core
-
+    .exclude("org.apache.hadoop", "hadoop-auth") // vs storm-core/scheme-registry, but only when storm-core is not marked as provided
 
   // Web application backend dependencies
   lazy val ngVersion = "2.4.3"
@@ -78,4 +83,5 @@ object Dependencies {
 
   // Web application frontend dependencies
   lazy val leaflet = "com.github.fancellu.scalajs-leaflet" % "scalajs-leaflet_sjs0.6_2.11" % "v0.1"
+  lazy val shocon = "eu.unicredit" % "shocon_sjs0.6_2.11" % "0.1.1"
 }

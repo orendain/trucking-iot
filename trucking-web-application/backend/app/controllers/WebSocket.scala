@@ -7,6 +7,7 @@ import akka.kafka.scaladsl.Consumer
 import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.stream.scaladsl.Sink
 import akka.stream.{Materializer, ThrottleMode}
+import com.typesafe.config.ConfigFactory
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.{ByteArrayDeserializer, StringDeserializer}
 import play.api.libs.streams.ActorFlow
@@ -31,8 +32,16 @@ class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Mate
   }
 
   class KafkaWSActor(outRef: ActorRef) extends Actor {
+
+    val config = ConfigFactory.load()
+    val combinedConfig = ConfigFactory.defaultOverrides()
+      .withFallback(config)
+      .withFallback(ConfigFactory.defaultApplication())
+      .getConfig("trucking-web-application.backend")
+
     val consumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new StringDeserializer)
-      .withBootstrapServers("sandbox-hdf.hortonworks.com:6667")
+      //.withBootstrapServers("sandbox-hdf.hortonworks.com:6667")
+      .withBootstrapServers(combinedConfig.getString("kafka.bootstrap-servers"))
       .withGroupId("group1")
       .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 

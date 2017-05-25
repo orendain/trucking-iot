@@ -14,6 +14,8 @@ import org.apache.storm.kafka.bolt.KafkaBolt
 import org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper
 import org.apache.storm.kafka.bolt.selector.DefaultTopicSelector
 import org.apache.storm.kafka.spout._
+import org.apache.storm.shade.org.json.simple.JSONValue
+import org.apache.storm.utils.{NimbusClient, Utils}
 //import org.apache.storm.kafka.{KafkaSpout, SpoutConfig, ZkHosts}
 import org.apache.storm.spout.SchemeAsMultiScheme
 import org.apache.storm.topology.TopologyBuilder
@@ -22,6 +24,7 @@ import org.apache.storm.tuple.{Fields, Values}
 import org.apache.storm.{Config, StormSubmitter}
 
 import scala.concurrent.duration._
+import scala.collection.JavaConverters._
 
 /**
   * Companion object to [[KafkaToKafka]] class.
@@ -32,31 +35,61 @@ import scala.concurrent.duration._
 object KafkaToKafka {
 
   def main(args: Array[String]): Unit = {
+    val topology =
+      if (args.length > 0) new KafkaToKafka(ConfigFactory.parseFile(File(args(0)).toJava))
+      else new KafkaToKafka()
 
-    def main(args: Array[String]): Unit = {
-      val topology =
-        if (args.length > 0) new KafkaToKafka(ConfigFactory.parseFile(File(args(0)).toJava))
-        else new KafkaToKafka()
+    StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", topology.stormConfig, topology.buildTopology())
+  }
 
-      StormSubmitter.submitTopologyWithProgressBar("KafkaToKafka", topology.stormConfig, topology.buildTopology())
-    }
+}
 
-    /*
+object KafkaToKafkaRemoteSubmitter {
+
+  private lazy val logger = Logger(this.getClass)
+
+  def main(args: Array[String]): Unit = {
+
+    logger.info("k2k-sub1")
+
+    val config = if (args.length > 0) ConfigFactory.parseFile(File(args(0)).toJava)
+    else ConfigFactory.load()
+
+    val topology = new KafkaToKafka(config)
+
+    val combinedConfig = ConfigFactory.defaultOverrides()
+      .withFallback(config)
+      .withFallback(ConfigFactory.defaultReference())
+      .getConfig("trucking-storm-topology")
+
+
+
     // Temp
-    val config = ConfigFactory.load()
+    //val config = ConfigFactory.load()
     val stormConf2 = Utils.readStormConfig()
-    stormConf2.put("nimbus.seeds", List("nimbus.storm-app-1.root.hwx.site").asJava)
-    stormConf2.putAll(config)
-    stormConf2.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, "60")
+
+    //stormConf2.put("nimbus.seeds", List("nimbus.storm-app-1.root.hwx.site").asJava)
+    stormConf2.put("nimbus.seeds", combinedConfig.getString("nimbus.seeds"))
+
+    stormConf2.putAll(topology.stormConfig)
+    //stormConf2.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, "120")
     val stormClient2 = NimbusClient.getConfiguredClient(stormConf2).getClient
-    //val inputJar = "/trucking-iot/trucking-storm-topology/target/scala-2.11/trucking-storm-topology-assembly-0.4.0-SNAPSHOT.jar"
-    val inputJar = "/Users/eorendain/Documents/trucking/trucking-iot/trucking-storm-topology/target/scala-2.11/trucking-storm-topology-assembly-0.4.0-SNAPSHOT.jar"
-    val nimbus = new NimbusClient(stormConf2, "nimbus.storm-app-1.root.hwx.site")
+
+    //val inputJar = "/Users/eorendain/Documents/trucking/trucking-iot/trucking-storm-topology/target/scala-2.11/trucking-storm-topology-assembly-0.4.0-SNAPSHOT.jar"
+    val inputJar = combinedConfig.getString("jar.path")
+
+    //val nimbus = new NimbusClient(stormConf2, "nimbus.storm-app-1.root.hwx.site")
+    //val nimbus = new NimbusClient(stormConf2, combinedConfig.getString("nimbus.host"))
+
     val uploadedJarLocation = StormSubmitter.submitJar(stormConf2, inputJar)
     val jsonConf = JSONValue.toJSONString(stormConf2)
-    nimbus.getClient.submitTopology("K2K", uploadedJarLocation, jsonConf, topology)
-*/
 
+
+
+    //nimbus.getClient.submitTopology("K2K", uploadedJarLocation, jsonConf, topology)
+    stormClient2.submitTopology("K2K", uploadedJarLocation, jsonConf, topology.buildTopology())
+
+    logger.info("k2k-sub9")
   }
 }
 
@@ -117,27 +150,18 @@ class KafkaToKafka(config: TypeConfig) {
     // Extract values from config
     val truckTopic = combinedConfig.getString("kafka.truck-data.topic")
 
-
-    class HFunc extends Func[ConsumerRecord[String, String], java.util.List[AnyRef]] {
+    lazy val truckRecordTranslator = new Func[ConsumerRecord[String, String], java.util.List[AnyRef]] {
       def apply(record: ConsumerRecord[String, String]) = new Values("EnrichedTruckData", record.value())
     }
 
-    val f: Func[ConsumerRecord[String, String], java.util.List[AnyRef]] = new HFunc
-
-//    val f1: Func[ConsumerRecord[String, String], java.util.List[AnyRef]] = new Func[ConsumerRecord[String, String], java.util.List[AnyRef]] {
-//      (r: ConsumerRecord[String, String]) => new Values("EnrichedTruckData", r.value())
-//    }
-
-
-//    val f: Func[ConsumerRecord[String, String], java.util.List[AnyRef]] =
-//      (r: ConsumerRecord[String, String]) => new Values("EnrichedTruckData", r.value())
+    val trafficRecordTranslator = new Func[ConsumerRecord[String, String], java.util.List[AnyRef]] {
+      def apply(record: ConsumerRecord[String, String]) = new Values("TrafficData", record.value())
+    }
 //
-
-
-    class HFunc2 extends Func[ConsumerRecord[String, String], java.util.List[AnyRef]] {
-      def apply(record: ConsumerRecord[String, String]) = new Values("EnrichedTruckData", record.value())
-    }
-    val f2: Func[ConsumerRecord[String, String], java.util.List[AnyRef]] = new HFunc2
+//    class HFunc2 extends Func[ConsumerRecord[String, String], java.util.List[AnyRef]] {
+//      def apply(record: ConsumerRecord[String, String]) = new Values("EnrichedTruckData", record.value())
+//    }
+//    val f2: Func[ConsumerRecord[String, String], java.util.List[AnyRef]] = new HFunc2
 
     //val nr = new RecordTranslator[String, String](r => new Values(r.topic, r.key, r.value))
 
@@ -150,8 +174,9 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     val truckSpoutConfig: KafkaSpoutConfig[String, String] = KafkaSpoutConfig.builder(combinedConfig.getString("kafka.bootstrap-servers"), truckTopic)
-      .setRecordTranslator(f, new Fields("dataType", "data"))
       //.setRecordTranslator(f, new Fields("dataType", "data"))
+      //.setRecordTranslator(f, new Fields("dataType", "data"))
+      .setRecordTranslator(truckRecordTranslator, new Fields("dataType", "data"))
       .setFirstPollOffsetStrategy(KafkaSpoutConfig.FirstPollOffsetStrategy.EARLIEST)
       .setGroupId(groupId)
       .build()
@@ -180,8 +205,7 @@ class KafkaToKafka(config: TypeConfig) {
 
 
     val trafficSpoutConfig = KafkaSpoutConfig.builder(combinedConfig.getString("kafka.bootstrap-servers"), trafficTopic)
-      .setRecordTranslator(f2, new Fields("dataType", "data"))
-      //.setRecordTranslator(f, new Fields("dataType", "data"))
+      .setRecordTranslator(trafficRecordTranslator, new Fields("dataType", "data"))
       .setFirstPollOffsetStrategy(KafkaSpoutConfig.FirstPollOffsetStrategy.EARLIEST)
       .setGroupId(groupId)
       .build()

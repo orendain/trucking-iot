@@ -65,14 +65,14 @@ lazy val simulator = (project in file("trucking-simulator"))
     commonSettings,
     name := "trucking-simulator",
     libraryDependencies ++= Dependencies.simulatorDeps,
-    mainClass in Compile := Some("com.orendainx.hortonworks.trucking.simulator.simulators.EnrichToKafkaSimulator"),
+    mainClass := Some("com.orendainx.hortonworks.trucking.simulator.simulators.EnrichToKafkaSimulator"),
     //publishArtifact in (Compile, packageBin) := false,
-    assemblyMergeStrategy in assembly := {
+    /*assemblyMergeStrategy in assembly := {
       case PathList("application.conf") => MergeStrategy.concat
       case x =>
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
-    },
+    },*/
     artifact in (Compile, assembly) ~= { art =>
       art.copy(`classifier` = Some("assembly"))
     },
@@ -157,7 +157,7 @@ lazy val stormTopologyJava = (project in file("trucking-storm-topology-java"))
     resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
     libraryDependencies ++= Dependencies.stormTopologyJavaDeps,
     autoScalaLibrary := false,
-    mainClass in (Compile,run) := Some("com.orendainx.hortonworks.trucking.storm.java.topologies.KafkaToKafka"),
+    mainClass in (Compile, run) := Some("com.orendainx.hortonworks.trucking.storm.java.topologies.KafkaToKafka"),
     assemblyMergeStrategy in assembly := {
       case PathList(x) if x.endsWith("clj") => MergeStrategy.first
       case x =>
@@ -216,5 +216,7 @@ lazy val webApplicationFrontend = (project in file("trucking-web-application/fro
     resolvers += "jitpack" at "https://jitpack.io", // For scalajs-leaflet
     libraryDependencies ++= Dependencies.webApplicationFrontendDeps,
     jsDependencies ++= Seq("org.webjars.npm" % "leaflet" % "1.0.2" / "leaflet.js" commonJSName "Leaflet"),
-    ngBootstrap := Some("com.orendainx.hortonworks.trucking.webapplication.AppModule")
+    ngBootstrap := Some("com.orendainx.hortonworks.trucking.webapplication.AppModule")//,
+    //resourceDirectory in Compile := baseDirectory.value / "../backend/conf",
+    //unmanagedResourceDirectories in Compile += baseDirectory.value / "../backend/conf"
   ).enablePlugins(ScalaJSPlugin, ScalaJSWeb, Angulate2Plugin)

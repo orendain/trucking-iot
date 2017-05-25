@@ -2,6 +2,7 @@ package com.orendainx.hortonworks.trucking.webapplication
 
 import angulate2.std.Injectable
 import com.orendainx.hortonworks.trucking.webapplication.models.{PrettyEnrichedTruckAndTrafficData, PrettyEnrichedTruckAndTrafficDataFactory, PrettyTruckAndTrafficData, PrettyTruckAndTrafficDataFactory}
+import com.typesafe.config.ConfigFactory
 import org.scalajs.dom.raw.{CloseEvent, ErrorEvent, Event, MessageEvent, WebSocket}
 
 import scala.collection.mutable
@@ -18,8 +19,22 @@ class WebSocketService {
 
   def initialize(): Unit = {
 
+    val config = ConfigFactory.load()
+    val combinedConfig = config.getConfig("trucking-web-application.frontend")
+
+//    Console.println("0")
+//    Console.println(s"1: ${config}")
+//    Console.println(s"2: ${config.cfg}")
+//    Console.println(s"3: $combinedConfig")
+//    Console.println(s"4: ${combinedConfig.cfg}")
+
+    //ws = new WebSocket(combinedConfig.getString("websocket-uri")) // Play WS
+
+
     //ws = new WebSocket("ws://sandbox-hdf.hortonworks.com:17000/trucking-events") // NiFi WS
-    ws = new WebSocket("ws://sandbox-hdf.hortonworks.com:15100/ws") // Play WS
+    //ws = new WebSocket("ws://sandbox-hdf.hortonworks.com:15100/ws") // Play WS
+    ws = new WebSocket("ws://localhost:15100/ws") // Play WS
+
     ws.onopen = onOpen _
     ws.onclose = onClose _
     ws.onerror = onError _
