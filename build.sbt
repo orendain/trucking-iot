@@ -188,7 +188,8 @@ lazy val webApplicationBackend = (project in file("trucking-web-application/back
     unmanagedResourceDirectories in Assets += baseDirectory.value / "../frontend/src/main/resources",
     unmanagedResources in Assets ++= Seq(
       baseDirectory.value / "../frontend/target/scala-2.11/trucking-web-application-frontend-sjsx.js",
-      baseDirectory.value / "../frontend/target/scala-2.11/trucking-web-application-frontend-fastop.js"
+      baseDirectory.value / "../frontend/target/scala-2.11/trucking-web-application-frontend-fastop.js",
+      baseDirectory.value / "../frontend/target/scala-2.11/trucking-web-application-frontend-opt.js"
     ),
 
     libraryDependencies ++= Dependencies.webApplicationBackendDeps ++ Seq(filters, cache, ws),
