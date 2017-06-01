@@ -33,4 +33,8 @@ cd "/trucking-iot"
 sbt "project webApplicationFrontend" "clean"
 
 # Run project
-sbt "project webApplicationBackend" "run"
+#sbt "project webApplicationBackend" "run"
+
+sbt "project webApplicationBackend" "clean" "stage"
+
+/trucking-iot/trucking-web-application/backend/target/universal/stage/bin/trucking-web-application-backend -Dplay.crypto.secret=hortonworks -Dhttp.port=15100
