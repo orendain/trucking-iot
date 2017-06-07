@@ -4,7 +4,7 @@ import java.util.Scanner
 
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.hortonworks.registries.schemaregistry.{SchemaCompatibility, SchemaMetadata, SchemaVersion, SerDesInfo}
+import com.hortonworks.registries.schemaregistry.{SchemaCompatibility, SchemaMetadata, SchemaVersion}
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.Logger
 
@@ -106,39 +106,44 @@ object SchemaRegistrar {
      * then upload the jar file with the compiled class files of the de/serializer.
      * Follow up with creating both de/serializers, and finally add them with the registry client.
      */
-    val avroSchemaName = config.getString("avro.name")
-    val avroSchemaDescription = config.getString("avro.description")
-//    val avroSerializerClassName = config.getString("avro.serializer-class-name")
-//    val avroDeserializerClassName = config.getString("avro.deserializer-class-name")
-val avroSerializerClassName = "com.hortonworks.schemaregistry.samples.serdes.SimpleSerializer"
-val avroDeserializerClassName = "com.hortonworks.schemaregistry.samples.serdes.SimpleDeserializer"
+//    val avroSchemaName = config.getString("avro.name")
+//    val avroSchemaDescription = config.getString("avro.description")
+////    val avroSerializerClassName = config.getString("avro.serializer-class-name")
+////    val avroDeserializerClassName = config.getString("avro.deserializer-class-name")
+//val avroSerializerClassName = "com.hortonworks.schemaregistry.samples.serdes.SimpleSerializer"
+//val avroDeserializerClassName = "com.hortonworks.schemaregistry.samples.serdes.SimpleDeserializer"
+//
+//    //val avroJar = getClass.getResourceAsStream(config.getString("avro.jarpath"))
+//    val avroJar = getClass.getResourceAsStream("/schema/serdes-examples.jar")
+//    val avroSerDesFileId = schemaRegistryClient.uploadFile(avroJar)
+//    avroJar.close()
+//
+//    log.info(s"Upload fileId: $avroSerDesFileId")
+//
+//    val avroSerializerInfo = new SerDesInfo.Builder().name(avroSchemaName).description(avroSchemaDescription)
+//      .fileId(avroSerDesFileId).className(avroSerializerClassName).buildSerializerInfo()
+//
+//    val avroDeserializerInfo = new SerDesInfo.Builder().name(avroSchemaName).description(avroSchemaDescription)
+//      .fileId(avroSerDesFileId).className(avroDeserializerClassName).buildDeserializerInfo()
+//
+//    val avroSerializerId = schemaRegistryClient.addSerializer(avroSerializerInfo)
+//    val avroDeserializerId = schemaRegistryClient.addDeserializer(avroDeserializerInfo)
+//
+//    log.info(s"Avro serializer id: $avroSerializerId")
+//    log.info(s"Avro deserializer id: $avroDeserializerId")
+//
+//
+//
 
-    //val avroJar = getClass.getResourceAsStream(config.getString("avro.jarpath"))
-    val avroJar = getClass.getResourceAsStream("/schema/serdes-examples.jar")
-    val avroSerDesFileId = schemaRegistryClient.uploadFile(avroJar)
-    avroJar.close()
 
-    log.info(s"Upload fileId: $avroSerDesFileId")
-
-    val avroSerializerInfo = new SerDesInfo.Builder().name(avroSchemaName).description(avroSchemaDescription)
-      .fileId(avroSerDesFileId).className(avroSerializerClassName).buildSerializerInfo()
-
-    val avroDeserializerInfo = new SerDesInfo.Builder().name(avroSchemaName).description(avroSchemaDescription)
-      .fileId(avroSerDesFileId).className(avroDeserializerClassName).buildDeserializerInfo()
-
-    val avroSerializerId = schemaRegistryClient.addSerializer(avroSerializerInfo)
-    val avroDeserializerId = schemaRegistryClient.addDeserializer(avroDeserializerInfo)
-
-    log.info(s"Avro serializer id: $avroSerializerId")
-    log.info(s"Avro deserializer id: $avroDeserializerId")
-
-
-
-
-    /*
-     * Map the serializer/deserializer to our schema.
-     */
-    schemaRegistryClient.mapSchemaWithSerDes(schemaName, avroSerializerId)
-    schemaRegistryClient.mapSchemaWithSerDes(schemaName, avroDeserializerId)
+//    import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
+//    val avroSerializerId = schemaRegistryClient.getDefaultSerializer(AvroSchemaProvider.TYPE)
+//    val avroDeserializerId = schemaRegistryClient.getDefaultDeserializer(AvroSchemaProvider.TYPE)
+////
+////    /*
+////     * Map the serializer/deserializer to our schema.
+////     */
+//    schemaRegistryClient.mapSchemaWithSerDes(schemaName, avroSerializerId)
+//    schemaRegistryClient.mapSchemaWithSerDes(schemaName, avroDeserializerId)
   }
 }
