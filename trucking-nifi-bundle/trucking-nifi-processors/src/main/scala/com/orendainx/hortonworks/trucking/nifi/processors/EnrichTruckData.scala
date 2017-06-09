@@ -57,8 +57,8 @@ class EnrichTruckData extends AbstractProcessor {
     // Form a TruckData object from content, then creating an EnrichedTruckData object by making the appropriate
     // calls to WeatherAPI
     val truckData = TruckData.fromCSV(content.get())
-    val enrichedTruckData = EnrichedTruckData(truckData, WeatherAPI.isFoggy(truckData.eventType),
-      WeatherAPI.isRainy(truckData.eventType), WeatherAPI.isWindy(truckData.eventType))
+    val enrichedTruckData = EnrichedTruckData(truckData, WeatherAPI.default.isFoggy(truckData.eventType),
+      WeatherAPI.default.isRainy(truckData.eventType), WeatherAPI.default.isWindy(truckData.eventType))
 
     log.debug(s"EnrichedData generated: $enrichedTruckData")
 

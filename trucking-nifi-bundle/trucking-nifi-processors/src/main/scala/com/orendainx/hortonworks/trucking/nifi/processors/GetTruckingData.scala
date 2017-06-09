@@ -28,7 +28,7 @@ class GetTruckingData extends AbstractProcessor {
 
   private var log: ComponentLog = _
   private val RelSuccess = new Relationship.Builder().name("success").description("All generated data is routed to this relationship.").build
-  private lazy val simulator = ManualTickAndFetchSimulator()
+  private lazy val simulator = new ManualTickAndFetchSimulator()
 
   override def init(context: ProcessorInitializationContext): Unit = {
     log = context.getLogger

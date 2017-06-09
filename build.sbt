@@ -2,11 +2,12 @@
  * Definition of common settings for all subprojects
  */
 lazy val commonSettings = Seq(
-  version := "0.4.0-SNAPSHOT",
+  version := "0.3.2",
   isSnapshot := true,
   scalaVersion := "2.11.8",
   description := """Trucking IoT application.""",
-  organization := "com.orendainx.trucking",
+  //organization := "com.orendainx.trucking",
+  organization := "com.orendainx.hortonworks.trucking",
   homepage := Some(url("https://github.com/orendain/trucking-iot")),
   organizationHomepage := Some(url("https://github.com/orendain/trucking-iot")),
   licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
@@ -24,12 +25,12 @@ lazy val commonSettings = Seq(
       email = "edgar@orendainx.com",
       url   = url("http://www.orendainx.com")
     )
-  ),
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-    else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  }
+  )//,
+//  publishTo := {
+//    val nexus = "https://oss.sonatype.org/"
+//    if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
+//    else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+//  }
 )
 
 
