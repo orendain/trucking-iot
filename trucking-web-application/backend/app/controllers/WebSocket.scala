@@ -20,7 +20,7 @@ import scala.concurrent.duration._
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
-@Singleton
+//@Singleton
 class KafkaWebSocket @Inject() (implicit system: ActorSystem, materializer: Materializer) extends Controller {
 
   def kafkaWS = WebSocket.accept[String, String] { request =>
