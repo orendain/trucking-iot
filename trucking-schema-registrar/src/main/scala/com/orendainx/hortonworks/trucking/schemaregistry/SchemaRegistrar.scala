@@ -46,8 +46,8 @@ object SchemaRegistrar {
     setupSchema("schema.enriched-truck-data-kafka")
     setupSchema("schema.traffic-data")
     setupSchema("schema.traffic-data-kafka")
-    //setupSchema("schema.enriched-truck-and-traffic-data")
-    //setupSchema("schema.enriched-truck-and-traffic-data-kafka")
+    setupSchema("schema.enriched-truck-and-traffic-data")
+    setupSchema("schema.enriched-truck-and-traffic-data-kafka")
     //setupSchema("schema.windowed-driver-stats")
     //setupSchema("schema.windowed-driver-stats-kafka")
   }
