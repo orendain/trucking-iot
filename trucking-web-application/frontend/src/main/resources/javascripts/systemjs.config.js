@@ -36,8 +36,8 @@
         main: 'assets/trucking-web-application-frontend-sjsx.js',
         map: {
           // Scala.js module to be loaded
-          //scalaModule: 'assets/trucking-web-application-frontend-fastopt.js'
-          scalaModule: 'assets/trucking-web-application-frontend-opt.js'
+          scalaModule: 'assets/trucking-web-application-frontend-fastopt.js'
+          //scalaModule: 'assets/trucking-web-application-frontend-opt.js'
         },
         format: 'cjs',
         defaultExtension: 'js'
