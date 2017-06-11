@@ -32,8 +32,7 @@ class WebSocketService {
 
 
     //ws = new WebSocket("ws://sandbox-hdf.hortonworks.com:17000/trucking-events") // NiFi WS
-    //ws = new WebSocket("ws://sandbox-hdf.hortonworks.com:15100/ws") // Play WS
-    ws = new WebSocket("ws://localhost:15100/ws") // Play WS
+    ws = new WebSocket("ws://sandbox-hdf.hortonworks.com:15100/ws") // Play WS
 
     ws.onopen = onOpen _
     ws.onclose = onClose _
