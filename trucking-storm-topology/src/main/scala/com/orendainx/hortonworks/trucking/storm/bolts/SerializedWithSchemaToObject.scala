@@ -57,11 +57,11 @@ class SerializedWithSchemaToObject extends BaseRichBolt {
     log.info(s"bytes: $bytes")
     val (dataType, data) = tuple.getStringByField("dataType") match {
       case typ @ "EnrichedTruckData" =>
-        log.info(s"des: ${deserializer.deserialize(bytes, truckDataSchemaMetadata, null)}")
-        (typ, recordToEnrichedTruckData(deserializer.deserialize(bytes, truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
+        log.info(s"des: ${deserializer.deserialize(bytes, null)}")
+        (typ, recordToEnrichedTruckData(deserializer.deserialize(bytes, null).asInstanceOf[GenericData.Record]))
       case typ @ "TrafficData" =>
-        log.info(s"des: ${deserializer.deserialize(bytes, trafficDataSchemaMetadata, null)}")
-        (typ, recordToTrafficData(deserializer.deserialize(bytes, trafficDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
+        log.info(s"des: ${deserializer.deserialize(bytes, null)}")
+        (typ, recordToTrafficData(deserializer.deserialize(bytes, null).asInstanceOf[GenericData.Record]))
     }
 
     outputCollector.emit(new Values(data, dataType))

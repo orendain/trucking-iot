@@ -57,7 +57,7 @@ class MapComponent(webSocketService: WebSocketService) extends OnInit {
     val tileLayer =
     //L.tileLayer(s"https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=$MapBoxAccessToken",
       L.tileLayer(s"https://api.mapbox.com/styles/v1/orendain/cixwfdcue00112splqmktu0e9/tiles/256/{z}/{x}/{y}?access_token=$MapBoxAccessToken",
-        TileLayerOptions.id("mapbox.streets").maxZoom(MaxZoom).minZoom(MinZoom)
+        TileLayerOptions.id("mapebox.streets").maxZoom(MaxZoom).minZoom(MinZoom)
           .attribution("""<a href="https://github.com/orendain/trucking-iot">Source Code</a>""".stripMargin)
       ).addTo(map)
 

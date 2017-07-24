@@ -53,8 +53,8 @@ class NiFiPacketWithSchemaToObject extends BaseRichBolt {
 
     // Deserialize each tuple and convert it into its proper case class (e.g. EnrichedTruckData or TrafficData)
     val (dataType, data) = dp.getAttributes.get("dataType") match {
-      case typ @ "EnrichedTruckData" => (typ, recordToEnrichedTruckData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), truckDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
-      case typ @ "TrafficData" => (typ, recordToTrafficData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), trafficDataSchemaMetadata, null).asInstanceOf[GenericData.Record]))
+      case typ @ "EnrichedTruckData" => (typ, recordToEnrichedTruckData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), null).asInstanceOf[GenericData.Record]))
+      case typ @ "TrafficData" => (typ, recordToTrafficData(deserializer.deserialize(new ByteArrayInputStream(dp.getContent), null).asInstanceOf[GenericData.Record]))
     }
 
     outputCollector.emit(new Values(data, dataType))
