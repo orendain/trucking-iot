@@ -21,7 +21,7 @@
 
 echo "Checking for SBT, installing if missing"
 curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
-yum -y install sbt-0.13.13.1-1
+yum -y install sbt-0.13.15
 
 echo "Checking for Maven, installing if missing"
 wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
