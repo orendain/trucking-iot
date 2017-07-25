@@ -27,7 +27,7 @@ For an instance of the HDF Sandbox preloaded with this reference application, ru
 
 For a Nifi -> Storm -> Nifi -> Kafka -> Web Application pipeline, with integration with Hortonworks Schema Registry:
 ```
-docker run --name hdf-trucking-iot --hostname "sandbox.hortonworks.com" --privileged -d \
+docker run --name hdf-trucking-iot --hostname "sandbox-hdf.hortonworks.com" --privileged -d \
 -p 12181:2181 \
 -p 13000:3000 \
 -p 14200:4200 \
@@ -61,7 +61,7 @@ orendain/hdf-trucking-iot /usr/sbin/sshd -D
 
 Once the container is created, SSH into the HDF sandbox:
 ```
-ssh root@sandbox.hortonworks.com -p 12222 # password: greenhadoop
+ssh root@sandbox-hdf.hortonworks.com -p 12222 # password: greenhadoop
 ```
 
 Execute the pre-included script:
@@ -69,13 +69,13 @@ Execute the pre-included script:
 /root/nifi-to-nifi-with-schema.sh
 ```
 
-Open the web applicaton: http://sandbox.hortonworks.com:25001
+Open the web applicaton: http://sandbox-hdf.hortonworks.com:25001
 
 Optionally check out the NiFi Flow and Storm UI.
 
 ## Setup on existing HDF/HDP
 
-> Note: If you're **not** on the HDF Sandbox, you'll need to replace the default cluster hostname "sandbox.hortonworks.com" in the following files, as well as check the port endpoints:
+> Note: If you're **not** on the HDF Sandbox, you'll need to replace the default cluster hostname "sandbox-hdf.hortonworks.com" in the following files, as well as check the port endpoints:
 >
 > trucking-schema-registrar/src/main/resources/application.conf
 >
@@ -100,7 +100,7 @@ cd trucking-iot
 scripts/auto-deploy.sh
 ```
 
-3.  On your local machine, open a browser and navigate to the web application: <http://sandbox.hortonworks.com:25001>
+3.  On your local machine, open a browser and navigate to the web application: <http://sandbox-hdf.hortonworks.com:25001>
 
 4.  Optionally check out the NiFi Flow and Storm UI. 
 
