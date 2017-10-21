@@ -12,7 +12,8 @@ echo "Building the trucking-nifi-bundle project and installing the compiled NiFi
 sbt nifiBundle/compile
 cp -f $projDir/trucking-nifi-bundle/nifi-trucking-nar/target/nifi-trucking-nar-$projVer.nar $nifiLibDir
 
-echo "Starting NiFi via Ambari"
+echo "Restarting NiFi via Ambari"
+curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Stop NIFi"}, "ServiceInfo": {"state": "INSTALLED"}}' http://sandbox-hdf.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI | python $projDir/scripts/wait-until-done.py
 curl -u admin:admin -i -H 'X-Requested-By: ambari' -X PUT -d '{"RequestInfo": {"context": "Start NIFi"}, "ServiceInfo": {"state": "STARTED"}}' http://sandbox-hdf.hortonworks.com:8080/api/v1/clusters/Sandbox/services/NIFI | python $projDir/scripts/wait-until-done.py
 #nifiSh=$(find / -type f -wholename "/usr/*/nifi.sh" -print -quit 2> /dev/null)
 #$nifiSh restart
