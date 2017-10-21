@@ -1,7 +1,12 @@
 #!/bin/bash
 
+echo "Starting the Kafka service"
 
-# Make sure Kafka is running
+# Via Ambari
+scriptDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+curl -u admin:admin -H "X-Requested-By: ambari" -X PUT -d '{"RequestInfo": {"context" :"Start Kafka"}, "Body": {"ServiceInfo": {"state": "STARTED"}}}' http://sandbox-hdf.hortonworks.com:8080/api/v1/clusters/Sandbox/services/KAFKA | python $scriptDir/wait-until-done.py
+
+# Via local package
 $(find / -type f -wholename '/usr/hd*/kafka' -print -quit 2> /dev/null) start
 
 #echo "Deleting existing Kafka topics"

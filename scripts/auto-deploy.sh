@@ -6,13 +6,13 @@ scriptDir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 $scriptDir/setup-environment.sh
 
 # Create Kafka topics
-$scriptDir/create-kafka-topics.sh
+$scriptDir/kafka-create-topics.sh
 
 # Import NiFi flow
-$scriptDir/import-nifi-flow.sh
+$scriptDir/nifi-flow-import.sh
 
-# Find the registry webservice and start it
-$scriptDir/registry-restart.sh
+# Start the registry service
+$scriptDir/registry-start.sh
 
 # Build and install the trucking-nifi-bundle project, generating a NiFi nar for use.
 $scriptDir/builds/nifi-bundle.sh
@@ -24,7 +24,7 @@ echo "Running the NiFi flow"
 curl 'http://sandbox-hdf.hortonworks.com:9090/nifi-api/flow/process-groups/90e748c3-015a-1000-f68d-292036f42e8f' -X PUT -H 'Content-Type: application/json' -H 'X-Requested-With: XMLHttpRequest' --data-binary '{"id":"90e748c3-015a-1000-f68d-292036f42e8f","state":"RUNNING"}' --compressed
 
 # Build and deploy the Storm topology
-$scriptDir/builds/storm-topology.sh
+#$scriptDir/builds/storm-topology.sh
 
 # Build and run the web application
-$scriptDir/builds/web-application.sh
+#$scriptDir/builds/web-application.sh

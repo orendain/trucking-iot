@@ -2,7 +2,7 @@
 
 #
 # Note: This script assumes that Ambari and NiFi and are up and running at this point.
-# It also assumes an Ambari username/pass of admin/admin and that it's running on port 8080 with hostname "sandbox-hdf.hortonworks.com"
+box/ambari/wait-until-done.py# It also assumes an Ambari username/pass of admin/admin and that it's running on port 8080 with hostname "sandbox-hdf.hortonworks.com"
 #
 
 #echo "Setting nifi.remote.input.socket.port to correct value via Ambari"
