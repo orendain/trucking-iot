@@ -1,10 +1,10 @@
 logLevel := Level.Info
 
 // For finding dependency issues
-addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.0")
 
 // For publishing JARs, used by trucking-topology
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.3")
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.6")
 
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
@@ -21,7 +21,7 @@ addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.8")
 //addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.1")
 
 // Sbt and Git prompt
-addSbtPlugin("com.scalapenos" % "sbt-prompt" % "1.0.0")
+addSbtPlugin("com.scalapenos" % "sbt-prompt" % "1.0.2")
 
 // GPG and publishing
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
