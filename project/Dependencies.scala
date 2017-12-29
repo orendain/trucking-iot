@@ -51,13 +51,11 @@ object Dependencies {
     .exclude("org.slf4j", "slf4j-log4j12")
 
 
-  lazy val schemaRegistrySerdes = "com.hortonworks.registries" % "schema-registry-serdes" % "0.3.0.3.0.1.1-5"
-  //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.0.1.3.0.0.0-240")
-  //lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.2.1")
-  //  .exclude("commons-beanutils", "commons-beanutils") // vs itself - commons-beanutils/commons-beanutils-core
-  //  .exclude("commons-collections", "commons-collections") // vs itself - commons-beanutils/commons-beanutils-core
+  lazy val schemaRegistrySerdes = ("com.hortonworks.registries" % "schema-registry-serdes" % "0.3.0.3.0.1.1-5")
+    .exclude("commons-beanutils", "commons-beanutils") // vs itself - commons-beanutils/commons-beanutils-core
+    .exclude("commons-collections", "commons-collections") // vs itself - commons-beanutils/commons-beanutils-core
+    .exclude("org.springframework", "spring-aop") // vs itself - aopalliance/intercept/ConstructorInvocation.class
   //  .exclude("org.apache.hadoop", "hadoop-auth") // vs storm-core/scheme-registry, but only when storm-core is not marked as provided
-  //  .exclude("org.springframework", "spring-aop") // vs itself - aopalliance/intercept/ConstructorInvocation.class
 
   // Web application backend dependencies
   lazy val ngVersion = "2.4.3"

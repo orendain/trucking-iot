@@ -6,13 +6,12 @@ lazy val commonSettings = Seq(
   isSnapshot := true,
   scalaVersion := "2.11.8",
   description := """Trucking IoT application.""",
-  //organization := "com.orendainx.trucking",
   organization := "com.orendainx.hortonworks",
   homepage := Some(url("https://github.com/orendain/trucking-iot")),
   organizationHomepage := Some(url("https://github.com/orendain/trucking-iot")),
   licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
   promptTheme := ScalapenosTheme,
-  autoAPIMappings := true, // TODO: I forget exactly why this was necessary
+  //autoAPIMappings := true, // TODO: I forget exactly why this was necessary
 
   pomIncludeRepository := { _ => false },
   scmInfo := Some(
