@@ -1,23 +1,22 @@
 package com.orendainx.hortonworks.trucking.enrichment
 
+import java.io.{InputStreamReader, Reader}
 import java.util.{Calendar, Date}
 
 import better.files.File
 import com.github.tototoshi.csv.CSVReader
-
-import scala.io.Source
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object DriverTimesheetAPI {
 
-  lazy val apply = new DriverTimesheetAPI(Source.fromInputStream(getClass.getResourceAsStream("timesheet-default.conf")))
+  lazy val apply = new DriverTimesheetAPI(new InputStreamReader(getClass.getResourceAsStream("timesheet-default.conf")))
 
-  def apply(filename: String) = new DriverTimesheetAPI(File(filename).newBufferedSource)
+  def apply(filename: String) = new DriverTimesheetAPI(File(filename).newBufferedReader)
 }
 
-class DriverTimesheetAPI(datasource: Source) {
+class DriverTimesheetAPI(datasource: Reader) {
 
   private val reader = CSVReader.open(datasource)
   private val values = reader.all()

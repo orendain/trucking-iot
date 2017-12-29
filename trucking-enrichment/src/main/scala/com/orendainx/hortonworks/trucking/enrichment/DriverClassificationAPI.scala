@@ -1,21 +1,21 @@
 package com.orendainx.hortonworks.trucking.enrichment
 
+import java.io.{InputStreamReader, Reader}
+
 import better.files.File
 import com.github.tototoshi.csv.CSVReader
-
-import scala.io.Source
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object DriverClassificationAPI {
 
-  lazy val apply = new DriverClassificationAPI(Source.fromInputStream(getClass.getResourceAsStream("classifications-default.conf")))
+  lazy val apply = new DriverClassificationAPI(new InputStreamReader(getClass.getResourceAsStream("classifications-default.conf")))
 
-  def apply(filename: String) = new DriverTimesheetAPI(File(filename).newBufferedSource)
+  def apply(filename: String) = new DriverClassificationAPI(File(filename).newBufferedReader)
 }
 
-class DriverClassificationAPI(datasource: Source) {
+class DriverClassificationAPI(datasource: Reader) {
 
   private val reader = CSVReader.open(datasource)
   private val values = reader.all()

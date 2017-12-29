@@ -4,7 +4,8 @@
 lazy val commonSettings = Seq(
   version := "0.3.2",
   isSnapshot := true,
-  scalaVersion := "2.11.8",
+  //scalaVersion := "2.11.8",
+  scalaVersion := "2.12.4",
   description := """Trucking IoT application.""",
   organization := "com.orendainx.hortonworks",
   homepage := Some(url("https://github.com/orendain/trucking-iot")),
@@ -57,31 +58,6 @@ lazy val commonsCross = crossProject.in(file("trucking-commons"))
 
 
 /*
- * Subproject definition for trucking-simulator
- */
-lazy val simulator = (project in file("trucking-simulator"))
-  .dependsOn(commonsJVM, enrichment)
-  .settings(
-    commonSettings,
-    name := "trucking-simulator",
-    libraryDependencies ++= Dependencies.simulatorDeps,
-    mainClass := Some("com.orendainx.hortonworks.trucking.simulator.simulators.EnrichToKafkaSimulator"),
-    //publishArtifact in (Compile, packageBin) := false,
-    /*assemblyMergeStrategy in assembly := {
-      case PathList("application.conf") => MergeStrategy.concat
-      case x =>
-        val oldStrategy = (assemblyMergeStrategy in assembly).value
-        oldStrategy(x)
-    },*/
-    artifact in (Compile, assembly) ~= { art =>
-      art.copy(`classifier` = Some("assembly"))
-    },
-    addArtifact(artifact in (Compile, assembly), assembly)
-  )
-
-
-
-/*
  * Subproject definition for trucking-enrichment
  */
 lazy val enrichment = (project in file("trucking-enrichment"))
@@ -90,6 +66,20 @@ lazy val enrichment = (project in file("trucking-enrichment"))
     commonSettings,
     name := "trucking-enrichment",
     libraryDependencies ++= Dependencies.enrichmentDeps
+  )
+
+
+
+/*
+ * Subproject definition for trucking-simulator
+ */
+lazy val simulator = (project in file("trucking-simulator"))
+  .dependsOn(commonsJVM, enrichment)
+  .settings(
+    commonSettings,
+    name := "trucking-simulator",
+    libraryDependencies ++= Dependencies.simulatorDeps,
+    mainClass := Some("com.orendainx.hortonworks.trucking.simulator.simulators.EnrichToKafkaSimulator")
   )
 
 
@@ -118,15 +108,17 @@ lazy val execScript = taskKey[Unit]("Execute the shell script")
 lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
   .dependsOn(commonsJVM, simulator, enrichment)
   .settings(
-    commonSettings,
+    commonSettings
+    /*
     execScript := {
       (publishM2 in Compile in commonsJVM).value
       (publishM2 in Compile in simulator).value
       (publishM2 in Compile in enrichment).value
-      Process("mvn clean package", baseDirectory.value) !
+      scala.sys.process.Process("mvn clean package", baseDirectory.value) !
     },
-    (`compile` in Compile) := (compile in Compile).dependsOn(execScript).value,
+    //(`compile` in Compile) := (compile in Compile).dependsOn(execScript).value,
     (Keys.`package` in Compile) := (Keys.`package` in Compile).dependsOn(execScript).value
+    */
   )
 
 
@@ -168,12 +160,14 @@ lazy val stormTopologyJava = (project in file("trucking-storm-topology-java"))
 
 
 
+
 /*
  * Subproject definition for trucking-web-application/backend
  *
  * The project is build on top of the Play Framework and depends on the subproject webApplicationFrontend,
  * developed using ScalaJS.
  */
+/*
 lazy val webApplicationBackend = (project in file("trucking-web-application/backend"))
   .settings(
     commonSettings,
@@ -200,7 +194,7 @@ lazy val webApplicationBackend = (project in file("trucking-web-application/back
     //mainClass in assembly := Some("play.core.server.ProdServerStart"),
     //fullClasspath in assembly += Attributed.blank(PlayKeys.playPackageAssets.value)
   ).enablePlugins(PlayScala)
-
+*/
 
 
 /*
@@ -208,6 +202,7 @@ lazy val webApplicationBackend = (project in file("trucking-web-application/back
  *
  * Build using ScalaJS, leverages the Angular2 framework, using ScalaJS facades provided by the ScalaJS Angulate2 plugin
  */
+/*
 lazy val webApplicationFrontend = (project in file("trucking-web-application/frontend"))
   .dependsOn(commonsJS)
   .settings(
@@ -220,3 +215,4 @@ lazy val webApplicationFrontend = (project in file("trucking-web-application/fro
     //resourceDirectory in Compile := baseDirectory.value / "../backend/conf",
     //unmanagedResourceDirectories in Compile += baseDirectory.value / "../backend/conf"
   ).enablePlugins(ScalaJSPlugin, ScalaJSWeb, Angulate2Plugin)
+*/

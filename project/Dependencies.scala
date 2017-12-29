@@ -22,7 +22,7 @@ object Dependencies {
 
   // Scala libraries
   lazy val config = "com.typesafe" % "config" % "1.3.1"
-  lazy val betterFiles = "com.github.pathikrit" %% "better-files" % "2.16.0"
+  lazy val betterFiles = "com.github.pathikrit" %% "better-files" % "3.4.0"
   lazy val scalaCsv = "com.github.tototoshi" %% "scala-csv" % "1.3.4"
   lazy val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.4.14"
 
