@@ -22,6 +22,7 @@ import scala.collection.mutable.ListBuffer
 object RouteParser {
 
   // TODO: if a routefile is incorrectly formatted, entire system goes down.  change this.
+
   val log = Logger(getClass)
 
   def apply(routeDirectory: String): RouteParser = {
@@ -67,9 +68,10 @@ object RouteParser {
   }
 
   def parseFile(file: File): Route = {
-    val scanner = file.newScanner
-    val routeId = scanner.next[Int]
-    val routeName = scanner.tillEndOfLine()
+    val scanner = file.newScanner()
+    val routeInfo = scanner.nextLine().split(" ")
+    val routeId = routeInfo.head.toInt
+    val routeName = routeInfo.drop(1).mkString(" ")
     val locations = ListBuffer[Location]()
     while (scanner.hasNext)
       locations += scanner.next[Location]
