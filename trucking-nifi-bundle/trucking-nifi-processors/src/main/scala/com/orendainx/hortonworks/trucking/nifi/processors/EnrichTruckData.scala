@@ -9,7 +9,6 @@ import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckData, Tru
 import com.orendainx.hortonworks.trucking.enrichment.WeatherAPI
 import org.apache.nifi.annotation.behavior._
 import org.apache.nifi.annotation.documentation.{CapabilityDescription, Tags}
-import org.apache.nifi.annotation.lifecycle.{OnRemoved, OnShutdown}
 import org.apache.nifi.components.PropertyDescriptor
 import org.apache.nifi.logging.ComponentLog
 import org.apache.nifi.processor.io.InputStreamCallback
@@ -17,7 +16,6 @@ import org.apache.nifi.processor.io.OutputStreamCallback
 import org.apache.nifi.processor._
 
 import scala.collection.JavaConverters._
-import scala.language.implicitConversions
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>

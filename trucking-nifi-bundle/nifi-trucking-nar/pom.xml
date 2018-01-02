@@ -3,16 +3,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>nifi-trucking-nar</artifactId>
-  <version>${trucking.nifi.version}</version>
+  <version>0.3.2</version>
   <packaging>nar</packaging>
 
   <parent>
     <groupId>com.orendainx.hortonworks</groupId>
     <artifactId>trucking-nifi-bundle</artifactId>
-    <version>${trucking.nifi.version}</version>
+    <version>0.3.2</version>
   </parent>
 
   <properties>
+    <trucking.version>0.3.2</trucking.version>
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <source.skip>true</source.skip>
   </properties>
@@ -21,7 +22,7 @@
     <dependency>
       <groupId>com.orendainx.hortonworks</groupId>
       <artifactId>trucking-nifi-processors</artifactId>
-      <version>${trucking.nifi.version}</version>
+      <version>${trucking.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.nifi</groupId>

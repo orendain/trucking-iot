@@ -8,19 +8,23 @@
   <parent>
     <groupId>com.orendainx.hortonworks</groupId>
     <artifactId>trucking-nifi-bundle</artifactId>
-    <version>${trucking.nifi.version}</version>
+    <version>0.3.2</version>
   </parent>
+
+  <properties>
+    <trucking.version>0.3.2</trucking.version>
+  </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.orendainx.hortonworks</groupId>
       <artifactId>trucking-simulator_${scala.major.version}</artifactId>
-      <version>${trucking.simulator.version}</version>
+      <version>${trucking.version}</version>
     </dependency>
     <dependency>
       <groupId>com.orendainx.hortonworks</groupId>
       <artifactId>trucking-enrichment_${scala.major.version}</artifactId>
-      <version>${trucking.enrichment.version}</version>
+      <version>${trucking.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.nifi</groupId>
