@@ -32,7 +32,7 @@ object RouteParser {
     //log.debug(s"path: $path")
     //new RouteParser(path)
 
-    // TODO: Cleanup!
+    // TODO: Cleanup
     val path = s"${getClass.getResource("/routes").getPath}/$routeDirectory"
     log.debug(s"1 $path")
     if (path.startsWith("file")) { // is a jar file
@@ -69,9 +69,8 @@ object RouteParser {
 
   def parseFile(file: File): Route = {
     val scanner = file.newScanner()
-    val routeInfo = scanner.nextLine().split(" ")
-    val routeId = routeInfo.head.toInt
-    val routeName = routeInfo.drop(1).mkString(" ")
+    val routeId = scanner.nextLine().toInt
+    val routeName = scanner.nextLine()
     val locations = ListBuffer[Location]()
     while (scanner.hasNext)
       locations += scanner.next[Location]
