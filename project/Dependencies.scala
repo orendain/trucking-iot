@@ -36,7 +36,7 @@ object Dependencies {
   lazy val stormCoreProvided = "org.apache.storm" % "storm-core" % "1.1.0" % "provided"
   //lazy val stormCoreProvided = ("org.apache.storm" % "storm-core" % "1.1.0")
     //.exclude("org.apache.hadoop", "hadoop-auth") // vs storm-core/scheme-registry, but only when storm-core is not marked as provided
-    //.exclude("ring-cors", "ring-cors") // vs storm-core/nifi-storm-spout, but only when storm-core is not marked as provided
+   //.exclude("ring-cors", "ring-cors") // vs storm-core/nifi-storm-spout, but only when storm-core is not marked as provided
 
   lazy val stormKafkaClient = "org.apache.storm" % "storm-kafka-client" % "1.1.0"
   lazy val stormKafka = "org.apache.storm" % "storm-kafka" % "1.1.0"
@@ -44,6 +44,7 @@ object Dependencies {
     //.exclude("ring-cors", "ring-cors") // vs storm-core/nifi-storm-spout, but only when storm-core is not marked as provided
 
 
+  // TODO: Update Kafka to 1.0.0+
   // See: http://stackoverflow.com/questions/33054294/kafkaspout-throws-noclassdeffounderror-for-log4j
   lazy val kafkaClients = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
   lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")

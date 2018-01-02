@@ -29,7 +29,7 @@ class AutoFinishSimulator(val config: Config) extends Simulator {
 
   def this() = this(ConfigFactory.load())
 
-  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+  private implicit val combinedConfig: Config = ConfigFactory.defaultOverrides()
     .withFallback(config)
     .withFallback(ConfigFactory.defaultReference())
     .getConfig("trucking-simulator")

@@ -57,8 +57,8 @@ class EnrichTruckData extends AbstractProcessor {
     // Form a TruckData object from content, then creating an EnrichedTruckData object by making the appropriate
     // calls to WeatherAPI
     val truckData = TruckData.fromCSV(content.get())
-    val enrichedTruckData = EnrichedTruckData(truckData, WeatherAPI.default.isFoggy(truckData.eventType),
-      WeatherAPI.default.isRainy(truckData.eventType), WeatherAPI.default.isWindy(truckData.eventType))
+    val enrichedTruckData = EnrichedTruckData(truckData, WeatherAPI.default.getFog(truckData.eventType),
+      WeatherAPI.default.getRain(truckData.eventType), WeatherAPI.default.getWind(truckData.eventType))
 
     log.debug(s"EnrichedData generated: $enrichedTruckData")
 
@@ -76,9 +76,6 @@ class EnrichTruckData extends AbstractProcessor {
     session.transfer(flowFile, RelSuccess)
     session.commit()
   }
-
-  // For use with results from the WeatherAPI - convert result from the call to an integer value
-  private implicit def bool2Int(bool: Boolean): Int = if (bool) 1 else 0
 
   // Define properties and relationships
   override def getSupportedPropertyDescriptors: java.util.List[PropertyDescriptor] = List.empty[PropertyDescriptor].asJava

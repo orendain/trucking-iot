@@ -32,7 +32,7 @@ class EnrichToKafkaSimulator(val config: Config) extends Simulator {
 
   def this() = this(ConfigFactory.load())
 
-  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+  private implicit val combinedConfig: Config = ConfigFactory.defaultOverrides()
     .withFallback(config)
     .withFallback(ConfigFactory.defaultReference())
     .getConfig("trucking-simulator")
@@ -74,14 +74,13 @@ class EnrichToKafkaSimulator(val config: Config) extends Simulator {
     * Private helper Actor
     */
   private class EnrichmentActor extends Actor {
-    implicit def bool2int(b: Boolean): Int = if (b) 1 else 0
     def receive = {
       case td: TruckData =>
         kafkaTruckTransmitter ! DataTransmitter.Transmit(
           EnrichedTruckData(td,
-            WeatherAPI.default.isFoggy(td.eventType),
-            WeatherAPI.default.isRainy(td.eventType),
-            WeatherAPI.default.isWindy(td.eventType))
+            WeatherAPI.default.getFog(td.eventType),
+            WeatherAPI.default.getRain(td.eventType),
+            WeatherAPI.default.getWind(td.eventType))
         )
       case td: TrafficData =>
         kafkaTrafficTransmitter ! DataTransmitter.Transmit(td)

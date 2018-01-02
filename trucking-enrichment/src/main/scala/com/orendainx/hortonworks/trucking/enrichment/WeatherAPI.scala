@@ -16,7 +16,7 @@ class WeatherAPI(config: Config) {
 
   def this() = this(ConfigFactory.load())
 
-  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+  private implicit val combinedConfig: Config = ConfigFactory.defaultOverrides()
     .withFallback(config)
     .withFallback(ConfigFactory.defaultReference())
     .getConfig("trucking-enrichment.weatherapi")
@@ -26,25 +26,25 @@ class WeatherAPI(config: Config) {
     * @param eventType The type of a driving event (e.g. "normal", "speeding", etc.)
     * @return true if the weather is foggy, false otherwise
     */
-  def isFoggy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("foggy.normal-chance")
-    else Random.nextInt(100) < combinedConfig.getInt("foggy.anomalous-chance")
+  def getFog(eventType: String): Int =
+    if (eventType == TruckEventTypes.Normal) if (Random.nextInt(100) < combinedConfig.getInt("foggy.normal-chance")) 1 else 0
+    else if (Random.nextInt(100) < combinedConfig.getInt("foggy.anomalous-chance")) 1 else 0
 
   /** Queries the weatherAPI for rain status.
     *
     * @param eventType The type of a driving event (e.g. "normal", "speeding", etc.)
     * @return true if the weather is rainy, false otherwise
     */
-  def isRainy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("rainy.normal-chance")
-    else Random.nextInt(100) < combinedConfig.getInt("rainy.anomalous-chance")
+  def getRain(eventType: String): Int =
+    if (eventType == TruckEventTypes.Normal) if (Random.nextInt(100) < combinedConfig.getInt("rainy.normal-chance")) 1 else 0
+    else if (Random.nextInt(100) < combinedConfig.getInt("rainy.anomalous-chance")) 1 else 0
 
   /** Queries the weatherAPI for wind status.
     *
     * @param eventType The type of a driving event (e.g. "normal", "speeding", etc.)
     * @return true if the weather is windy, false otherwise
     */
-  def isWindy(eventType: String): Boolean =
-    if (eventType == TruckEventTypes.Normal) Random.nextInt(100) < combinedConfig.getInt("windy.normal-chance")
-    else Random.nextInt(100) < combinedConfig.getInt("windy.anomalous-chance")
+  def getWind(eventType: String): Int =
+    if (eventType == TruckEventTypes.Normal) if (Random.nextInt(100) < combinedConfig.getInt("windy.normal-chance")) 1 else 0
+    else if (Random.nextInt(100) < combinedConfig.getInt("windy.anomalous-chance")) 1 else 0
 }
