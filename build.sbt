@@ -12,6 +12,7 @@ lazy val commonSettings = Seq(
   organizationHomepage := Some(url("https://github.com/orendain/trucking-iot")),
   licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
   promptTheme := ScalapenosTheme,
+  scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
   //autoAPIMappings := true, // TODO: I forget exactly why this was necessary
 
   pomIncludeRepository := { _ => false },
