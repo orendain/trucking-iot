@@ -24,12 +24,12 @@ object Dependencies {
   lazy val config = "com.typesafe" % "config" % "1.3.1"
   lazy val betterFiles = "com.github.pathikrit" %% "better-files" % "3.4.0"
   lazy val scalaCsv = "com.github.tototoshi" %% "scala-csv" % "1.3.5"
-  lazy val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.4.14"
+  lazy val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.5.8"
 
 
   // Logging-related dependencies
-  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.1.8"
-  lazy val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0"
+  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.2.3"
+  lazy val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
 
 
   // Storm-related dependencies
