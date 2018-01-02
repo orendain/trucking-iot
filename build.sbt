@@ -13,8 +13,7 @@ lazy val commonSettings = Seq(
   licenses := Seq(("Apache License 2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))),
   promptTheme := ScalapenosTheme,
   scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation"),
-  //autoAPIMappings := true, // TODO: I forget exactly why this was necessary
-
+  autoAPIMappings := true,
   pomIncludeRepository := { _ => false },
   scmInfo := Some(
     ScmInfo(url("https://github.com/orendain/trucking-iot"), "scm:git@github.com/orendain/trucking-iot.git")

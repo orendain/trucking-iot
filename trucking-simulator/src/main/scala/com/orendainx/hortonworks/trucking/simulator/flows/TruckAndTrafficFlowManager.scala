@@ -6,9 +6,9 @@ import com.orendainx.hortonworks.trucking.simulator.flows.FlowManager.ShutdownFl
 import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
 
 /**
-  * The TruckAndTrafficFlowManager expects messages of type [[Transmit(data: TruckData]] and [[Transmit(data: TrafficData]]
+  * The TruckAndTrafficFlowManager expects messages of type [[com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit]]
   * and routes messages to two sepearate [[com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter]]s
-  * specified as arguments to [[TruckAndTrafficFlowManager.props()]].
+  * specified as arguments to [[TruckAndTrafficFlowManager.props]].
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */

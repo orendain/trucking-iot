@@ -5,8 +5,8 @@ import com.orendainx.hortonworks.trucking.simulator.flows.FlowManager.ShutdownFl
 import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
 
 /**
-  * The SharedFlowManager routes all [[Transmit]] messages to a single [[com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter]]
-  * specified when constructing a Props via [[SharedFlowManager.props()]].
+  * The SharedFlowManager routes all [[com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit]] messages to a single [[com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter]]
+  * specified when constructing a Props via [[SharedFlowManager.props]].
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */

@@ -25,7 +25,7 @@ object TruckAndTrafficGenerator {
 
   /**
     *
-    * @param driver The [[Driver]] driving the truck.
+    * @param driver The [[com.orendainx.hortonworks.trucking.simulator.models.Driver]] driving the truck.
     * @param depot ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot]]
     * @param flowManager ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.flows.FlowManager]]
     * @return

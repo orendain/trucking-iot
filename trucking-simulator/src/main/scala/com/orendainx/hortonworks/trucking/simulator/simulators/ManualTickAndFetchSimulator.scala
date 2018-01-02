@@ -63,9 +63,9 @@ class ManualTickAndFetchSimulator(val config: Config) extends Simulator {
   }
 
   /**
-    * Fetch the data generated since the last call to [[tick()]].
+    * Fetch the data generated since the last call to [[tick]].
     *
-    * As long as this method is not called immediately after a [[tick()]], results should return immediately and
+    * As long as this method is not called immediately after a [[tick]], results should return immediately and
     * the specified timeout is ignored.
     *
     * @param timeout Max amount of time to wait, in milliseconds, for the simulator to respond (default: 1000 milliseconds).

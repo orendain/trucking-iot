@@ -12,7 +12,7 @@ import scala.util.Random
 object DriverFactory {
 
   /**
-    * Generate a list of drivers using values from the supplied [[com.typesafe.config.Config]].
+    * Generate a list of drivers using values from the supplied [[Config]].
     */
   def drivers(implicit config: Config): Seq[Driver] = {
 
