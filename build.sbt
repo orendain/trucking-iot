@@ -104,8 +104,8 @@ lazy val schemaRegistrar = (project in file("trucking-schema-registrar"))
  * Because this subproject is built with Maven instead of Sbt, we set execScript to publish all dependencies to the local
  * M2 repository so those libraries can be accessible by the subproject during Maven's build process.
  */
-lazy val compileScript = taskKey[Unit]("Compile this and child projects via shell script")
-lazy val packageScript = taskKey[Unit]("Package this and child projects via shell script")
+lazy val compileScript = taskKey[Unit]("Compile this maven project via shell script")
+lazy val packageScript = taskKey[Unit]("Package this maven and child projects via shell script")
 lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
   .dependsOn(commonsJVM, simulator, enrichment)
   .settings(

@@ -46,8 +46,8 @@ object Dependencies {
 
   // TODO: Update Kafka to 1.0.0+
   // See: http://stackoverflow.com/questions/33054294/kafkaspout-throws-noclassdeffounderror-for-log4j
-  lazy val kafkaClients = "org.apache.kafka" % "kafka-clients" % "0.10.2.0"
-  lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.0")
+  lazy val kafkaClients = "org.apache.kafka" % "kafka-clients" % "0.10.2.1"
+  lazy val kafka = ("org.apache.kafka" %% "kafka" % "0.10.2.1")
     .exclude("org.apache.zookeeper", "zookeeper")
     .exclude("org.slf4j", "slf4j-log4j12")
 
