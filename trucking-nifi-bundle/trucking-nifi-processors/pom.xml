@@ -22,11 +22,6 @@
       <artifactId>trucking-enrichment_${scala.major.version}</artifactId>
       <version>${trucking.enrichment.version}</version>
     </dependency>
-    <!--<dependency>
-      <groupId>com.typesafe</groupId>
-      <artifactId>config</artifactId>
-      <version>${typesafe.config.version}</version>
-    </dependency>-->
     <dependency>
       <groupId>org.apache.nifi</groupId>
       <artifactId>nifi-api</artifactId>

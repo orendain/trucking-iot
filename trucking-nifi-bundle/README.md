@@ -11,6 +11,7 @@ Upon building this module, a `nifi-trucking-nar-<version>.nar` is created, which
 -   [Install](#install)
 -   [GetTruckData Processor](#gettruckdata-processor)
 -   [EnrichTruckData Processor](#enrichtruckdata-processor)
+-   [Custom Processor Template](#custom-processor-template)
 
 ## Install
 
@@ -41,3 +42,60 @@ The EnrichTruckData processor takes in FlowFiles carrying TruckData and enriches
 1488767711734|26|1|Edgar Orendain|107|Springfield to Kansas City Via Columbia|38.95940879245423|-92.21923828125|65|Speeding|1|0|1
 ```
 ![EnrichedTruckData fields](readme-assets/enriched-truck-data_fields.png)
+
+
+## Custom Processor Template
+```scala
+package com.orendainx.hortonworks.trucking.nifi.processors
+
+import java.io.OutputStream
+import java.nio.charset.StandardCharsets
+
+import com.orendainx.hortonworks.trucking.simulator.simulators.ManualTickAndFetchSimulator
+import org.apache.nifi.annotation.behavior._
+import org.apache.nifi.annotation.documentation.{CapabilityDescription, Tags}
+import org.apache.nifi.annotation.lifecycle.{OnRemoved, OnShutdown}
+import org.apache.nifi.components.PropertyDescriptor
+import org.apache.nifi.logging.ComponentLog
+import org.apache.nifi.processor._
+import org.apache.nifi.processor.io.OutputStreamCallback
+
+import scala.collection.JavaConverters._
+
+@Tags(Array("trucking", "data", "event", "generator", "simulator", "iot"))
+@CapabilityDescription("Generates simulated testing data for trucking use cases")
+class GetTruckingData extends AbstractProcessor {
+
+  /** Perform necessary initialization */
+  override def init(context: ProcessorInitializationContext): Unit = {
+  }
+
+  /** Called when processor is scheduled to run and when work exists for it */
+  override def onTrigger(context: ProcessContext, session: ProcessSession): Unit = {
+
+    // Creating flow file and tagging with attributes as appropriate
+    var ourFlowFile = session.create()
+
+    // Tag this data packet (i.e. flow file) with some attributes
+    ourFlowFile = session.putAttribute(ourFlowFile, ...)
+
+    // Write data to our flow file
+    ourFlowFile = session.write(ourFlowFile, new OutputStreamCallback {
+      override def process(outputStream: OutputStream) = outputStream.write(...)
+    })
+
+    // Send our flow file downstream
+    session.transfer(ourFlowFile)
+
+    // Acknowledge receipt and processing of our work (helps insure no data loss)
+    session.commit()
+  }
+
+  @OnRemoved
+  @OnShutdown
+  /** Clean up and exit gracefully */
+  def cleanup(): Unit = {
+  }
+
+}
+```
