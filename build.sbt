@@ -111,9 +111,6 @@ lazy val nifiBundle = (project in file("trucking-nifi-bundle"))
   .settings(
     commonSettings,
     compileScript := {
-      (compile in Compile in commonsJVM).value
-      (compile in Compile in simulator).value
-      (compile in Compile in enrichment).value
       scala.sys.process.Process("mvn compile", baseDirectory.value) !
     },
     packageScript := {
