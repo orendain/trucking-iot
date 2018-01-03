@@ -8,14 +8,14 @@ import com.hortonworks.registries.schemaregistry.{SchemaCompatibility, SchemaMet
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.Logger
 
+import scala.collection.JavaConverters._
+
 /**
   * Example of how to leverage the Schema Registry with Scala.
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 object SchemaRegistrar {
-
-  import collection.JavaConversions._
 
   // Create logger
   private val log = Logger(this.getClass)
@@ -25,7 +25,7 @@ object SchemaRegistrar {
 
   // Create a config object with the configuration properties to instantiate a SchemaRegistryClient
   private val clientConfig = Map[String, AnyRef](SchemaRegistryClient.Configuration.SCHEMA_REGISTRY_URL.name() -> baseConfig.getString("schema-registry.url"))
-  private val schemaRegistryClient = new SchemaRegistryClient(clientConfig)
+  private val schemaRegistryClient = new SchemaRegistryClient(clientConfig.asJava)
 
   /**
     * Entry point for an application.  Immediately runs register().
@@ -41,15 +41,12 @@ object SchemaRegistrar {
     * - EnrichedTruckAndTrafficData
     */
   def register(): Unit = {
-    //setupSchema("schema.truck-data")
     setupSchema("schema.enriched-truck-data")
     setupSchema("schema.enriched-truck-data-kafka")
     setupSchema("schema.traffic-data")
     setupSchema("schema.traffic-data-kafka")
     setupSchema("schema.enriched-truck-and-traffic-data")
     setupSchema("schema.enriched-truck-and-traffic-data-kafka")
-    //setupSchema("schema.windowed-driver-stats")
-    //setupSchema("schema.windowed-driver-stats-kafka")
   }
 
 
