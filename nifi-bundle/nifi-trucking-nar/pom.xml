@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>nifi-trucking-nar</artifactId>
+  <version>0.5.0</version>
+  <packaging>nar</packaging>
+
+  <parent>
+    <groupId>com.orendainx.hortonworks</groupId>
+    <artifactId>trucking-nifi-bundle</artifactId>
+    <version>0.5.0</version>
+  </parent>
+
+  <properties>
+    <trucking.version>0.5.0</trucking.version>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <source.skip>true</source.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.orendainx.hortonworks</groupId>
+      <artifactId>trucking-nifi-processors</artifactId>
+      <version>${trucking.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.nifi</groupId>
+      <artifactId>nifi-standard-services-api-nar</artifactId>
+      <type>nar</type>
+    </dependency>
+  </dependencies>
+</project>
