@@ -1,7 +1,7 @@
 package com.orendainx.trucking.simulator.depots
 
 import akka.actor.Actor
-import com.orendainx.hortonworks.trucking.simulator.models.Truck
+import com.orendainx.trucking.simulator.models.Truck
 import com.orendainx.trucking.simulator.models.Route
 
 /**

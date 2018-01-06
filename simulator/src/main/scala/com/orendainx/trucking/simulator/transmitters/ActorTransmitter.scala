@@ -1,7 +1,7 @@
 package com.orendainx.trucking.simulator.transmitters
 
 import akka.actor.{ActorLogging, ActorRef, Props}
-import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
+import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
 
 /**
   * @author Edgar Orendain <edgar@orendainx.com>

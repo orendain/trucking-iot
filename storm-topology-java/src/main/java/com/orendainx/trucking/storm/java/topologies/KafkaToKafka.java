@@ -1,10 +1,10 @@
 package com.orendainx.trucking.storm.java.topologies;
 
-import com.orendainx.hortonworks.trucking.storm.java.bolts.CSVStringToObjectBolt;
-import com.orendainx.hortonworks.trucking.storm.java.bolts.DataWindowingBolt;
-import com.orendainx.hortonworks.trucking.storm.java.bolts.ObjectToCSVStringBolt;
-import com.orendainx.hortonworks.trucking.storm.java.bolts.TruckAndTrafficJoinBolt;
-import com.orendainx.hortonworks.trucking.storm.java.schemes.TruckingStringScheme;
+import com.orendainx.trucking.storm.java.bolts.CSVStringToObjectBolt;
+import com.orendainx.trucking.storm.java.bolts.DataWindowingBolt;
+import com.orendainx.trucking.storm.java.bolts.ObjectToCSVStringBolt;
+import com.orendainx.trucking.storm.java.bolts.TruckAndTrafficJoinBolt;
+import com.orendainx.trucking.storm.java.schemes.TruckingStringScheme;
 import com.typesafe.config.ConfigFactory;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.errors.AuthorizationException;

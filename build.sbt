@@ -76,7 +76,7 @@ lazy val simulator = (project in file("simulator"))
     commonSettings,
     name := "trucking-simulator",
     libraryDependencies ++= Dependencies.simulatorDeps,
-    mainClass := Some("com.orendainx.hortonworks.trucking.simulator.simulators.EnrichToKafkaSimulator")
+    mainClass := Some("com.orendainx.trucking.simulator.simulators.EnrichToKafkaSimulator")
   )
 
 
@@ -143,7 +143,7 @@ lazy val stormTopologyJava = (project in file("storm-topology-java"))
     resolvers += "Hortonworks Nexus" at "http://nexus-private.hortonworks.com/nexus/content/groups/public",
     libraryDependencies ++= Dependencies.stormTopologyJavaDeps,
     autoScalaLibrary := false,
-    mainClass in (Compile, run) := Some("com.orendainx.hortonworks.trucking.storm.java.topologies.KafkaToKafka"),
+    mainClass in (Compile, run) := Some("com.orendainx.trucking.storm.java.topologies.KafkaToKafka"),
     assemblyMergeStrategy in assembly := {
       case PathList(x) if x.endsWith("clj") => MergeStrategy.first
       case x =>
@@ -205,7 +205,7 @@ lazy val webApplicationFrontend = (project in file("web-application/frontend"))
     resolvers += "jitpack" at "https://jitpack.io", // For scalajs-leaflet
     libraryDependencies ++= Dependencies.webApplicationFrontendDeps,
     jsDependencies ++= Seq("org.webjars.npm" % "leaflet" % "1.0.2" / "leaflet.js" commonJSName "Leaflet"),
-    ngBootstrap := Some("com.orendainx.hortonworks.trucking.webapplication.AppModule")//,
+    ngBootstrap := Some("com.orendainx.trucking.webapplication.AppModule")//,
     //resourceDirectory in Compile := baseDirectory.value / "../backend/conf",
     //unmanagedResourceDirectories in Compile += baseDirectory.value / "../backend/conf"
   ).enablePlugins(ScalaJSPlugin, ScalaJSWeb, Angulate2Plugin)

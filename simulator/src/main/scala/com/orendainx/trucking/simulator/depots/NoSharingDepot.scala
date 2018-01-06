@@ -1,17 +1,17 @@
 package com.orendainx.trucking.simulator.depots
 
 import akka.actor.{ActorLogging, Props, Stash}
-import com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot.{RequestRoute, RequestTruck, ReturnRoute, ReturnTruck}
-import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator.NewResource
-import com.orendainx.hortonworks.trucking.simulator.models._
-import com.orendainx.hortonworks.trucking.simulator.services.RouteParser
+import com.orendainx.trucking.simulator.depots.ResourceDepot.{RequestRoute, RequestTruck, ReturnRoute, ReturnTruck}
+import com.orendainx.trucking.simulator.generators.DataGenerator.NewResource
+import com.orendainx.trucking.simulator.models._
+import com.orendainx.trucking.simulator.services.RouteParser
 import com.orendainx.trucking.simulator.models.EmptyRoute
 import com.typesafe.config.Config
 
 import scala.util.Random
 
 /**
-  * This implementation of a [[ResourceDepot]] disallows [[com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator]]
+  * This implementation of a [[ResourceDepot]] disallows [[com.orendainx.trucking.simulator.generators.DataGenerator]]
   * objects from sharing resources.  That is, any resource managed by this depot can only be checked out by a single generator.
   *
   * Sending a [[ResourceDepot.RequestRoute]] or [[ResourceDepot.RequestTruck]] message will return a new resource (that is different

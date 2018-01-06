@@ -2,7 +2,7 @@ package com.orendainx.trucking.simulator.transmitters
 
 import akka.actor.{ActorLogging, Props}
 import better.files.File
-import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
+import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
 
 /**
   * FileTransmitter records data to the filesystem, specifically to the file whose path is passed in as the constructor parameter.

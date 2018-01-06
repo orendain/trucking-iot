@@ -1,7 +1,7 @@
 package com.orendainx.trucking.webapplication
 
 import angulate2.std.Injectable
-import com.orendainx.hortonworks.trucking.webapplication.models.{PrettyEnrichedTruckAndTrafficData, PrettyEnrichedTruckAndTrafficDataFactory, PrettyTruckAndTrafficData, PrettyTruckAndTrafficDataFactory}
+import com.orendainx.trucking.webapplication.models.{PrettyEnrichedTruckAndTrafficData, PrettyEnrichedTruckAndTrafficDataFactory, PrettyTruckAndTrafficData, PrettyTruckAndTrafficDataFactory}
 import com.typesafe.config.ConfigFactory
 import org.scalajs.dom.raw.{CloseEvent, ErrorEvent, Event, MessageEvent, WebSocket}
 

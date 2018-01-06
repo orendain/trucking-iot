@@ -3,8 +3,8 @@ package com.orendainx.trucking.storm.topologies
 import java.util.Properties
 
 import better.files.File
-import com.orendainx.hortonworks.trucking.storm.bolts._
-import com.orendainx.hortonworks.trucking.storm.schemes.BufferToStringScheme
+import com.orendainx.trucking.storm.bolts._
+import com.orendainx.trucking.storm.schemes.BufferToStringScheme
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -103,14 +103,26 @@ object KafkaToKafkaRemoteSubmitter {
   */
 class KafkaToKafka(config: TypeConfig) {
 
-  def this() = this(ConfigFactory.load())
+  private lazy val logger = Logger(this.getClass)
 
-  private implicit val combinedConfig = ConfigFactory.defaultOverrides()
+  private implicit val combinedConfig: TypeConfig = ConfigFactory.defaultOverrides()
     .withFallback(config)
     .withFallback(ConfigFactory.defaultReference())
     .getConfig("trucking-storm-topology")
 
-  private lazy val logger = Logger(this.getClass)
+  /**
+    * Build a Storm Config
+    */
+  lazy val stormConfig: Config = {
+    val stConfig = new Config()
+    stConfig.setDebug(combinedConfig.getBoolean(Config.TOPOLOGY_DEBUG))
+    stConfig.setMessageTimeoutSecs(combinedConfig.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
+    stConfig.setNumWorkers(combinedConfig.getInt(Config.TOPOLOGY_WORKERS))
+    stConfig
+  }
+
+  def this() = this(ConfigFactory.load())
+
 
   /**
     *
@@ -134,6 +146,7 @@ class KafkaToKafka(config: TypeConfig) {
     kafkaBoltProps.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, combinedConfig.getString("kafka.bootstrap-servers"))
     kafkaBoltProps.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, combinedConfig.getString("kafka.key-serializer"))
     kafkaBoltProps.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, combinedConfig.getString("kafka.value-serializer"))
+
 
 
 
@@ -314,15 +327,6 @@ class KafkaToKafka(config: TypeConfig) {
   }
 
 
-  /**
-    * Build a Storm Config
-    */
-  lazy val stormConfig: Config = {
-    val stConfig = new Config()
-    stConfig.setDebug(combinedConfig.getBoolean(Config.TOPOLOGY_DEBUG))
-    stConfig.setMessageTimeoutSecs(combinedConfig.getInt(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS))
-    stConfig.setNumWorkers(combinedConfig.getInt(Config.TOPOLOGY_WORKERS))
-    stConfig
-  }
+
 
 }

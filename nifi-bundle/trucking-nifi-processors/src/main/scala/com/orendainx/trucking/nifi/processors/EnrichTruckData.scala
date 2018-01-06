@@ -5,8 +5,8 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicReference
 import java.util.Scanner
 
-import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckData, TruckData}
-import com.orendainx.hortonworks.trucking.enrichment.WeatherAPI
+import com.orendainx.trucking.commons.models.{EnrichedTruckData, TruckData}
+import com.orendainx.trucking.enrichment.WeatherAPI
 import org.apache.nifi.annotation.behavior._
 import org.apache.nifi.annotation.documentation.{CapabilityDescription, Tags}
 import org.apache.nifi.components.PropertyDescriptor

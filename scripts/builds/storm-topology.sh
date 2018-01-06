@@ -14,10 +14,10 @@ storm jar $projDir/trucking-storm-topology/target/scala-2.11/trucking-storm-topo
 
 # Valid, built-in options for the topology (last argument) above are:
 #
-# com.orendainx.hortonworks.trucking.storm.topologies.NiFiToNiFi
-# com.orendainx.hortonworks.trucking.storm.topologies.NiFiToNiFiWithSchema
-# com.orendainx.hortonworks.trucking.storm.topologies.KafkaToKafka
-# com.orendainx.hortonworks.trucking.storm.topologies.KafkaToKafkaWithSchema
+# com.orendainx.trucking.storm.topologies.NiFiToNiFi
+# com.orendainx.trucking.storm.topologies.NiFiToNiFiWithSchema
+# com.orendainx.trucking.storm.topologies.KafkaToKafka
+# com.orendainx.trucking.storm.topologies.KafkaToKafkaWithSchema
 
 # This is the Java version of the topology
 #sbt stormTopologyJava/assembly

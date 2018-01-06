@@ -1,10 +1,10 @@
 package com.orendainx.trucking.simulator.coordinators
 
 import akka.actor.{ActorLogging, ActorRef, PoisonPill, Props, Terminated}
-import com.orendainx.hortonworks.trucking.simulator.coordinators.AutomaticCoordinator.TickGenerator
-import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator.AcknowledgeTick
-import com.orendainx.hortonworks.trucking.simulator.flows.FlowManager
-import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator
+import com.orendainx.trucking.simulator.coordinators.AutomaticCoordinator.TickGenerator
+import com.orendainx.trucking.simulator.coordinators.GeneratorCoordinator.AcknowledgeTick
+import com.orendainx.trucking.simulator.flows.FlowManager
+import com.orendainx.trucking.simulator.generators.DataGenerator
 import com.typesafe.config.Config
 
 import scala.collection.mutable
@@ -12,11 +12,11 @@ import scala.concurrent.duration._
 import scala.util.Random
 
 /**
-  * The AutomaticCoordinator automatically ticks the [[com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator]] actors it gets passed in
-  * until some event count has been met.  This works by having each [[com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator]] acknowledge
+  * The AutomaticCoordinator automatically ticks the [[com.orendainx.trucking.simulator.generators.DataGenerator]] actors it gets passed in
+  * until some event count has been met.  This works by having each [[com.orendainx.trucking.simulator.generators.DataGenerator]] acknowledge
   * that it has processed a tick and is ready for another.
   *
-  * Once all [[com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator]] objects have ticked a certain number of times, this coordinator ends itself.
+  * Once all [[com.orendainx.trucking.simulator.generators.DataGenerator]] objects have ticked a certain number of times, this coordinator ends itself.
   * Thus, knowing when this job finished is simply a matter of DeathWatching this actor.
   *
   * @author Edgar Orendain <edgar@orendainx.com>
@@ -26,8 +26,8 @@ object AutomaticCoordinator {
 
   /**
     *
-    * @param generators A Seq of ActorRef referring to instances of [[com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator]]s.
-    * @param flowManager ActorRef to the instance of a [[com.orendainx.hortonworks.trucking.simulator.flows.FlowManager]] actor that handles data flow/transmission.
+    * @param generators A Seq of ActorRef referring to instances of [[com.orendainx.trucking.simulator.generators.DataGenerator]]s.
+    * @param flowManager ActorRef to the instance of a [[com.orendainx.trucking.simulator.flows.FlowManager]] actor that handles data flow/transmission.
     * @return A Props for a new [[AutomaticCoordinator]]
     */
   def props(eventCount: Int, generators: Seq[ActorRef], flowManager: ActorRef)(implicit config: Config) =

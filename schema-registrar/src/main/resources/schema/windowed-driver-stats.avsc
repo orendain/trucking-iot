@@ -1,6 +1,6 @@
 {
    "type" : "record",
-   "namespace" : "com.orendainx.hortonworks.trucking",
+   "namespace" : "com.orendainx.trucking",
    "name" : "WindowedDriverStats",
    "fields" : [
       { "name" : "driverId" , "type" : "int" },

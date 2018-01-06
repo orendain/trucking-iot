@@ -1,8 +1,8 @@
 package com.orendainx.trucking.storm.java.bolts;
 
-import com.orendainx.hortonworks.trucking.commons.models.EnrichedTruckData;
-import com.orendainx.hortonworks.trucking.commons.models.TrafficData;
-import com.orendainx.hortonworks.trucking.commons.models.TruckingData;
+import com.orendainx.trucking.commons.models.EnrichedTruckData;
+import com.orendainx.trucking.commons.models.TrafficData;
+import com.orendainx.trucking.commons.models.TruckingData;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;

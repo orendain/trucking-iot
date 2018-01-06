@@ -1923,7 +1923,7 @@
         <name>success</name>
       </relationships>
       <style></style>
-      <type>com.orendainx.hortonworks.trucking.nifi.processors.GetTruckingData</type>
+      <type>com.orendainx.trucking.nifi.processors.GetTruckingData</type>
     </processors>
     <processors>
       <id>15fddf0f-015a-1000-0000-000000000000</id>
@@ -1952,7 +1952,7 @@
         <name>success</name>
       </relationships>
       <style></style>
-      <type>com.orendainx.hortonworks.trucking.nifi.processors.EnrichTruckData</type>
+      <type>com.orendainx.trucking.nifi.processors.EnrichTruckData</type>
     </processors>
     <processors>
       <id>6a3130e0-d0a7-1a73-0000-000000000000</id>

@@ -3,7 +3,7 @@ package com.orendainx.trucking.simulator.transmitters
 import java.util.Properties
 
 import akka.actor.{ActorLogging, Props}
-import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
+import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
 

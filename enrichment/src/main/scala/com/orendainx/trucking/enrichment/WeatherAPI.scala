@@ -1,6 +1,6 @@
 package com.orendainx.trucking.enrichment
 
-import com.orendainx.hortonworks.trucking.commons.models.TruckEventTypes
+import com.orendainx.trucking.commons.models.TruckEventTypes
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.util.Random

@@ -3,7 +3,7 @@ package com.orendainx.trucking.nifi.processors
 import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 
-import com.orendainx.hortonworks.trucking.simulator.simulators.ManualTickAndFetchSimulator
+import com.orendainx.trucking.simulator.simulators.ManualTickAndFetchSimulator
 import org.apache.nifi.annotation.behavior._
 import org.apache.nifi.annotation.documentation.{CapabilityDescription, Tags}
 import org.apache.nifi.annotation.lifecycle.{OnRemoved, OnShutdown}

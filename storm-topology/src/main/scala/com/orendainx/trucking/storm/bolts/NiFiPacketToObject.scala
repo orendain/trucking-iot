@@ -3,7 +3,7 @@ package com.orendainx.trucking.storm.bolts
 import java.nio.charset.StandardCharsets
 import java.util
 
-import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckData, TrafficData}
+import com.orendainx.trucking.commons.models.{EnrichedTruckData, TrafficData}
 import com.typesafe.scalalogging.Logger
 import org.apache.nifi.storm.NiFiDataPacket
 import org.apache.storm.task.{OutputCollector, TopologyContext}

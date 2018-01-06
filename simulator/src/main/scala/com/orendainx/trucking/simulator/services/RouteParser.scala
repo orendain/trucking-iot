@@ -5,7 +5,7 @@ import java.nio.file.{FileSystemNotFoundException, FileSystems}
 import java.util
 
 import better.files.{File, Scannable}
-import com.orendainx.hortonworks.trucking.simulator.models.Location
+import com.orendainx.trucking.simulator.models.Location
 import com.orendainx.trucking.simulator.models
 import com.orendainx.trucking.simulator.models.Route
 import com.typesafe.scalalogging.Logger

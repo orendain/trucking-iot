@@ -1,13 +1,13 @@
 package com.orendainx.trucking.simulator.flows
 
 import akka.actor.{ActorRef, PoisonPill, Props, Terminated}
-import com.orendainx.hortonworks.trucking.commons.models.{TrafficData, TruckData}
-import com.orendainx.hortonworks.trucking.simulator.flows.FlowManager.ShutdownFlow
-import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
+import com.orendainx.trucking.commons.models.{TrafficData, TruckData}
+import com.orendainx.trucking.simulator.flows.FlowManager.ShutdownFlow
+import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
 
 /**
-  * The TruckAndTrafficFlowManager expects messages of type [[com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit]]
-  * and routes messages to two sepearate [[com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter]]s
+  * The TruckAndTrafficFlowManager expects messages of type [[com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit]]
+  * and routes messages to two sepearate [[com.orendainx.trucking.simulator.transmitters.DataTransmitter]]s
   * specified as arguments to [[TruckAndTrafficFlowManager.props]].
   *
   * @author Edgar Orendain <edgar@orendainx.com>

@@ -3,8 +3,8 @@ package com.orendainx.trucking.storm.topologies
 import java.util.Properties
 
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.orendainx.hortonworks.trucking.storm.bolts._
-import com.orendainx.hortonworks.trucking.storm.schemes.{BufferToBytesScheme, BufferToStringScheme}
+import com.orendainx.trucking.storm.bolts._
+import com.orendainx.trucking.storm.schemes.{BufferToBytesScheme, BufferToStringScheme}
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger
 import org.apache.kafka.clients.producer.ProducerConfig

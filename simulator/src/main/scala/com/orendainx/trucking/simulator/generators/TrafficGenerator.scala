@@ -3,12 +3,12 @@ package com.orendainx.trucking.simulator.generators
 import java.time.Instant
 
 import akka.actor.{ActorLogging, ActorRef, Props, Stash}
-import com.orendainx.hortonworks.trucking.commons.models._
-import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator
-import com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot.{RequestRoute, ReturnRoute}
-import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}
-import com.orendainx.hortonworks.trucking.simulator.models._
-import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
+import com.orendainx.trucking.commons.models._
+import com.orendainx.trucking.simulator.coordinators.GeneratorCoordinator
+import com.orendainx.trucking.simulator.depots.ResourceDepot.{RequestRoute, ReturnRoute}
+import com.orendainx.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}
+import com.orendainx.trucking.simulator.models._
+import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
 import com.orendainx.trucking.simulator.models.{EmptyRoute, Route}
 import com.typesafe.config.Config
 
@@ -24,8 +24,8 @@ object TrafficGenerator {
 
   /**
     *
-    * @param depot ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot]]
-    * @param flowManager ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.flows.FlowManager]]
+    * @param depot ActorRef to a [[com.orendainx.trucking.simulator.depots.ResourceDepot]]
+    * @param flowManager ActorRef to a [[com.orendainx.trucking.simulator.flows.FlowManager]]
     * @return
     */
   def props(depot: ActorRef, flowManager: ActorRef)(implicit config: Config) =

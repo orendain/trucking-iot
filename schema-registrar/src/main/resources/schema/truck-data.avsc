@@ -1,6 +1,6 @@
 {
    "type" : "record",
-   "namespace" : "com.orendainx.hortonworks.trucking",
+   "namespace" : "com.orendainx.trucking",
    "name" : "TruckData",
    "fields" : [
       { "name" : "eventTime" , "type" : "long" },

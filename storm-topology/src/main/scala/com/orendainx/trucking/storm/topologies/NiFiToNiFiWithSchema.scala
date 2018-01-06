@@ -1,7 +1,7 @@
 package com.orendainx.trucking.storm.topologies
 
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
-import com.orendainx.hortonworks.trucking.storm.bolts._
+import com.orendainx.trucking.storm.bolts._
 import com.orendainx.trucking.storm.nifi.ByteArrayToNiFiPacket
 import com.typesafe.config.{ConfigFactory, Config => TypeConfig}
 import com.typesafe.scalalogging.Logger

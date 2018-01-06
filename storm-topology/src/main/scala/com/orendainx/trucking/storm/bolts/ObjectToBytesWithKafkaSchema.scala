@@ -6,7 +6,7 @@ import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient
 import com.hortonworks.registries.schemaregistry.serdes.avro.AvroSnapshotSerializer
 import com.hortonworks.registries.schemaregistry.{SchemaCompatibility, SchemaMetadata, SchemaVersionInfo}
-import com.orendainx.hortonworks.trucking.commons.models.{EnrichedTruckAndTrafficData, WindowedDriverStats}
+import com.orendainx.trucking.commons.models.{EnrichedTruckAndTrafficData, WindowedDriverStats}
 import com.typesafe.scalalogging.Logger
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericData

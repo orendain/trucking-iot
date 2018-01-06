@@ -5,12 +5,12 @@ import java.time.Instant
 import java.util.Date
 
 import akka.actor.{ActorLogging, ActorRef, Props, Stash}
-import com.orendainx.hortonworks.trucking.commons.models.{TrafficData, TruckData, TruckEventTypes}
-import com.orendainx.hortonworks.trucking.simulator.coordinators.GeneratorCoordinator
-import com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot.{RequestRoute, RequestTruck, ReturnRoute, ReturnTruck}
-import com.orendainx.hortonworks.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}
-import com.orendainx.hortonworks.trucking.simulator.models._
-import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
+import com.orendainx.trucking.commons.models.{TrafficData, TruckData, TruckEventTypes}
+import com.orendainx.trucking.simulator.coordinators.GeneratorCoordinator
+import com.orendainx.trucking.simulator.depots.ResourceDepot.{RequestRoute, RequestTruck, ReturnRoute, ReturnTruck}
+import com.orendainx.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}
+import com.orendainx.trucking.simulator.models._
+import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
 import com.orendainx.trucking.simulator.models.{EmptyRoute, Route}
 import com.typesafe.config.Config
 
@@ -18,7 +18,7 @@ import scala.util.Random
 
 /**
   * TruckAndTrafficGenerator generates two types of data: [[TruckData]] and [[TrafficData]] and transmits to the
-  * specified [[com.orendainx.hortonworks.trucking.simulator.flows.FlowManager]].
+  * specified [[com.orendainx.trucking.simulator.flows.FlowManager]].
   *
   * @author Edgar Orendain <edgar@orendainx.com>
   */
@@ -26,9 +26,9 @@ object TruckAndTrafficGenerator {
 
   /**
     *
-    * @param driver The [[com.orendainx.hortonworks.trucking.simulator.models.Driver]] driving the truck.
-    * @param depot ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.depots.ResourceDepot]]
-    * @param flowManager ActorRef to a [[com.orendainx.hortonworks.trucking.simulator.flows.FlowManager]]
+    * @param driver The [[com.orendainx.trucking.simulator.models.Driver]] driving the truck.
+    * @param depot ActorRef to a [[com.orendainx.trucking.simulator.depots.ResourceDepot]]
+    * @param flowManager ActorRef to a [[com.orendainx.trucking.simulator.flows.FlowManager]]
     * @return
     */
   def props(driver: Driver, depot: ActorRef, flowManager: ActorRef)(implicit config: Config) =

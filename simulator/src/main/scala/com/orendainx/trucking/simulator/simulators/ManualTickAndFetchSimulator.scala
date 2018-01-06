@@ -2,13 +2,13 @@ package com.orendainx.trucking.simulator.simulators
 
 import akka.actor.{ActorSystem, Inbox}
 import better.files.File
-import com.orendainx.hortonworks.trucking.commons.models.TruckingData
-import com.orendainx.hortonworks.trucking.simulator.coordinators.ManualCoordinator
-import com.orendainx.hortonworks.trucking.simulator.depots.NoSharingDepot
-import com.orendainx.hortonworks.trucking.simulator.flows.SharedFlowManager
-import com.orendainx.hortonworks.trucking.simulator.generators.TruckAndTrafficGenerator
-import com.orendainx.hortonworks.trucking.simulator.services.DriverFactory
-import com.orendainx.hortonworks.trucking.simulator.transmitters.BufferTransmitter
+import com.orendainx.trucking.commons.models.TruckingData
+import com.orendainx.trucking.simulator.coordinators.ManualCoordinator
+import com.orendainx.trucking.simulator.depots.NoSharingDepot
+import com.orendainx.trucking.simulator.flows.SharedFlowManager
+import com.orendainx.trucking.simulator.generators.TruckAndTrafficGenerator
+import com.orendainx.trucking.simulator.services.DriverFactory
+import com.orendainx.trucking.simulator.transmitters.BufferTransmitter
 import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.Await

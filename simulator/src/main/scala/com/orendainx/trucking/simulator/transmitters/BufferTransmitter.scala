@@ -1,9 +1,9 @@
 package com.orendainx.trucking.simulator.transmitters
 
 import akka.actor.{ActorLogging, Props}
-import com.orendainx.hortonworks.trucking.commons.models.TruckingData
-import com.orendainx.hortonworks.trucking.simulator.transmitters.BufferTransmitter.Fetch
-import com.orendainx.hortonworks.trucking.simulator.transmitters.DataTransmitter.Transmit
+import com.orendainx.trucking.commons.models.TruckingData
+import com.orendainx.trucking.simulator.transmitters.BufferTransmitter.Fetch
+import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
 
 import scala.collection.mutable
 

@@ -1,6 +1,6 @@
 package com.orendainx.trucking.simulator.services
 
-import com.orendainx.hortonworks.trucking.simulator.models.{Driver, DrivingPattern}
+import com.orendainx.trucking.simulator.models.{Driver, DrivingPattern}
 import com.typesafe.config.Config
 
 import scala.collection.JavaConverters._
