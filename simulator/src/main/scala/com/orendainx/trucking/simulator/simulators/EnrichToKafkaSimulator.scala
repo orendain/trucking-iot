@@ -32,10 +32,7 @@ class EnrichToKafkaSimulator(val config: Config) extends Simulator {
 
   def this() = this(ConfigFactory.load())
 
-  private implicit val combinedConfig: Config = ConfigFactory.defaultOverrides()
-    .withFallback(config)
-    .withFallback(ConfigFactory.defaultReference())
-    .getConfig("trucking-simulator")
+  private implicit val combinedConfig: Config = ConfigFactory.load(config).getConfig("trucking-simulator")
 
   //private implicit val config = ConfigFactory.load()
   private val system = ActorSystem("EnrichToKafkaSimulator")

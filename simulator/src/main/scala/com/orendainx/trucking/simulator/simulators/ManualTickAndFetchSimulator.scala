@@ -34,10 +34,7 @@ class ManualTickAndFetchSimulator(val config: Config) extends Simulator {
 
   def this() = this(ConfigFactory.load())
 
-  private implicit val combinedConfig: Config = ConfigFactory.defaultOverrides()
-    .withFallback(config)
-    .withFallback(ConfigFactory.defaultReference())
-    .getConfig("trucking-simulator")
+  private implicit val combinedConfig: Config = ConfigFactory.load(config).getConfig("trucking-simulator")
 
   private val system = ActorSystem("ManualTickAndFetchSimulator")
 
