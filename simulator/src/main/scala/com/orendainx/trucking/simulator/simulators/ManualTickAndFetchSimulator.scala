@@ -25,7 +25,7 @@ import scala.concurrent.duration._
   */
 object ManualTickAndFetchSimulator {
   def main(args: Array[String]): Unit = {
-    if (args.length > 0) new ManualTickAndFetchSimulator(ConfigFactory.parseFile(File(args(0)).toJava))
+    if (args.length > 0) new ManualTickAndFetchSimulator(ConfigFactory.parseFile(File(args(1)).toJava))
     else new ManualTickAndFetchSimulator()
   }
 }
@@ -34,6 +34,7 @@ class ManualTickAndFetchSimulator(val config: Config) extends Simulator {
 
   def this() = this(ConfigFactory.load())
 
+  // Wrap 'config' with the default config and system defaults
   private implicit val combinedConfig: Config = ConfigFactory.load(config).getConfig("trucking-simulator")
 
   private val system = ActorSystem("ManualTickAndFetchSimulator")

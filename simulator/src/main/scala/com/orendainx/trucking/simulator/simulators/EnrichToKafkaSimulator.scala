@@ -23,7 +23,7 @@ import scala.concurrent.duration._
   */
 object EnrichToKafkaSimulator {
   def main(args: Array[String]): Unit = {
-    if (args.length > 0) new EnrichToKafkaSimulator(ConfigFactory.parseFile(File(args(0)).toJava))
+    if (args.length > 0) new EnrichToKafkaSimulator(ConfigFactory.parseFile(File(args(1)).toJava))
     else new EnrichToKafkaSimulator()
   }
 }
@@ -32,9 +32,9 @@ class EnrichToKafkaSimulator(val config: Config) extends Simulator {
 
   def this() = this(ConfigFactory.load())
 
+  // Wrap 'config' with the default config and system defaults
   private implicit val combinedConfig: Config = ConfigFactory.load(config).getConfig("trucking-simulator")
 
-  //private implicit val config = ConfigFactory.load()
   private val system = ActorSystem("EnrichToKafkaSimulator")
 
   // Generate the drivers to be used in the simulation and create an Inbox for accepting messages

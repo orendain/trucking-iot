@@ -20,7 +20,7 @@ import scala.concurrent.duration._
   */
 object AutoFinishSimulator {
   def main(args: Array[String]): Unit = {
-    if (args.length > 0) new AutoFinishSimulator(ConfigFactory.parseFile(File(args(0)).toJava))
+    if (args.length > 0) new AutoFinishSimulator(ConfigFactory.parseFile(File(args(1)).toJava))
     else new AutoFinishSimulator()
   }
 }
@@ -29,6 +29,7 @@ class AutoFinishSimulator(val config: Config) extends Simulator {
 
   def this() = this(ConfigFactory.load())
 
+  // Wrap 'config' with the default config and system defaults
   private implicit val combinedConfig: Config = ConfigFactory.load(config).getConfig("trucking-simulator")
 
   private val system = ActorSystem("AutoFinishSimulator")

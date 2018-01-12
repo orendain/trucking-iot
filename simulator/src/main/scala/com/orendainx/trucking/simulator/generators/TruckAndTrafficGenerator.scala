@@ -1,17 +1,14 @@
 package com.orendainx.trucking.simulator.generators
 
-import java.sql.Timestamp
 import java.time.Instant
-import java.util.Date
 
 import akka.actor.{ActorLogging, ActorRef, Props, Stash}
 import com.orendainx.trucking.commons.models.{TrafficData, TruckData, TruckEventTypes}
 import com.orendainx.trucking.simulator.coordinators.GeneratorCoordinator
 import com.orendainx.trucking.simulator.depots.ResourceDepot.{RequestRoute, RequestTruck, ReturnRoute, ReturnTruck}
 import com.orendainx.trucking.simulator.generators.DataGenerator.{GenerateData, NewResource}
-import com.orendainx.trucking.simulator.models._
+import com.orendainx.trucking.simulator.models.{EmptyRoute, Route, _}
 import com.orendainx.trucking.simulator.transmitters.DataTransmitter.Transmit
-import com.orendainx.trucking.simulator.models.{EmptyRoute, Route}
 import com.typesafe.config.Config
 
 import scala.util.Random
