@@ -8,11 +8,11 @@
   <parent>
     <groupId>com.orendainx.hortonworks</groupId>
     <artifactId>trucking-nifi-bundle</artifactId>
-    <version>0.5.1</version>
+    <version>0.5.2</version>
   </parent>
 
   <properties>
-    <trucking.version>0.5.1</trucking.version>
+    <trucking.version>0.5.2</trucking.version>
   </properties>
 
   <dependencies>

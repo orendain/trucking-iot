@@ -2,7 +2,7 @@
  * Definition of common settings for all subprojects
  */
 lazy val commonSettings = Seq(
-  version := "0.5.1",
+  version := "0.5.2",
   isSnapshot := false,
   //scalaVersion := "2.11.8",
   scalaVersion := "2.12.4",
