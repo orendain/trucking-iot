@@ -7,12 +7,11 @@ object Dependencies {
    */
   lazy val simulatorDeps = Seq(akkaActor, config, betterFiles, scalaLogging, logback, kafkaClients)
   lazy val enrichmentDeps = Seq(scalaCsv, config, betterFiles)
-  lazy val schemaRegistrarDeps = Seq(schemaRegistrySerdes, config, scalaLogging, logback)
+  lazy val schemaRegistrarDeps = Seq(schemaRegistrySerdes, javaxXml, config, scalaLogging, logback)
   lazy val stormTopologyDeps = Seq(stormCoreProvided, stormNifi, stormKafkaClient, kafka, schemaRegistrySerdes, config, betterFiles, scalaLogging)
   lazy val stormTopologyJavaDeps = Seq(stormCoreProvided, stormKafka, stormKafkaClient, kafkaClients, config)
   lazy val webApplicationBackendDeps = Seq(scalaJsScripts, compass, bootstrap, akkaStreamKafka) ++ angular2Deps
   lazy val webApplicationFrontendDeps = Seq(leaflet, shocon)
-
 
 
   /*
@@ -55,6 +54,7 @@ object Dependencies {
     .exclude("commons-collections", "commons-collections") // vs itself - commons-beanutils/commons-beanutils-core
     .exclude("org.springframework", "spring-aop") // vs itself - aopalliance/intercept/ConstructorInvocation.class
   //  .exclude("org.apache.hadoop", "hadoop-auth") // vs storm-core/scheme-registry, but only when storm-core is not marked as provided
+  lazy val javaxXml = "javax.xml.bind" % "jaxb-api" % "2.3.0"
 
 
   // Web application backend dependencies
