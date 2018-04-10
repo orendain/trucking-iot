@@ -1,7 +1,7 @@
 {
    "type" : "record",
    "namespace" : "com.orendainx.trucking",
-   "name" : "WindowedDriverStats",
+   "name" : "DriverStatsAverageSpeed",
    "fields" : [
       { "name" : "driverId" , "type" : "int" },
       { "name" : "routeId" , "type" : "int" },
