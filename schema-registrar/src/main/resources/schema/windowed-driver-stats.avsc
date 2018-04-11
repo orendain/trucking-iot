@@ -5,7 +5,7 @@
    "fields" : [
       { "name" : "driverId" , "type" : "int" },
       { "name" : "routeId" , "type" : "int" },
-      { "name" : "averageSpeed" , "type" : "float" },
+      { "name" : "averageSpeed" , "type" : "double" },
       { "name" : "totalFog" , "type" : "int" },
       { "name" : "totalRain" , "type" : "int" },
       { "name" : "totalWind" , "type" : "int" },
