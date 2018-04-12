@@ -58,7 +58,6 @@
           </execution>
         </executions>
         <configuration>
-          <recompileMode>incremental</recompileMode>
           <scalaVersion>${scala.version}</scalaVersion>
           <args>
             <arg>-deprecation</arg>
