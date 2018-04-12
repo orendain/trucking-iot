@@ -10,7 +10,7 @@ echo "Building and deploying the Storm topology"
 
 # This is the Scala version of the topology
 sbt stormTopology/assembly
-storm jar $projDir/trucking-storm-topology/target/scala-2.11/trucking-storm-topology-assembly-$projVer.jar com.orendainx.hortonworks.trucking.storm.topologies.KafkaToKafka
+storm jar $projDir/trucking-storm-topology/target/scala-2.11/trucking-storm-topology-assembly-$projVer.jar com.orendainx.trucking.storm.topologies.KafkaToKafka
 
 # Valid, built-in options for the topology (last argument) above are:
 #
@@ -21,5 +21,5 @@ storm jar $projDir/trucking-storm-topology/target/scala-2.11/trucking-storm-topo
 
 # This is the Java version of the topology
 #sbt stormTopologyJava/assembly
-#storm jar $projDir/trucking-storm-topology-java/target/scala-2.11/trucking-storm-topology-java-assembly-$projVer.jar com.orendainx.hortonworks.trucking.storm.java.topologies.KafkaToKafka
+#storm jar $projDir/trucking-storm-topology-java/target/scala-2.11/trucking-storm-topology-java-assembly-$projVer.jar com.orendainx.trucking.storm.java.topologies.KafkaToKafka
 

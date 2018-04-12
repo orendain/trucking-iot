@@ -6,23 +6,23 @@
   <packaging>jar</packaging>
 
   <parent>
-    <groupId>com.orendainx.hortonworks</groupId>
+    <groupId>com.orendainx.trucking</groupId>
     <artifactId>trucking-nifi-bundle</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
   </parent>
 
   <properties>
-    <trucking.version>0.5.2</trucking.version>
+    <trucking.version>0.5.3</trucking.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.orendainx.hortonworks</groupId>
+      <groupId>com.orendainx.trucking</groupId>
       <artifactId>trucking-simulator_${scala.major.version}</artifactId>
       <version>${trucking.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.orendainx.hortonworks</groupId>
+      <groupId>com.orendainx.trucking</groupId>
       <artifactId>trucking-enrichment_${scala.major.version}</artifactId>
       <version>${trucking.version}</version>
     </dependency>
