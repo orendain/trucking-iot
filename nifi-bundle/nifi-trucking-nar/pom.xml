@@ -3,17 +3,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>nifi-trucking-nar</artifactId>
-  <version>0.5.3</version>
+  <version>0.5.4</version>
   <packaging>nar</packaging>
 
   <parent>
     <groupId>com.orendainx.trucking</groupId>
     <artifactId>trucking-nifi-bundle</artifactId>
-    <version>0.5.3</version>
+    <version>0.5.4</version>
   </parent>
 
   <properties>
-    <trucking.version>0.5.3</trucking.version>
+    <trucking.version>0.5.4</trucking.version>
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <source.skip>true</source.skip>
   </properties>

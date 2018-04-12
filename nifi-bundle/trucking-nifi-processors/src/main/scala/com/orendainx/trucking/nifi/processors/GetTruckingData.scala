@@ -18,7 +18,7 @@ import scala.collection.JavaConverters._
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 @Tags(Array("trucking", "data", "event", "generator", "simulator", "iot"))
-@CapabilityDescription("Generates data for a trucking application. Master project <a href=\"https://github.com/orendain/trucking-iot\">found here</a>")
+@CapabilityDescription("Generates simulated truck sensor data. Find the master project and its code, documentation and corresponding tutorials at: https://github.com/orendain/trucking-iot")
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
 @TriggerSerially
 @WritesAttributes(Array(

@@ -21,7 +21,7 @@ import scala.collection.JavaConverters._
   * @author Edgar Orendain <edgar@orendainx.com>
   */
 @Tags(Array("trucking", "data", "event", "enrich", "iot"))
-@CapabilityDescription("Enriches data for a trucking application. Master project <a href=\"https://github.com/orendain/trucking-iot\">found here</a>")
+@CapabilityDescription("Enriches simulated truck sensor data. Find the master project and its code, documentation and corresponding tutorials at: https://github.com/orendain/trucking-iot")
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @TriggerSerially
 @WritesAttributes(Array(

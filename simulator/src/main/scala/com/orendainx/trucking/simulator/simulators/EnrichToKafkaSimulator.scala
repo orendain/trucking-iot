@@ -43,7 +43,7 @@ class EnrichToKafkaSimulator(val config: Config) extends Simulator {
 
   // Generate the different actors in the simulation
   private val depot = system.actorOf(NoSharingDepot.props())
-  private val kafkaTruckTransmitter = system.actorOf(KafkaTransmitter.props("trucking_data_truck"))
+  private val kafkaTruckTransmitter = system.actorOf(KafkaTransmitter.props("trucking_data_truck_enriched"))
   private val kafkaTrafficTransmitter = system.actorOf(KafkaTransmitter.props("trucking_data_traffic"))
   private val enrichmentActor = system.actorOf(Props(new EnrichmentActor))
   private val actorTransmitter = system.actorOf(ActorTransmitter.props(enrichmentActor))

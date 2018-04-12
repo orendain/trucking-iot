@@ -4,7 +4,7 @@
 
   <groupId>com.orendainx.trucking</groupId>
   <artifactId>trucking-nifi-bundle</artifactId>
-  <version>0.5.3</version>
+  <version>0.5.4</version>
   <packaging>pom</packaging>
 
   <parent>
